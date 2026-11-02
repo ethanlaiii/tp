@@ -329,11 +329,7 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     private static String parseSlashFreeSearchText(String value, String blankMessage, String fieldName)
             throws ParseException {
         String text = parseSearchText(value, blankMessage);
-        Optional<String> hint = ParserUtil.getSlashHint(text);
-        if (hint.isPresent()) {
-            throw new ParseException(String.format(MESSAGE_SEARCH_CANNOT_MATCH, fieldName, text)
-                    + "\n" + hint.get());
-        }
+        ParserUtil.verifyNoSlash(text, String.format(MESSAGE_SEARCH_CANNOT_MATCH, fieldName, text));
         return text;
     }
 
