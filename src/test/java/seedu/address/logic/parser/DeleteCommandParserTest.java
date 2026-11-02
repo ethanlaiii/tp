@@ -75,4 +75,9 @@ public class DeleteCommandParserTest {
     public void parse_integerTooBigForInt_throwsIndexError() {
         assertParseFailure(parser, "99999999999", MESSAGE_INVALID_INDEX);
     }
+
+    @Test
+    public void parse_fullWidthDigitIndex_throwsParseException() {
+        assertParseFailure(parser, "-f １", DeleteCommand.MESSAGE_INVALID_FORMAT);
+    }
 }
