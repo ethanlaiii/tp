@@ -784,6 +784,21 @@ Term | Meaning
 
 --------------------------------------------------------------------------------------------------------------------
 
+## Coming soon
+
+These features are planned for a future version. Until then, typing `undo` or a short form such as `a` shows `Unknown command.` and changes nothing.
+
+Feature | What it will do | What to do for now
+--------|-----------------|-------------------
+Undo: `undo` | Reverses your last command that changed your data, such as a mistyped `edit`. | `delete`, `deletenote`, and `clear` ask you to confirm first. See [Confirming a command](#confirming-a-command).
+Command history | Lets you press the Up and Down arrow keys in the command box to bring back earlier commands. | Type or paste the command again.
+Inactive students | Marks a student who is on a break as inactive, so you keep their record and notes without deleting them. | Tag them `inactive`, and use `filter t/inactive` to find them. `edit` replaces all tags, so list the student's other tags too, such as `edit 1 t/paid t/inactive`.
+Groups | Groups students who attend the same class, so you can work with the whole group at once. | Give the students the same tag, such as `sat-class`, and use `filter t/sat-class` to list them.
+Shared guardians | Links siblings to one guardian, so a change to the guardian's details updates every child. | Use `edit` on each sibling.
+Command aliases | Adds short forms of command words, such as `a` for `add`. | Type the full command word.
+
+--------------------------------------------------------------------------------------------------------------------
+
 ## Known issues
 
 1. **The window opens off-screen after you stop using a second screen.** If you move TuteeBook3 to a second screen and later use only your main screen, the window opens where the second screen was. The remedy is to delete `preferences.json` from the [home folder](#glossary) before you start TuteeBook3 again.
