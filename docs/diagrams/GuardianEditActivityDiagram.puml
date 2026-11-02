@@ -12,18 +12,24 @@ if () then ([guardian is to be removed])
         :Throw CommandException
         "no guardian to remove";
     endif
-elseif () then ([neither gn/ nor gp/ given])
-    :Return the current guardian;
-elseif () then ([student has a guardian])
-    :Return a new Guardian, taking
-    each missing field from the
-    current guardian;
-elseif () then ([both gn/ and gp/ given])
-    :Return a new Guardian
-    with both values;
 else ([else])
-    :Throw CommandException
-    "give both gn/ and gp/";
+    if () then ([neither gn/ nor gp/ given])
+        :Return the current guardian;
+    else ([else])
+        if () then ([student has a guardian])
+            :Return a new Guardian, taking
+            each missing field from the
+            current guardian;
+        else ([else])
+            if () then ([both gn/ and gp/ given])
+                :Return a new Guardian
+                with both values;
+            else ([else])
+                :Throw CommandException
+                "give both gn/ and gp/";
+            endif
+        endif
+    endif
 endif
 stop
 @enduml
