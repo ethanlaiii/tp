@@ -4,79 +4,40 @@ skinparam ArrowFontStyle plain
 
 box UI UI_COLOR_T1
 participant ":MainWindow" as MainWindow UI_COLOR
-end box
-
-box Logic LOGIC_COLOR_T1
-participant ":LogicManager" as LogicManager LOGIC_COLOR
-participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
-participant ":ViewCommandParser" as ViewCommandParser LOGIC_COLOR
-participant "v:ViewCommand" as ViewCommand LOGIC_COLOR
-end box
-
-box Model MODEL_COLOR_T1
-participant "m:Model" as Model MODEL_COLOR
-end box
-
-box "UI panels" UI_COLOR_T1
+participant ":ResultDisplay" as ResultDisplay UI_COLOR
 participant ":StudentDetailPanel" as StudentDetailPanel UI_COLOR
 participant ":PersonListPanel" as PersonListPanel UI_COLOR
 end box
 
+box Logic LOGIC_COLOR_T1
+participant "logic:Logic" as Logic LOGIC_COLOR
+end box
+
 [-> MainWindow : executeCommand("view 1")
 activate MainWindow
-MainWindow -> LogicManager : execute("view 1")
-activate LogicManager
 
-LogicManager -> AddressBookParser : parseCommand("view 1")
-activate AddressBookParser
+MainWindow -> Logic : execute("view 1")
+activate Logic
+Logic --> MainWindow : commandResult
+deactivate Logic
 
-create ViewCommandParser
-AddressBookParser -> ViewCommandParser
-activate ViewCommandParser
-ViewCommandParser --> AddressBookParser
-deactivate ViewCommandParser
+MainWindow -> ResultDisplay : setFeedbackToUser(...)
+activate ResultDisplay
+ResultDisplay --> MainWindow
+deactivate ResultDisplay
 
-AddressBookParser -> ViewCommandParser : parse(" 1")
-activate ViewCommandParser
-
-create ViewCommand
-ViewCommandParser -> ViewCommand
-activate ViewCommand
-ViewCommand --> ViewCommandParser : v
-deactivate ViewCommand
-
-ViewCommandParser --> AddressBookParser : v
-deactivate ViewCommandParser
-'Position the destruction occurrence below the activation and terminate the parser lifeline there.
-AddressBookParser -[hidden]-> ViewCommandParser
-destroy ViewCommandParser
-
-AddressBookParser --> LogicManager : v
-deactivate AddressBookParser
-
-LogicManager -> ViewCommand : execute(m)
-activate ViewCommand
-
-ViewCommand -> Model : getFilteredPersonList()
-activate Model
-Model --> ViewCommand : persons
-deactivate Model
-
-ViewCommand -> ViewCommand : person = persons.get(0)
-
-ViewCommand --> LogicManager : r:CommandResult
-deactivate ViewCommand
-
-LogicManager --> MainWindow : r
-deactivate LogicManager
-
-MainWindow -> MainWindow : updateMainContent(r)
+MainWindow -> MainWindow : updateMainContent(commandResult)
 activate MainWindow
 
-MainWindow -> LogicManager : getFilteredPersonList()
-activate LogicManager
-LogicManager --> MainWindow : persons
-deactivate LogicManager
+note right of MainWindow
+display mode, person, and index are
+read from commandResult.
+end note
+
+MainWindow -> Logic : getFilteredPersonList()
+activate Logic
+Logic --> MainWindow : persons
+deactivate Logic
 
 create StudentDetailPanel
 MainWindow -> StudentDetailPanel : StudentDetailPanel(person, index, persons)
@@ -84,12 +45,19 @@ activate StudentDetailPanel
 StudentDetailPanel --> MainWindow
 deactivate StudentDetailPanel
 
+note right of MainWindow
+MainWindow replaces the detail placeholder
+content with the panel's root.
+end note
+
 MainWindow -> PersonListPanel : highlightPerson(person)
 activate PersonListPanel
 PersonListPanel --> MainWindow
 deactivate PersonListPanel
+
+MainWindow --> MainWindow
 deactivate MainWindow
 
+[<-- MainWindow : commandResult
 deactivate MainWindow
-[<-- MainWindow : r
 @enduml

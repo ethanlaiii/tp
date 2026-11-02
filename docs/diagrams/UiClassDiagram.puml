@@ -1,6 +1,5 @@
 @startuml
 !include style.puml
-!pragma layout smetana
 skinparam arrowThickness 1.1
 skinparam arrowColor UI_COLOR_T4
 skinparam classBackgroundColor UI_COLOR
@@ -31,31 +30,35 @@ HiddenOutside ..> Ui
 
 UiManager .up.|> Ui
 UiManager -down-> "1" MainWindow
-MainWindow *-down->  "1" CommandBox
+UiManager -left-> Logic
+MainWindow -left-> Logic
+
+MainWindow *-down-> "1" CommandBox
 MainWindow *-down-> "1" ResultDisplay
+MainWindow *-down-> "1" StatusBarFooter
 MainWindow *-down-> "1" PersonListPanel
 MainWindow *-down-> "0..1" StudentDetailPanel
-MainWindow *-down-> "1" StatusBarFooter
-
 PersonListPanel -down-> "*" PersonCard
 
-MainWindow -left-|> UiPart
-
-ResultDisplay --|> UiPart
-CommandBox --|> UiPart
-PersonListPanel --|> UiPart
-PersonCard --|> UiPart
-StudentDetailPanel --|> UiPart
-StatusBarFooter --|> UiPart
+CommandBox -down-|> UiPart
+ResultDisplay -down-|> UiPart
+StatusBarFooter -down-|> UiPart
+PersonListPanel -down-|> UiPart
+StudentDetailPanel -down-|> UiPart
+PersonCard -left-|> UiPart
+MainWindow -down-|> UiPart
 
 PersonCard ..> Model
 StudentDetailPanel ..> Model
-UiManager -right-> Logic
-MainWindow -left-> Logic
 
-PersonListPanel -[hidden]left- CommandBox
-CommandBox -[hidden]left- ResultDisplay
-ResultDisplay -[hidden]left- StatusBarFooter
+CommandBox -[hidden]right- ResultDisplay
+ResultDisplay -[hidden]right- StatusBarFooter
+StatusBarFooter -[hidden]right- PersonListPanel
+PersonListPanel -[hidden]right- StudentDetailPanel
 
-MainWindow -[hidden]-|> UiPart
+note as N1
+Partial diagram: other cross-component relationships are omitted,
+including Model relationships used by MainWindow and PersonListPanel
+and Logic dependencies used by CommandBox and StudentDetailPanel.
+end note
 @enduml
