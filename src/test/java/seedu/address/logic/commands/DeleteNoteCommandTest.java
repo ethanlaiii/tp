@@ -93,7 +93,7 @@ public class DeleteNoteCommandTest {
     @Test
     public void execute_noteWithSymbols_showsWholeNoteInMessage() {
         String symbolNote = "Rajesh s/o Kumar: WA2 36/50 (Mary-Jane's class)";
-        String maxLengthNote = "a".repeat(500);
+        String maxLengthNote = "a".repeat(Note.MAX_LENGTH);
         addNotesToFirstPerson(symbolNote, maxLengthNote);
 
         assertDeleteNoteSuccess(NID_FIRST, symbolNote, maxLengthNote);
