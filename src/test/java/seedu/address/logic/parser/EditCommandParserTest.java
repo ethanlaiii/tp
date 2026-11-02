@@ -485,4 +485,9 @@ public class EditCommandParserTest {
         assertParseFailure(parser, userInput,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PHONE, PREFIX_SCHOOL));
     }
+
+    @Test
+    public void parse_fullWidthDigitIndex_throwsParseException() {
+        assertParseFailure(parser, "１" + PHONE_DESC_AMY, MESSAGE_INVALID_FORMAT);
+    }
 }

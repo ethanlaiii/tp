@@ -143,4 +143,9 @@ public class DeleteNoteCommandParserTest {
         // repeated prefix is reported before the invalid NID
         assertParseFailure(parser, " 1 nid/abc nid/2", expectedMessage);
     }
+
+    @Test
+    public void parse_fullWidthDigitNid_throwsParseException() {
+        assertParseFailure(parser, " 1 nid/１", MESSAGE_INVALID_NID);
+    }
 }
