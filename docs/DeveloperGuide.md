@@ -22,7 +22,7 @@ Notable uses of AI:
 * @azora04 used Claude Code (Anthropic) to help write code, tests, and parts of the User Guide and Developer Guide, and for preliminary reviews of PRs.
 * @lawjiakai11 used Codex to support some writing of code, tests, guides, drawing of diagrams, and preliminary reviewing of PRs.
 * @ethanlaiii used Claude Code (Anthropic) to help write code, tests, and parts of the User Guide and Developer Guide, to test edge cases in the app, to draft issues, commit messages, and PR descriptions, and for preliminary reviews of PRs.
-* @adwaithanoop used Claude Code (Anthropic) to help write code, tests, and parts of the User Guide and Developer Guide, for preliminary reviews of PRs, and to find bugs and draft bug reports during testing.
+* @adwaithanoop used Claude Code (Anthropic) to help write code, tests, and parts of the User Guide and Developer Guide, for preliminary reviews of PRs, to find bugs and draft bug reports during testing, and assist drafting titles and descriptions for issues and PRs. Almost all AI-generated content was verified. 
 
 --------------------------------------------------------------------------------------------------------------------
 
