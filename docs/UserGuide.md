@@ -22,7 +22,7 @@ TuteeBook3 is **optimized for fast typists**. You do almost everything by typing
 1. Copy the file to the folder you want to use as the _home folder_ for TuteeBook3.
 
 1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar TuteeBook3.jar`.<br>
-   A GUI similar to the one below should appear in a few seconds. Note how the app contains some sample data.<br>
+   A GUI similar to the one below should appear in a few seconds, with some sample data. The picture shows the app after `view 1`, which opens the first student's record on the right.<br>
    ![Ui](images/Ui.png)
 
 1. Familiarize yourself with TuteeBook3 by trying its commands using the sample data. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to show the available commands in the result display.<br>
