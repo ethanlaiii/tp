@@ -3,7 +3,9 @@ layout: page
 title: User Guide
 ---
 
-TuteeBook3 is a **desktop app for private tutors who teach secondary school students (S1 to S5) in Singapore, optimized for use through a Command Line Interface (CLI)** while keeping the benefits of a Graphical User Interface (GUI). It keeps each student's information in one place, so you can look up a student's full record with a short typed command. If you type quickly, TuteeBook3 helps you manage your students faster than a spreadsheet or a traditional GUI app.
+TuteeBook3 is a **desktop app for private tutors who teach secondary school students (S1 to S5) in Singapore**. It keeps each student's contact details, guardian contact, school, level, subjects and bands, and lesson notes in one place, so you can pull up a student's full record quickly, such as when a guardian calls or just before a lesson.
+
+TuteeBook3 is **optimized for fast typists**. You do almost everything by typing short commands in a Command Line Interface (CLI), and a Graphical User Interface (GUI) shows the results, so you can manage your students faster than with a mouse-driven app or a notebook.
 
 * Table of Contents
 {:toc}
@@ -159,9 +161,9 @@ Parameter | Prefix | Required in `add` | Rules | Examples
 
 </div>
 
-Names accept English letters, digits, and spaces only. School names also accept periods, apostrophes, ampersands, parentheses, commas, and hyphens, but must contain at least one English letter. Both fields reject accented letters and letters from other alphabets. Before upgrading, use the previous version to change saved names or school names that contain such letters. Otherwise, those records fail validation when the data file is loaded.
+Names accept English letters, digits, and spaces only. School names also accept periods, apostrophes, ampersands, parentheses, commas, and hyphens, but must contain at least one English letter. Both fields reject accented letters and letters from other alphabets.
 
-Addresses accept the same characters as notes. Before upgrading, use the previous version to change saved addresses that contain other characters, such as accented letters or emoji. Otherwise, those records fail validation when the data file is loaded.
+Addresses accept the same characters as notes.
 
 #### Phone numbers
 
@@ -187,7 +189,7 @@ Each student and guardian has one phone number, which is the number you use to r
 
 #### Subjects and bands
 
-Each student takes 1 to 8 subjects. A subject name can contain English letters, spaces, hyphens, parentheses, commas, and ampersands. It must be 1 to 40 characters long and contain at least one letter. For example, `Science (Physics, Chemistry)`, `Design & Technology`, and `Food & Consumer Education` are valid names. Digits, slashes, and other symbols are not allowed. Like names and school names, subject names reject accented letters and letters from other alphabets, so type `French` rather than `Français`. Before upgrading, use the previous version to change saved subject names that contain such letters. Otherwise, those records fail validation when the data file is loaded.
+Each student takes 1 to 8 subjects. A subject name can contain English letters, spaces, hyphens, parentheses, commas, and ampersands. It must be 1 to 40 characters long and contain at least one letter. For example, `Science (Physics, Chemistry)`, `Design & Technology`, and `Food & Consumer Education` are valid names. Digits, slashes, and other symbols are not allowed. Like names and school names, subject names reject accented letters and letters from other alphabets, so type `French` rather than `Français`.
 
 Give each subject with `sub/`, followed immediately by its band with `band/`, such as `sub/Science (Physics, Chemistry) band/G3 sub/English band/G3`.
 
@@ -229,7 +231,7 @@ Parameter | Prefix | Used in | Rules | Example
 * `INDEX` and `NID` can change. An index changes when the list changes, such as after `filter` or `delete`. After a note is deleted, the notes after it move up one number. Check the list or the student detail view before you use them.
 * After `view`, the student's `INDEX` is also shown at the top of the student detail view, so you can use it in `edit`, `delete`, `addnote`, `editnote`, and `deletenote` without looking for the student in the list.
 * Everything after `note/` is the note text, so `TEXT` can contain other prefixes, such as `t/f` or another `note/`. For example, `addnote 1 note/Revise t/f questions` adds the note `Revise t/f questions`.
-* Notes saved by an earlier version may contain accented letters, emoji, or other characters that notes no longer allow. Before upgrading, use the previous version to change those notes. Otherwise, those records fail validation when the data file is loaded.
+* Notes saved by an earlier version may contain characters that notes no longer allow. See [Upgrading from an earlier version](#upgrading-from-an-earlier-version).
 
 ### Managing students
 
@@ -713,6 +715,10 @@ A missing required field (`name`, `school`, `level`, `subjects`, or any field in
 A missing optional field (`phone`, `email`, `address`, `guardian`, `tags`, or `notes`) only leaves the student without that value.<br>
 Back up the file before you edit it, and edit it only if you are confident you can update it correctly.
 </div>
+
+### Upgrading from an earlier version
+
+Earlier versions of TuteeBook3 allowed more characters in names, school names, addresses, subject names, and notes, such as accented letters and emoji. If your data file has such a value, TuteeBook3 cannot load the file (see the caution in [Editing the data file](#editing-the-data-file)). Before you upgrade, use the earlier version to change those values.
 
 --------------------------------------------------------------------------------------------------------------------
 
