@@ -20,6 +20,7 @@ Notable uses of AI:
 
 * @matthewbiju used Claude Code (Anthropic) to help write code, tests, and parts of the User Guide and Developer Guide, to draw the app icon, and for preliminary reviews of PRs.
 * @azora04 used Claude Code (Anthropic) to help write code, tests, and parts of the User Guide and Developer Guide, and for preliminary reviews of PRs.
+* @lawjiakai11 used Codex to support some writing of code, tests, guides, drawing of diagrams, and preliminary reviewing of PRs.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -121,7 +122,7 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 <img src="images/ParserClasses.png" width="600"/>
 
 How the parsing works:
-* Before parsing, `AddressBookParser` passes the user command through `StringUtil#normalizeInput`. It turns every kind of whitespace, such as a non-breaking space, into a normal space, removes invisible characters, such as a zero-width space, and turns curly quotes and en and em dashes into `'`, `"`, and `-`. Pasted text is then parsed the same way as typed text, so a prefix after a non-breaking space is still recognized. Only these characters are converted. Others that only look like keyboard symbols, such as a full-width slash (`／`), are left as they are, so they fail validation or are not read as prefixes.
+* Before parsing, `AddressBookParser` cleans the user command, so pasted text is parsed the same way as typed text. See [Cleaning pasted input](#cleaning-pasted-input).
 * When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name, e.g., `AddCommandParser`). The parser uses the other classes shown above to parse the user command and create an `XYZCommand` object (e.g., `AddCommand`). The `AddressBookParser` returns that object as a `Command` object.
 * All `XYZCommandParser` classes, such as `AddCommandParser` and `DeleteCommandParser`, implement the `Parser` interface so they can be treated similarly where appropriate, for example during testing.
 
@@ -259,7 +260,7 @@ Each student has 1 to 8 subjects. Every subject has a name and one band: `G1`, `
 
 #### Implementation
 
-<img src="images/SubjectBandClassDiagram.png" width="700" />
+<img src="images/SubjectBandClassDiagram.png" width="396" />
 
 1. `AddCommandParser` and `EditCommandParser` tokenize `sub/` and `band/`. `ArgumentMultimap#verifyEachFollowedBy` checks that each `sub/` is immediately followed by one `band/`. `add` requires at least one pair. For `edit`, giving neither prefix leaves the subjects unchanged; giving either prefix requires complete pairs and replaces the subject list.
 1. `ParserUtil#parseSubjects` checks that the subject-name and band lists have the same number of values and that there are no more than eight pairs. It creates each `Subject` from the name and band at the same position, then calls `Person#validateSubjects` to reject repeated names.
@@ -303,7 +304,7 @@ The app uses the second option because it resolves the reported real-name cases 
 
 ### Student addresses
 
-`Address` is an optional value object. It accepts any nonblank value up to 200 characters and collapses repeated ordinary spaces. The add parser accepts optional `a/ADDRESS`; the edit parser replaces an address, and a blank `a/` removes it. `JsonAdaptedPerson` saves supplied addresses and accepts older JSON records without an address. The student list card shows an address when one is present; the student detail view and the result display show an em dash (`—`) when it is absent. Addresses do not contribute to duplicate detection.
+`Address` is an optional value object. It accepts up to 200 English letters, digits, spaces, and keyboard symbols, as described in [Student names and schools](#student-names-and-schools), and collapses repeated ordinary spaces. It can't be blank. The add parser accepts optional `a/ADDRESS`; the edit parser replaces an address, and a blank `a/` removes it. `JsonAdaptedPerson` saves supplied addresses and accepts older JSON records without an address. The student list card shows an address when one is present; the student detail view and the result display show an em dash (`—`) when it is absent. Addresses do not contribute to duplicate detection.
 
 ### Student emails
 
@@ -473,7 +474,7 @@ So a student who has a guardian can change just the guardian's name or phone, bu
 
 In the data file, `JsonAdaptedPerson` stores the guardian as a nested `JsonAdaptedGuardian`, and leaves it out when the student has no guardian. A file without a guardian, such as one from before guardians were added, loads as a student without a guardian.
 
-`Person#isSamePerson` compares only names, so the guardian does not affect whether two students count as duplicates.
+Duplicates are decided by name, school, and level, as described in [Student duplicate handling](#student-duplicate-handling), so the guardian does not affect whether two students count as duplicates.
 
 #### Design considerations
 
@@ -513,7 +514,7 @@ In the data file, `JsonAdaptedPerson` stores the guardian as a nested `JsonAdapt
 
 ### Keeping the list after an edit
 
-`edit` keeps the displayed list or any open student record, so the tutor can work down a set of `filter` results by index.
+`edit` keeps the displayed list, so the tutor can work down a set of `filter` results by index.
 
 #### Implementation
 
@@ -521,7 +522,7 @@ In the data file, `JsonAdaptedPerson` stores the guardian as a nested `JsonAdapt
 1. If the list is filtered, `ModelManager` first checks whether the current filter matches the edited student. It then replaces the filter with one that also accepts the edited student: `current.test(p) || p.hasSameStudentKey(editedPerson)`, and returns `true` if the old filter did not match them. If the list is not filtered, it does nothing and returns `false`.
 1. `Model#setPerson` then replaces the student in place. Since the new filter accepts the edited student, they stay at the same position in the filtered list, even if they no longer match the search.
 1. If `keepPersonInFilteredList` returned `true`, `EditCommand` adds a line to the result saying that the student no longer matches the last search but stays in the list. Any phone warning comes after this line.
-1. `EditCommand` returns a `CommandResult` that keeps the current display, so an open `StudentDetailPanel`, which shows the student at its index in the filtered list, shows the updated details.
+1. `EditCommand` returns `CommandResult.showStudent` with the edited student and their index, so the student detail view opens the edited student.
 
 The filter matches the edited student by the normalized name, school, and level key rather than by name alone or `Person#equals`. This distinguishes two allowed same-name students in different schools or levels. A later command that changes only notes, such as `addnote`, still keeps the student in the list.
 
@@ -542,7 +543,7 @@ Each edit wraps the current filter, so after several edits in a row, every edite
   * Cons: A student edited so that they no longer match the search disappears. The students after them move up, and an open student record shows a different student.
 
 * **Alternative 3 (current choice):** Keep the filter, plus the edited student.
-  * Pros: Every student keeps their index number, and an open student record stays on the same student.
+  * Pros: Every student keeps their index number, so a follow-up command such as `edit 2 ...` changes the student the tutor expects.
   * Cons: A student who no longer matches the search stays in the list until the next `filter` or `list`. The result display and the User Guide both say so, so the tutor is not left wondering why they are there.
 
 ### Filtering students
@@ -644,6 +645,14 @@ The exact-match filters are parsed first with the same `ParserUtil` methods as `
 * **Alternative 2 (current choice):** A `note/` filter in `filter`.
   * Pros: One search command. A note search combines with other filters, such as `filter lvl/S3 note/algebra`.
   * Cons: The result shows students, not which of their notes matched. `note/` must be the last filter.
+
+### Cleaning pasted input
+
+Text pasted from web pages, documents, or chat apps can contain characters that look like keyboard characters but aren't, so a prefix after one would not be recognized.
+
+Before parsing, `AddressBookParser` passes the user command through `StringUtil#normalizeInput`. It turns every kind of whitespace, such as a non-breaking space, into a normal space, removes invisible characters, such as a zero-width space, and turns curly quotes and en and em dashes into `'`, `"`, and `-`. Pasted text is then parsed the same way as typed text, so a prefix after a non-breaking space is still recognized.
+
+Only these characters are converted. Others that only look like keyboard symbols, such as a full-width slash (`／`), are left as they are, so they fail validation or are not read as prefixes.
 
 ### Hint for a missing space before a prefix
 
@@ -843,7 +852,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to list students, or filters them (UC4)
+1.  Tutor requests to list students, or <u>filters them (UC4)</u>
 2.  TuteeBook3 shows a list of students
 3.  Tutor requests to edit a specific student by index, giving the new values for the details to change
 4.  TuteeBook3 validates and updates the student
@@ -921,7 +930,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to list or filter students
+1.  Tutor requests to list students, or <u>filters them (UC4)</u>
 2.  TuteeBook3 shows the corresponding list of students
 3.  Tutor requests to delete a specific student by index
 4.  TuteeBook3 asks Tutor to confirm the deletion
@@ -1017,7 +1026,7 @@ Use case ends.
 
 **MSS**
 
-1.  Tutor requests to list students
+1.  Tutor requests to list students, or <u>filters them (UC4)</u>
 2.  TuteeBook3 shows a list of students
 3.  Tutor requests to add a note to a specific student in the list
 4.  TuteeBook3 adds the note to the student's notes
@@ -1053,7 +1062,7 @@ Use case ends.
 
 **MSS**
 
-1.  Tutor views a specific student's record (UC5)
+1.  Tutor <u>views a specific student's record (UC5)</u>
 2.  TuteeBook3 shows the student's record with numbered notes
 3.  Tutor requests to edit a specific note, giving the student's index, note number and new text
 4.  TuteeBook3 validates the text and replaces the note's text
@@ -1099,7 +1108,7 @@ Use case ends.
 
 **MSS**
 
-1.  Tutor requests to view a specific student by index
+1.  Tutor <u>views a specific student's record (UC5)</u>
 2.  TuteeBook3 shows the student's record with numbered notes
 3.  Tutor requests to delete a specific note, giving the student's index and NID
 4.  TuteeBook3 asks Tutor to confirm deleting the note.
@@ -1109,11 +1118,9 @@ Use case ends.
 
 **Extensions**
 
-* 1a. The given index is invalid.
+* 1a. Tutor already knows the student's index and the note's number.
 
-    * 1a1. TuteeBook3 shows an error message.
-
-      Use case ends.
+    Use case resumes at step 3.
 
 * 2a. The student has no notes.
 
@@ -1624,7 +1631,7 @@ When students match, the status message says `N student(s) listed!`, where `N` i
       Expected: The student record stays open and shows Chloe Lim. The status message says that she no longer matches the last search but remains in the list until the next `list` or `filter` command.
 
    1. Test case: `edit 2 lvl/S4`<br>
-      Expected: The student record still shows Chloe Lim, so she is still first in the list even though another student was edited. The status message reports that Aisha Rahman was edited without a search warning. Enter `list`, then `filter n/an`: the list shows Aisha Rahman (now `S4`), Daniel Lee, and Ethan Kumar, and Chloe Lim is no longer in the results.
+      Expected: The student detail view shows Aisha Rahman, now `S4`. Chloe Lim is still first in the list, even though she no longer matches the search. The result display says that Aisha Rahman was edited, without a search warning. Enter `list`, then `filter n/an`: the list shows Aisha Rahman (now `S4`), Daniel Lee, and Ethan Kumar, and Chloe Lim is no longer in the results.
 
 ### Adding, editing, and deleting notes
 
