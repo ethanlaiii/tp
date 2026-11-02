@@ -78,6 +78,6 @@ public class DeleteCommandParserTest {
 
     @Test
     public void parse_fullWidthDigitIndex_throwsParseException() {
-        assertParseFailure(parser, "-f １", DeleteCommand.MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "-f １", MESSAGE_INVALID_FORMAT);
     }
 }
