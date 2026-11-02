@@ -62,6 +62,11 @@ public class DeleteCommand extends Command implements ConfirmationCommand {
     }
 
     @Override
+    public ConfirmationCommand withoutForce() {
+        return new DeleteCommand(targetIndex);
+    }
+
+    @Override
     public String getCommandWord() {
         return COMMAND_WORD;
     }

@@ -41,6 +41,12 @@ public class DeleteNoteCommandTest {
     private final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
     @Test
+    public void withoutForce_forcedCommand_returnsUnforcedCommand() {
+        assertEquals(new DeleteNoteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON),
+                new DeleteNoteCommand(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON, true).withoutForce());
+    }
+
+    @Test
     public void execute_middleNid_deletesNote() {
         addNotesToFirstPerson(NOTE_ALGEBRA, NOTE_TEST_SCORE, NOTE_CALCULATOR);
 

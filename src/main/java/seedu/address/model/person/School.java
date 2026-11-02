@@ -24,7 +24,6 @@ public class School {
     public static final String MESSAGE_CONSTRAINTS =
             "School names must be 1-" + MAX_LENGTH + " characters, contain at least one English letter "
                     + "(A-Z), and use only " + getAllowedCharacters() + ".";
-    public static final String DEFAULT_VALUE = "Unknown";
 
     private static final String ALLOWED_PUNCTUATION = " .'’&(),-";
 

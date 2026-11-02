@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -33,6 +34,7 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -272,13 +274,14 @@ public class LogicManagerTest {
     }
 
     @Test
-    public void execute_clearThenForcedClear_clearsAddressBook() throws Exception {
+    public void execute_clearThenForcedClear_clearsWithoutCancellationNotice() throws Exception {
         model.addPerson(AMY);
         logic.execute(ClearCommand.COMMAND_WORD);
 
-        assertCommandSuccess(ClearCommand.COMMAND_WORD + " " + ClearCommand.FORCE_OPTION,
-                CommandResult.showList(ClearCommand.MESSAGE_SUCCESS).withCancellationNotice(CLEAR_CANCELLED),
-                new ModelManager());
+        CommandResult result = logic.execute(ClearCommand.COMMAND_WORD + " " + ClearCommand.FORCE_OPTION);
+        assertEquals(CommandResult.showList(ClearCommand.MESSAGE_SUCCESS), result);
+        assertTrue(result.getCancellationNotice().isEmpty());
+        assertEquals(new ModelManager(), model);
     }
 
     @Test
@@ -347,6 +350,162 @@ public class LogicManagerTest {
         logic.execute(" CONFIRM ");
         assertEquals(1, model.getAddressBook().getPersonList().size());
         assertFalse(model.getAddressBook().getPersonList().contains(personAtFirstIndex));
+    }
+
+    @Test
+    public void execute_repeatedClear_promptsAgainWithoutCancellationNotice() throws Exception {
+        model.addPerson(AMY);
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        logic.execute(ClearCommand.COMMAND_WORD);
+
+        CommandResult result = logic.execute(ClearCommand.COMMAND_WORD);
+        assertEquals(CLEAR_CONFIRMATION_RESULT, result);
+        assertTrue(result.getCancellationNotice().isEmpty());
+        assertEquals(expectedModel, model);
+
+        logic.execute("CONFIRM");
+        assertEquals(new ModelManager(), model);
+    }
+
+    @Test
+    public void execute_clearWithArgumentsWhilePending_cancelsPendingAndThrowsParseException() throws Exception {
+        model.addPerson(AMY);
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        logic.execute(ClearCommand.COMMAND_WORD);
+
+        assertParseException(ClearCommand.COMMAND_WORD + " extra", CLEAR_CANCELLED + System.lineSeparator()
+                + String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClearCommand.MESSAGE_USAGE));
+        assertEquals(expectedModel, model);
+        assertParseException("CONFIRM", ConfirmationManager.MESSAGE_NOTHING_TO_CONFIRM);
+    }
+
+    @Test
+    public void execute_deleteDifferentIndexWhilePending_replacesPendingWithNotice() throws Exception {
+        model.addPerson(AMY);
+        model.addPerson(new PersonBuilder(AMY).withName("Other Student").build());
+        Person firstPerson = model.getFilteredPersonList().get(0);
+        Person secondPerson = model.getFilteredPersonList().get(1);
+        logic.execute("delete 1");
+
+        CommandResult result = logic.execute("delete 2");
+        assertEquals(String.format(ConfirmationManager.MESSAGE_CANCELLED_FORMAT, DeleteCommand.COMMAND_WORD),
+                result.getCancellationNotice().orElseThrow());
+        assertTrue(result.isWarning());
+
+        logic.execute("CONFIRM");
+        assertEquals(List.of(firstPerson), model.getAddressBook().getPersonList());
+        assertFalse(model.getAddressBook().getPersonList().contains(secondPerson));
+    }
+
+    @Test
+    public void execute_forcedDeleteWhileClearPending_deletesWithNotice() throws Exception {
+        model.addPerson(AMY);
+        model.addPerson(new PersonBuilder(AMY).withName("Other Student").build());
+        Person secondPerson = model.getFilteredPersonList().get(1);
+        logic.execute(ClearCommand.COMMAND_WORD);
+
+        CommandResult result = logic.execute("delete -f 1");
+        assertEquals(CLEAR_CANCELLED, result.getCancellationNotice().orElseThrow());
+        assertEquals(List.of(secondPerson), model.getAddressBook().getPersonList());
+        assertParseException("CONFIRM", ConfirmationManager.MESSAGE_NOTHING_TO_CONFIRM);
+    }
+
+    @Test
+    public void execute_forcedDeleteSameIndexWhilePending_deletesWithoutNotice() throws Exception {
+        model.addPerson(AMY);
+        model.addPerson(new PersonBuilder(AMY).withName("Other Student").build());
+        Person secondPerson = model.getFilteredPersonList().get(1);
+        logic.execute("delete 1");
+
+        CommandResult result = logic.execute("delete -f 1");
+        assertTrue(result.getCancellationNotice().isEmpty());
+        assertEquals(List.of(secondPerson), model.getAddressBook().getPersonList());
+        assertParseException("CONFIRM", ConfirmationManager.MESSAGE_NOTHING_TO_CONFIRM);
+    }
+
+    @Test
+    public void execute_forcedDeleteDifferentIndexWhilePending_deletesWithNotice() throws Exception {
+        model.addPerson(AMY);
+        model.addPerson(new PersonBuilder(AMY).withName("Other Student").build());
+        Person firstPerson = model.getFilteredPersonList().get(0);
+        logic.execute("delete 1");
+
+        CommandResult result = logic.execute("delete -f 2");
+        assertEquals(String.format(ConfirmationManager.MESSAGE_CANCELLED_FORMAT, DeleteCommand.COMMAND_WORD),
+                result.getCancellationNotice().orElseThrow());
+        assertEquals(List.of(firstPerson), model.getAddressBook().getPersonList());
+        assertParseException("CONFIRM", ConfirmationManager.MESSAGE_NOTHING_TO_CONFIRM);
+    }
+
+    @Test
+    public void execute_forcedDeleteNoteSameNoteWhilePending_deletesWithoutNotice() throws Exception {
+        model.addPerson(new PersonBuilder(AMY).withNotes("Review algebra", "Practise geometry").build());
+        logic.execute("deletenote 1 nid/1");
+
+        CommandResult result = logic.execute("deletenote -f 1 nid/1");
+        assertTrue(result.getCancellationNotice().isEmpty());
+        assertEquals(new PersonBuilder(AMY).withNotes("Practise geometry").build(),
+                model.getAddressBook().getPersonList().get(0));
+        assertParseException("CONFIRM", ConfirmationManager.MESSAGE_NOTHING_TO_CONFIRM);
+    }
+
+    @Test
+    public void execute_forcedDeleteNoteDifferentNoteWhilePending_deletesWithNotice() throws Exception {
+        model.addPerson(new PersonBuilder(AMY).withNotes("Review algebra", "Practise geometry").build());
+        logic.execute("deletenote 1 nid/1");
+
+        CommandResult result = logic.execute("deletenote -f 1 nid/2");
+        assertEquals(String.format(ConfirmationManager.MESSAGE_CANCELLED_FORMAT, DeleteNoteCommand.COMMAND_WORD),
+                result.getCancellationNotice().orElseThrow());
+        assertEquals(new PersonBuilder(AMY).withNotes("Review algebra").build(),
+                model.getAddressBook().getPersonList().get(0));
+        assertParseException("CONFIRM", ConfirmationManager.MESSAGE_NOTHING_TO_CONFIRM);
+    }
+
+    @Test
+    public void execute_repeatedDuplicateAdd_promptsAgainAndAddsOnce() throws Exception {
+        model.addPerson(TypicalPersons.ALICE);
+        String addInput = "add n/Alice Pauline sch/Victoria School lvl/S2 sub/Mathematics band/G1";
+        logic.execute(addInput);
+
+        CommandResult result = logic.execute(addInput);
+        assertTrue(result.isWarning());
+        assertTrue(result.getCancellationNotice().isEmpty());
+        assertEquals(1, model.getAddressBook().getPersonList().size());
+
+        logic.execute("CONFIRM");
+        assertEquals(2, model.getAddressBook().getPersonList().size());
+        assertParseException("CONFIRM", ConfirmationManager.MESSAGE_NOTHING_TO_CONFIRM);
+    }
+
+    @Test
+    public void execute_repeatedDuplicateEdit_promptsAgainAndEditsOnce() throws Exception {
+        model.addPerson(TypicalPersons.ALICE);
+        model.addPerson(TypicalPersons.BOB);
+        logic.execute("edit 2 n/Alice Pauline");
+
+        CommandResult result = logic.execute("edit 2 n/Alice Pauline");
+        assertTrue(result.isWarning());
+        assertTrue(result.getCancellationNotice().isEmpty());
+        assertEquals("Bob Choo", model.getAddressBook().getPersonList().get(1).getName().toString());
+
+        logic.execute("CONFIRM");
+        assertEquals("Alice Pauline", model.getAddressBook().getPersonList().get(1).getName().toString());
+        assertParseException("CONFIRM", ConfirmationManager.MESSAGE_NOTHING_TO_CONFIRM);
+    }
+
+    @Test
+    public void execute_forcedAddWhileAddPending_cancelsPendingAndThrowsParseException() throws Exception {
+        model.addPerson(TypicalPersons.ALICE);
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        String forcedAddInput = "add -f n/Alice Pauline sch/Victoria School lvl/S2 sub/Mathematics band/G1";
+        ParseException parseError = Assertions.assertThrows(ParseException.class, () ->
+                new AddressBookParser().parseCommand(forcedAddInput));
+        logic.execute("add n/Alice Pauline sch/Victoria School lvl/S2 sub/Mathematics band/G1");
+
+        assertParseException(forcedAddInput, String.format(ConfirmationManager.MESSAGE_CANCELLED_FORMAT,
+                AddCommand.COMMAND_WORD) + System.lineSeparator() + parseError.getMessage());
+        assertEquals(expectedModel, model);
     }
 
     @Test

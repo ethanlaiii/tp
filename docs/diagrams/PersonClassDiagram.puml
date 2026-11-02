@@ -19,19 +19,19 @@ Class Guardian
 Class Tag
 }
 
-Person *---> "1" Name
-Person *---> "0..1" Phone
+Person *--> "1" Name
+Person *--> "0..1" Guardian
+Person *--> "0..1" Phone
 Person *--> "1" School
 Person *--> "0..1" Address
 Person *--> "0..1" Email
 Person --> "1" Level
 Person *--> "1..8" Subject
 Person *--> "~* {ordered}" Note
-Person *--> "0..1" Guardian
 Person *--> "~*" Tag
 
 Subject --> "1" Band
 
-Guardian *--> "1" Name
-Guardian *--> "1" Phone
+Guardian *-left-> "1" Name
+Guardian *-right-> "1" Phone
 @enduml

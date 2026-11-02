@@ -63,6 +63,11 @@ public class DeleteNoteCommand extends Command implements ConfirmationCommand {
     }
 
     @Override
+    public ConfirmationCommand withoutForce() {
+        return new DeleteNoteCommand(targetIndex, targetNid);
+    }
+
+    @Override
     public String getCommandWord() {
         return COMMAND_WORD;
     }

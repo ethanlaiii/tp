@@ -20,6 +20,13 @@ public interface ConfirmationCommand {
     boolean isForced();
 
     /**
+     * Returns this command without the force option, so a forced command can be matched to a pending one.
+     */
+    default ConfirmationCommand withoutForce() {
+        return this;
+    }
+
+    /**
      * Returns the command word used to identify this command in a cancellation message.
      */
     String getCommandWord();

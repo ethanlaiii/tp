@@ -11,11 +11,11 @@ import seedu.address.logic.commands.ConfirmationCommand;
 public class ConfirmationManager {
     public static final String CONFIRM_WORD = "CONFIRM";
     public static final String MESSAGE_CONFIRMATION_CANCELLATION =
-            "Any other input cancels this request and runs as a command.";
+            "Any other non-blank input cancels this request and runs as a command.";
     public static final String MESSAGE_CONFIRMATION_SUFFIX = System.lineSeparator()
             + "Type CONFIRM (uppercase) to proceed."
             + System.lineSeparator() + MESSAGE_CONFIRMATION_CANCELLATION;
-    public static final String MESSAGE_CANCELLED_FORMAT = "The '%s' command has been cancelled.";
+    public static final String MESSAGE_CANCELLED_FORMAT = "The earlier '%s' command has been cancelled.";
     public static final String MESSAGE_NOTHING_TO_CONFIRM =
             "There is no command waiting for confirmation. Nothing was changed.";
 

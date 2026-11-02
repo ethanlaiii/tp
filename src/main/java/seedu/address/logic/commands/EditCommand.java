@@ -146,7 +146,8 @@ public class EditCommand extends Command implements ConfirmationCommand {
         requireNonNull(model);
         Person personToEdit = getTargetPerson(model);
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
-        if (editedPerson.equals(personToEdit)) {
+        // compare the shown details, since equals ignores case in schools, subjects, and tags
+        if (Messages.format(editedPerson).equals(Messages.format(personToEdit))) {
             return CommandResult.showStudentWarning(String.format(MESSAGE_NO_CHANGES, personToEdit.getName(),
                     personToEdit.getSchool(), personToEdit.getLevel()), personToEdit, index);
         }

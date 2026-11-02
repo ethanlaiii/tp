@@ -2,10 +2,13 @@
   "persons": [ {
     "name": "Valid Person",
     "phone": "94824240",
-    "level": "S1"
+    "school": "Maplewood Secondary School",
+    "level": "S1",
+    "subjects" : [{ "name" : "Mathematics", "band" : "G1" }]
   }, {
     "name": "Person With Invalid Phone Field",
     "phone": "948asdf2424",
+    "school": "Maplewood Secondary School",
     "level": "S1"
   } ]
 }

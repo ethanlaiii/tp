@@ -33,6 +33,12 @@ public class DeleteCommandTest {
     private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
     @Test
+    public void withoutForce_forcedCommand_returnsUnforcedCommand() {
+        assertEquals(new DeleteCommand(INDEX_FIRST_PERSON),
+                new DeleteCommand(INDEX_FIRST_PERSON, true).withoutForce());
+    }
+
+    @Test
     public void execute_validIndexUnfilteredList_success() {
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);

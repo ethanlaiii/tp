@@ -43,6 +43,11 @@ public class JsonUserPrefsStorageTest {
         assertThrows(DataLoadingException.class, () -> readUserPrefs("NotJsonFormatUserPrefs.json"));
     }
 
+    @Test
+    public void readUserPrefs_nullFile_exceptionThrown() {
+        assertThrows(DataLoadingException.class, () -> readUserPrefs("NullUserPrefs.json"));
+    }
+
     private Path addToTestDataPathIfNotNull(String userPrefsFileInTestDataFolder) {
         return userPrefsFileInTestDataFolder != null
                 ? TEST_DATA_FOLDER.resolve(userPrefsFileInTestDataFolder)

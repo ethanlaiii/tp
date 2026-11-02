@@ -2,6 +2,7 @@
   "persons": [ {
     "name": "Hans Muster",
     "phone": "948a2424",
+    "school": "Maplewood Secondary School",
     "level": "S1"
   } ]
 }

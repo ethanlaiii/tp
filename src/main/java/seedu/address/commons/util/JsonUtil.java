@@ -66,6 +66,10 @@ public class JsonUtil {
             throw new DataLoadingException(e);
         }
 
+        if (jsonFile == null) {
+            throw new DataLoadingException(new IOException("JSON file " + filePath + " contains null."));
+        }
+
         return Optional.of(jsonFile);
     }
 

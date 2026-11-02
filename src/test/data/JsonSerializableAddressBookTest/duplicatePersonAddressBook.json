@@ -2,11 +2,13 @@
   "persons": [ {
     "name": "Alice Pauline",
     "phone": "94351253",
+    "school": "Maplewood Secondary School",
     "level": "S1",
     "subjects" : [{ "name" : "Mathematics", "band" : "G1" }]
   }, {
     "name": "Alice Pauline",
     "phone": "94351253",
+    "school": "Maplewood Secondary School",
     "level": "S1",
     "subjects" : [{ "name" : "Mathematics", "band" : "G1" }]
   } ]

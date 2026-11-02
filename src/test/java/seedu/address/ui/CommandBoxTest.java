@@ -1,6 +1,8 @@
 package seedu.address.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
@@ -23,7 +25,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Note;
 
 /**
- * Tests that {@link CommandBox} keeps the words of pasted multi-line text apart.
+ * Tests that {@link CommandBox} keeps the words of pasted multi-line text apart and ignores blank commands.
  */
 @ExtendWith(ApplicationExtension.class)
 public class CommandBoxTest {
@@ -123,6 +125,47 @@ public class CommandBoxTest {
         });
     }
 
+    @Test
+    public void handleCommandEntered_emptyText_notExecuted(FxRobot robot) {
+        assertCommandIgnored(robot, "");
+    }
+
+    @Test
+    public void handleCommandEntered_singleSpace_notExecuted(FxRobot robot) {
+        assertCommandIgnored(robot, " ");
+    }
+
+    @Test
+    public void handleCommandEntered_multipleSpaces_notExecuted(FxRobot robot) {
+        assertCommandIgnored(robot, "     ");
+    }
+
+    @Test
+    public void handleCommandEntered_fullWidthSpace_notExecuted(FxRobot robot) {
+        assertCommandIgnored(robot, "\u3000");
+    }
+
+    @Test
+    public void handleCommandEntered_nonBreakingSpace_notExecuted(FxRobot robot) {
+        assertCommandIgnored(robot, "\u00A0");
+    }
+
+    @Test
+    public void handleCommandEntered_zeroWidthSpace_notExecuted(FxRobot robot) {
+        assertCommandIgnored(robot, "\u200B");
+    }
+
+    @Test
+    public void handleCommandEntered_commandWithSurroundingSpaces_executed(FxRobot robot) {
+        robot.interact(() -> {
+            TextField textField = getTextField();
+            textField.setText("  list  ");
+            textField.fireEvent(new ActionEvent());
+            assertEquals("  list  ", executedCommandText);
+            assertEquals("", textField.getText());
+        });
+    }
+
     private CommandResult recordCommand(String commandText) throws ParseException {
         executedCommandText = commandText;
         if (isExecutionFailing) {
@@ -144,6 +187,23 @@ public class CommandBoxTest {
         textField.end();
         // TextField#paste inserts the clipboard text through replaceSelection
         textField.replaceSelection(pastedText);
+    }
+
+    /**
+     * Enters {@code commandText} and asserts that it is not executed, is cleared from the box,
+     * and shows no error.
+     */
+    private void assertCommandIgnored(FxRobot robot, String commandText) {
+        // Executing the text would fail and show the error style, so the style check catches it.
+        isExecutionFailing = true;
+        robot.interact(() -> {
+            TextField textField = getTextField();
+            textField.setText(commandText);
+            textField.fireEvent(new ActionEvent());
+            assertNull(executedCommandText);
+            assertEquals("", textField.getText());
+            assertFalse(textField.getStyleClass().contains(CommandBox.ERROR_STYLE_CLASS));
+        });
     }
 
     private void assertPasteResult(FxRobot robot, String pastedText, String expectedCommandText) {

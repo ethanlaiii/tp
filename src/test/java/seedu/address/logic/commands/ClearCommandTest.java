@@ -16,6 +16,12 @@ import seedu.address.model.UserPrefs;
 public class ClearCommandTest {
 
     @Test
+    public void withoutForce_forcedCommand_returnsUnforcedCommand() {
+        assertEquals(new ClearCommand(),
+                new ClearCommand(true).withoutForce());
+    }
+
+    @Test
     public void execute_emptyAddressBook_showsAlreadyEmptyMessage() {
         Model model = new ModelManager();
         Model expectedModel = new ModelManager();

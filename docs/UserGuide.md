@@ -3,7 +3,9 @@ layout: page
 title: User Guide
 ---
 
-TuteeBook3 is a **desktop app for private tutors who teach secondary school students (S1 to S5) in Singapore, optimized for use through a Command Line Interface (CLI)** while keeping the benefits of a Graphical User Interface (GUI). It keeps each student's information in one place, so you can look up a student's full record with a short typed command. If you type quickly, TuteeBook3 helps you manage your students faster than a spreadsheet or a traditional GUI app.
+TuteeBook3 is a **desktop app for private tutors who teach secondary school students (S1 to S5) in Singapore**. It keeps each student's contact details, guardian contact, school, level, subjects and bands, and lesson notes in one place, so you can pull up a student's full record quickly, such as when a guardian calls or just before a lesson.
+
+TuteeBook3 is **optimized for fast typists**. You do almost everything by typing short commands in a Command Line Interface (CLI), and a Graphical User Interface (GUI) shows the results, so you can manage your students faster than with a mouse-driven app or a notebook.
 
 * Table of Contents
 {:toc}
@@ -12,10 +14,10 @@ TuteeBook3 is a **desktop app for private tutors who teach secondary school stud
 
 ## Quick start
 
-1. Ensure that Java `25` or later is installed on your computer.<br>
-   **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
+1. Make sure Java `25` is installed. To check, open a terminal and run `java -version`. The version shown should start with `25`, such as `openjdk version "25.0.1"`. If it doesn't, install Java 25 using the [Java installation guide](https://se-education.org/guides/tutorials/javaInstallation.html) for your operating system.<br>
+   **Mac users:** install the exact JDK named in the [Java installation guide for Mac](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/AY2627S1-CS2103T-T09-1/tp/releases).
+1. Download the latest `.jar` file from the [TuteeBook3 releases page](https://github.com/AY2627S1-CS2103T-T09-1/tp/releases).
 
 1. Copy the file to the folder you want to use as the _home folder_ for TuteeBook3.
 
@@ -38,7 +40,7 @@ TuteeBook3 is a **desktop app for private tutors who teach secondary school stud
 
    * `exit` : Exits the app.
 
-1. When you finish trying the commands and before you enter your own student records, type `clear`, then enter `CONFIRM` to remove all sample students. Alternatively, type `clear -f` to remove them immediately without confirmation. Both methods remove every student and note currently stored.
+1. When you finish trying the commands and before you enter your own student records, type `clear`, then enter `CONFIRM` to remove all sample students. Each sample student has the tag `sample`, so `filter t/sample` lists them. Alternatively, type `clear -f` to remove them immediately without confirmation. Both methods remove every student and note currently stored.
 
 1. Refer to [How commands are written](#how-commands-are-written) to learn how to type commands, then the [Features](#features) section for details of each command.
 
@@ -94,10 +96,12 @@ Some commands ask you to confirm before they go ahead:
 * `delete`, `deletenote`, and `clear`, before they delete anything.
 * `add` and `edit`, when another student already has the same name. See [Duplicate students](#duplicate-students).
 
-The command shows an amber prompt that says what will happen. The next line tells you how to go ahead, such as `Type CONFIRM (uppercase) to delete this student and all their notes.`
+The command shows a confirmation prompt that says what will happen. The next line tells you how to go ahead, such as `Type CONFIRM (uppercase) to delete this student and all their notes.`
 
 * To go ahead, type `CONFIRM` in uppercase and press Enter. Spaces before or after it are ignored.
-* Anything else, including `confirm`, cancels the request. TuteeBook3 then runs what you typed as a normal command, with the red notice `The 'delete' command has been cancelled.` (or the name of the command you cancelled) above its result.
+* Any other non-blank input, including `confirm` or a mistyped command, cancels the request. TuteeBook3 then runs what you typed as a normal command, with the red notice `The earlier 'delete' command has been cancelled.` (or the name of the command you cancelled) above its result.
+* Only one command waits for confirmation at a time. If you type the same command again with the same values, it replaces the waiting one and no notice appears. If you type that same command with `-f` (only `clear`, `delete`, and `deletenote` accept `-f`), it runs right away and no notice appears. For example, while `delete 1` is waiting, `delete -f 1` deletes the 1st student immediately, but `delete -f 2` shows the notice.
+* Pressing Enter when the command box is empty or holds only spaces does nothing. The request stays open.
 * Until you confirm, nothing changes. The student list and the student record on the right stay as they are.
 * If no command is waiting for confirmation, for example because you already cancelled it, `CONFIRM` shows `There is no command waiting for confirmation. Nothing was changed.`
 
@@ -132,15 +136,17 @@ These are the values you type in commands. The table below covers the student de
 
 Parameters can be given in any order, except that each `sub/SUBJECT` must be immediately followed by its `band/BAND`. For example, `sub/Mathematics band/G1 lvl/S3` is valid, but `sub/Mathematics lvl/S3 band/G1` is not.
 
+The rules below use the terms **English letter**, **digit**, and **keyboard symbol**, as defined in the [Glossary](#glossary).
+
 Parameter | Prefix | Required in `add` | Rules | Examples
 ----------|--------|-------------------|-------|--------
-`NAME` | `n/` | Yes | ASCII English letters (`A`–`Z`, `a`–`z`), digits (`0`–`9`), and spaces only. Accented letters and punctuation aren't supported. | ✓ `Rajesh so Kumar`<br>✗ `Zoë Lim`<br>✗ `Rajesh s/o Kumar`
+`NAME` | `n/` | Yes | English letters, digits, and spaces only. Accented letters and punctuation aren't supported. | ✓ `Rajesh so Kumar`<br>✗ `Zoë Lim`<br>✗ `Rajesh s/o Kumar`
 `PHONE` | `p/` | No | 3 to 15 digits, with an optional `+` at the start. See [Phone numbers](#phone-numbers). | ✓ `9123 4567`<br>✗ `12`
-`SCHOOL` | `sch/` | Yes | 1 to 100 characters, with at least one ASCII English letter (`A`–`Z`, `a`–`z`). Also allows digits (`0`–`9`), spaces, periods (`.`), apostrophes (`'`), ampersands (`&`), parentheses, commas, and hyphens (`-`). Accented letters and other punctuation aren't supported. | ✓ `Victoria School`<br>✓ `St. Joseph's Institution`<br>✓ `Anglo-Chinese School (Independent)`<br>✓ `School of Science and Technology, Singapore`<br>✗ `École Française`<br>✗ `School/Name`
-`ADDRESS` | `a/` | No | Up to 200 characters, using the same characters as a note's `TEXT`: English letters without accents, digits, spaces, the symbols on a standard keyboard, such as `# / , - ( ) '`. | ✓ `Blk 123 Bedok North Avenue 2, #04-111`<br>✗ `Rue de l'Église 5`<br>✗ more than 200 characters
+`SCHOOL` | `sch/` | Yes | 1 to 100 characters, with at least one English letter. Also allows digits, spaces, periods (`.`), apostrophes (`'` or `’`), ampersands (`&`), parentheses, commas, and hyphens (`-`). Accented letters and other punctuation aren't supported. | ✓ `Victoria School`<br>✓ `St. Joseph's Institution`<br>✓ `Anglo-Chinese School (Independent)`<br>✓ `School of Science and Technology, Singapore`<br>✗ `École Française`<br>✗ `School/Name`
+`ADDRESS` | `a/` | No | Up to 200 characters, using the same characters as a note's `TEXT`: English letters, digits, spaces, keyboard symbols such as `# / , - ( ) '`, and the curly apostrophe `’`. | ✓ `Blk 123 Bedok North Avenue 2, #04-111`<br>✗ `Rue de l'Église 5`<br>✗ more than 200 characters
 `EMAIL` | `e/` | No | Up to 254 characters, in the form `local-part@domain`. See [Emails](#emails). | ✓ `chloe.tan@example.com`<br>✗ `chloe.tan@`
 `LEVEL` | `lvl/` | Yes | `S1` to `S5`. Uppercase or lowercase both work. | ✓ `S3`, `s3`<br>✗ `S6`
-`SUBJECT` | `sub/` | Yes, 1 to 8 | 1 to 40 characters: English letters without accents, spaces, hyphens, parentheses, commas, and ampersands, with at least one letter. A subject can't appear twice, ignoring case and extra spaces. See [Subjects and bands](#subjects-and-bands). | ✓ `Mathematics`<br>✓ `Science (Physics, Chemistry)`<br>✓ `Design & Technology`<br>✗ `Maths 2`<br>✗ `Français`
+`SUBJECT` | `sub/` | Yes, 1 to 8 | 1 to 40 characters: English letters, spaces, hyphens, parentheses, commas, and ampersands, with at least one letter. A subject can't appear twice, ignoring case and extra spaces. See [Subjects and bands](#subjects-and-bands). | ✓ `Mathematics`<br>✓ `Science (Physics, Chemistry)`<br>✓ `Design & Technology`<br>✗ `Maths 2`<br>✗ `Français`
 `BAND` | `band/` | Yes, after each `sub/` | `G1`, `G2`, or `G3`. Uppercase or lowercase both work, and it is shown in uppercase. Must come right after its `sub/`. | ✓ `G1`, `g1`<br>✗ `G4`
 `GUARDIAN_NAME` | `gn/` | No, but give both `gn/` and `gp/` or neither | Same rules as `NAME`. | ✓ `Mary Tan`<br>✗ `Zoë Tan`<br>✗ `Mary-Ann Tan`
 `GUARDIAN_PHONE` | `gp/` | No, but give both `gn/` and `gp/` or neither | Same rules as `PHONE`. | ✓ `91234567`<br>✗ `12`
@@ -151,13 +157,13 @@ Parameter | Prefix | Required in `add` | Rules | Examples
 :bulb: **Tip:**
 
 * When you add or edit a student, spaces at the start and end of each value are removed, and repeated ordinary spaces are collapsed to one. Capitalization is kept as you typed it. For example, `n/John  Doe` is saved as `John Doe`.
-* If you leave out an optional field, the student list hides it and the detail view shows `Not provided`.
+* If you leave out an optional field, the student list hides it and the student detail view shows an em dash (`—`).
 
 </div>
 
-Names accept ASCII letters, digits, and spaces only. School names also accept periods, apostrophes, ampersands, parentheses, commas, and hyphens, but must contain at least one ASCII letter. Both fields reject accented and other non-ASCII letters. Before upgrading, use the previous version to change saved names or school names that contain non-ASCII letters. Otherwise, those records fail validation when the data file is loaded.
+Names accept English letters, digits, and spaces only. School names also accept periods, apostrophes, ampersands, parentheses, commas, and hyphens, but must contain at least one English letter. Both fields reject accented letters and letters from other alphabets.
 
-Addresses accept the same characters as notes. Before upgrading, use the previous version to change saved addresses that contain other characters, such as accented letters or emoji. Otherwise, those records fail validation when the data file is loaded.
+Addresses accept the same characters as notes.
 
 #### Phone numbers
 
@@ -183,7 +189,7 @@ Each student and guardian has one phone number, which is the number you use to r
 
 #### Subjects and bands
 
-Each student takes 1 to 8 subjects. A subject name can contain English letters without accents (`A` to `Z` and `a` to `z`), spaces, hyphens, parentheses, commas, and ampersands. It must be 1 to 40 characters long and contain at least one letter. For example, `Science (Physics, Chemistry)`, `Design & Technology`, and `Food & Consumer Education` are valid names. Digits, slashes, and other symbols are not allowed. Like names and school names, subject names reject accented and other non-ASCII letters, so type `French` rather than `Français`. Before upgrading, use the previous version to change saved subject names that contain non-ASCII letters. Otherwise, those records fail validation when the data file is loaded.
+Each student takes 1 to 8 subjects. A subject name can contain English letters, spaces, hyphens, parentheses, commas, and ampersands. It must be 1 to 40 characters long and contain at least one letter. For example, `Science (Physics, Chemistry)`, `Design & Technology`, and `Food & Consumer Education` are valid names. Digits, slashes, and other symbols are not allowed. Like names and school names, subject names reject accented letters and letters from other alphabets, so type `French` rather than `Français`.
 
 Give each subject with `sub/`, followed immediately by its band with `band/`, such as `sub/Science (Physics, Chemistry) band/G3 sub/English band/G3`.
 
@@ -198,7 +204,7 @@ If the subjects or bands are wrong, `add` and `edit` show one of these messages:
 | `band/` but no `sub/` anywhere in `add`, or `band/` supplied alone in `edit` | `Missing required parameter: sub/.` |
 | Missing, misplaced, or repeated `band/` within a pair | `Each sub/ must be immediately followed by one band/.` |
 | Empty band or a value other than G1, G2, or G3 | `Band must be one of G1, G2, G3.` |
-| Invalid subject name | `Subjects must be 1-40 characters using only English letters without accents, spaces, hyphens, parentheses, commas and ampersands, with at least one letter.` |
+| Invalid subject name | `Subjects must be 1-40 characters, contain at least one English letter (A-Z), and use only English letters, spaces, hyphens (-), parentheses, commas, and ampersands (&).` |
 | More than eight subject-band pairs | `A student may have at most 8 subjects.` |
 | Repeated subject name | `Subject is repeated: SUBJECT.` |
 
@@ -220,12 +226,12 @@ Parameter | Prefix | Used in | Rules | Example
 ----------|--------|---------|-------|--------
 `INDEX` | none, comes straight after the command word | `view`, `edit`, `delete`, `addnote`, `editnote`, `deletenote` | The number shown beside the student in the student list, or at the top of the student detail view. A positive integer no greater than the largest index in the student list. For example, if the list shows 1 to 3, you can use 1, 2, or 3. | `2`
 `NID` | `nid/` | `editnote`, `deletenote` | The number shown before the note in the student detail view. A positive integer. Use `view INDEX` to see a student's notes and their NIDs. | `1`
-`TEXT` | `note/` | `addnote`, `editnote`, `filter` | 1 to 500 characters, counting spaces between words. Use English letters without accents, digits, spaces, and the symbols on a standard keyboard, such as `/ % : ( ) - ' " ^ +`. Other characters, such as accented letters and emoji, are not allowed. Spaces before and after the text are removed. Pasted line breaks and tabs become spaces, and curly quotes and long dashes become keyboard symbols, as described in [Reading a command format](#reading-a-command-format). | `WA2 Math: 36/50`
+`TEXT` | `note/` | `addnote`, `editnote`, `filter` | 1 to 500 characters, counting spaces between words. Use English letters, digits, spaces, and keyboard symbols, such as `/ % : ( ) - ' " ^ +`. The curly apostrophe `’` is also allowed, as in school names. Other characters, such as accented letters and emoji, are not allowed. Spaces before and after the text are removed. Pasted line breaks and tabs become spaces, as described in [Reading a command format](#reading-a-command-format). | `WA2 Math: 36/50`
 
 * `INDEX` and `NID` can change. An index changes when the list changes, such as after `filter` or `delete`. After a note is deleted, the notes after it move up one number. Check the list or the student detail view before you use them.
 * After `view`, the student's `INDEX` is also shown at the top of the student detail view, so you can use it in `edit`, `delete`, `addnote`, `editnote`, and `deletenote` without looking for the student in the list.
 * Everything after `note/` is the note text, so `TEXT` can contain other prefixes, such as `t/f` or another `note/`. For example, `addnote 1 note/Revise t/f questions` adds the note `Revise t/f questions`.
-* Notes saved by an earlier version may contain accented letters, emoji, or other characters that notes no longer allow. Before upgrading, use the previous version to change those notes. Otherwise, those records fail validation when the data file is loaded.
+* Notes saved by an earlier version may contain characters that notes no longer allow. See [Upgrading from an earlier version](#upgrading-from-an-earlier-version).
 
 ### Managing students
 
@@ -246,15 +252,9 @@ Examples:
 To add a student with… | Type
 -----------------------|-----
 Only the required details | `add n/Tim Tan sch/Victoria School lvl/S2 sub/Mathematics band/G1`
-A phone number | `add n/John Doe p/98765432 sch/Victoria School lvl/S3 sub/Mathematics band/G1`
-Parameters in a different order | `add n/Betsy Crowe lvl/S1 sch/Bedok Green Secondary School p/81234567 sub/Mathematics band/G1`
-Two subjects at different bands | `add n/Chloe Tan sch/Bedok Green Secondary School lvl/S2 sub/Mathematics band/G1 sub/English band/G3`
-An address | `add n/Mei Lin sch/Bedok Green Secondary School a/Blk 123 Bedok North Avenue 2, #04-111 lvl/S2 sub/Mathematics band/G1`
-An email | `add n/Priya Nair sch/Bedok Green Secondary School e/priya.nair@example.com lvl/S2 sub/Mathematics band/G1`
-An email with no period in its domain (saved, with a warning that an ending such as `.com` may be missing) | `add n/John Tan sch/Victoria School lvl/S3 sub/Mathematics band/G3 e/john@gmail`
-Tags | `add n/Ryan Ong sch/Bedok Green Secondary School lvl/S2 sub/Mathematics band/G1 t/exams t/paid`
+Two subjects at different bands | `add n/Sarah Wong sch/Bedok Green Secondary School lvl/S2 sub/Mathematics band/G1 sub/English band/G3`
 A guardian (use `view INDEX` to see the guardian's details) | `add n/Jun Wei Lim sch/Victoria School lvl/S2 sub/Mathematics band/G1 gn/Mary Lim gp/91234567`
-A guardian with an overseas number (saved as `+60123456789`, with a warning that it doesn't look like a Singapore number) | `add n/Aisha Rahman sch/Victoria School lvl/S2 sub/Mathematics band/G1 gn/Farah Rahman gp/+60 12-345 6789`
+A guardian with an overseas number (saved as `+60123456789`, with a warning that it doesn't look like a Singapore number) | `add n/Nurul Rahman sch/Victoria School lvl/S2 sub/Mathematics band/G1 gn/Farah Rahman gp/+60 12-345 6789`
 Every detail | `add n/James Ho p/62224444 sch/Victoria School a/Blk 123 Bedok North Avenue 2, #04-111 e/james.ho@example.com lvl/S2 sub/Mathematics band/G1 sub/English band/G2 gn/Mary Ho gp/91234567 t/paid`
 
 ##### Errors in `add`
@@ -271,11 +271,11 @@ Problem | Message
 There are no parameters, or there is text before the first one, such as `add John Doe sch/Victoria School ...` | `Invalid command format!` followed by how to use `add`
 `n/`, `sch/`, `lvl/`, or `sub/` is missing, or has no space before it | `Missing required parameters: sch/, lvl/.`, naming every missing one. A missing `sub/` is named together with `band/`, as in `Missing required parameters: sub/, band/.`
 `n/`, `p/`, `sch/`, `a/`, `e/`, `lvl/`, `gn/`, or `gp/` is given more than once | `Multiple values specified for the following single-valued field(s): p/`
-`NAME` is invalid | `Names must start with an ASCII letter or digit and contain only ASCII letters, digits, and spaces.`
+`NAME` is invalid | `Names must start with an English letter (A-Z) or digit (0-9) and use only English letters, digits, and spaces.`
 `PHONE` or `GUARDIAN_PHONE` is invalid | A message saying why. See [Phone numbers](#phone-numbers).
 `sch/` has no value or only spaces | `School name cannot be blank.`
 `SCHOOL` is longer than 100 characters | `School name must be at most 100 characters; this value has 101.`, with the actual character count
-`SCHOOL` contains an unsupported character | A message naming the school and first unsupported character, and listing the allowed characters. For example, `School name "School#1" contains "#", which isn't allowed. Use English letters, digits, spaces, periods (.), apostrophes ('), ampersands (&), parentheses, commas, and hyphens (-).`
+`SCHOOL` contains an unsupported character | A message naming the school and first unsupported character, and listing the allowed characters. For example, `School name "School#1" contains "#", which isn't allowed. Use English letters, digits, spaces, periods (.), apostrophes (' or ’), ampersands (&), parentheses, commas, and hyphens (-).`
 `SCHOOL` contains only digits and allowed punctuation | `School name "123" must contain at least one English letter (A-Z).`
 `ADDRESS` is blank or longer than 200 characters | `Addresses must not be blank and must be at most 200 characters.`
 `ADDRESS` contains a character that isn't allowed, such as `É` or an emoji | `Address contains "É", which isn't allowed. Use only English letters, digits, spaces, and keyboard symbols.`, with the first such character in `ADDRESS`
@@ -284,7 +284,7 @@ There are no parameters, or there is text before the first one, such as `add Joh
 A subject or band is wrong | See [Subjects and bands](#subjects-and-bands)
 Only one of `gn/` and `gp/` is given | `Guardian name (gn/) and guardian phone (gp/) must be given together.`
 `TAG` contains a space, such as `t/exam prep` | A message starting with `Tag "exam prep" contains a space.`
-`TAG` is blank, too long, or has a symbol other than a single hyphen | A message starting with `Tags must be one word of 1-30 English letters or digits.`
+`TAG` is blank, too long, or has a symbol other than a single hyphen | A message starting with `Tags must be one word of 1-30 English letters (A-Z) or digits (0-9).`
 The same tag is given twice, ignoring case, such as `t/Paid t/paid` | `Tag "paid" is given more than once.`
 
 ##### Duplicate students
@@ -293,7 +293,7 @@ After all the input is valid, `add` checks whether the new student might already
 
 Another student has… | What happens
 ---------------------|-------------
-The same name, but a different school or level | An amber prompt, such as `Student not added yet: NAME is also recorded at SCHOOL (LEVEL).` If several students match, their school and level details are separated by `; `. Type `CONFIRM` to add the student anyway. See [Confirming a command](#confirming-a-command).
+The same name, but a different school or level | A confirmation prompt, such as `Student not added yet: NAME is also recorded at SCHOOL (LEVEL).` If several students match, their school and level details are separated by `; `. Type `CONFIRM` to add the student anyway. See [Confirming a command](#confirming-a-command).
 The same name, school, and level | A red error: `A student named NAME at SCHOOL, level LEVEL already exists. If this is a different student, enter a distinguishing name, for example Chloe Tan 2.` The student is not added.
 
 * Names and schools are compared ignoring capitalization and extra spaces. Levels are compared directly.
@@ -336,17 +336,10 @@ Examples:
 To… | Type
 ----|-----
 Change the phone number and school of the 1st student | `edit 1 p/91234567 sch/Victoria School`
-Change the phone number, typed with `+65`, spaces, and a hyphen (saved as `81234567`) | `edit 1 p/+65 8123-4567`
-Change the name of the 2nd student | `edit 2 n/Betsy Crower`
-Change the level | `edit 1 lvl/S4`
 Replace the subjects with Mathematics at G2 and English at G3 | `edit 1 sub/Mathematics band/G2 sub/English band/G3`
 Replace the tags with `paid` and `exams` | `edit 1 t/paid t/exams`
-Add a guardian, or replace both of the guardian's details | `edit 1 gn/Mary Tan gp/91234567`
 Change only the guardian's phone number | `edit 1 gp/98765432`
-Change the guardian's phone number to an overseas number (saved as `+60123456789`, with a warning that it doesn't look like a Singapore number) | `edit 1 gp/+60 12-345 6789`
-Change the email to one with no period in its domain (saved, with a warning that an ending such as `.com` may be missing) | `edit 1 e/john@gmail`
 Remove the phone number of the 3rd student | `edit 3 p/`
-Remove all tags | `edit 1 t/`
 Remove the guardian | `edit 1 gn/ gp/`
 
 ##### Errors in `edit`
@@ -368,11 +361,11 @@ Every value given is the same as the student's current value, such as `edit 1 n/
 
 ##### Duplicate students in `edit`
 
-`edit` checks the student's new details against the other students, the same way as [`add`](#duplicate-students). The student being edited is not compared with themselves, and the amber prompt only appears when you change the name, school, or level.
+`edit` checks the student's new details against the other students, the same way as [`add`](#duplicate-students). The student being edited is not compared with themselves, and the confirmation prompt only appears when you change the name, school, or level.
 
 Another student has… | What happens
 ---------------------|-------------
-The same name, but a different school or level | An amber prompt, such as `Edit not saved yet: NAME is also recorded at SCHOOL (LEVEL).` If several students match, their school and level details are separated by `; `. Type `CONFIRM` to save the edit anyway. See [Confirming a command](#confirming-a-command).
+The same name, but a different school or level | A confirmation prompt, such as `Edit not saved yet: NAME is also recorded at SCHOOL (LEVEL).` If several students match, their school and level details are separated by `; `. Type `CONFIRM` to save the edit anyway. See [Confirming a command](#confirming-a-command).
 The same name, school, and level | A red error: `Another student named NAME at SCHOOL, level LEVEL already exists. If these are different students, edit the name to include an identifier, for example Chloe Tan 2.` The student is not changed.
 
 #### Deleting a student: `delete`
@@ -385,7 +378,7 @@ Format: `delete [-f] INDEX`
 * `delete` asks you to confirm first, with the prompt `This will delete NAME at SCHOOL (LEVEL) and all their notes.` See [Confirming a command](#confirming-a-command). Use `delete -f INDEX` to delete immediately.
 * After a student is deleted, the current filter remains active while it still has matches. The index numbers of the remaining matching students may change, so check the list before you run another command that uses an index.
 * If you delete the filter's last matching student while other students remain, TuteeBook3 shows the full list and adds `The filtered list is now empty, so all remaining students are shown.` to the result.
-* After deletion, the right panel returns to `View a student to see details.`
+* After deletion, the student detail view returns to `View a student to see details.`
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
 You cannot undo `delete`. Check `INDEX` in the student list before you confirm.
@@ -530,7 +523,7 @@ These commands choose which students are shown, and which student's full record 
 
 #### Listing all students: `list`
 
-Shows a list of all students in TuteeBook3. Each entry shows the student's index, name, phone number (if provided), school, address (if provided), email (if provided), level, and tags (if any). The right panel returns to `View a student to see details.` Use `view INDEX` to see the remaining details.
+Shows a list of all students in TuteeBook3. Each entry shows the student's index, name, phone number (if provided), school, address (if provided), email (if provided), level, and tags (if any). The student detail view returns to `View a student to see details.` Use `view INDEX` to see the remaining details.
 
 Format: `list`
 
@@ -538,17 +531,19 @@ The command does not accept additional arguments.
 
 #### Viewing a student: `view`
 
-TuteeBook3 always shows a fixed, equal-width student list on the left and student record panel on the right. Both panels fill the available height down to the status bar, and you cannot move the divider. If the student record is taller than the right panel, the entire record scrolls, including the student details and notes. The list cards are not clickable. The card for the student shown on the right is highlighted. When no student is selected, the right panel says `View a student to see details.`
+TuteeBook3 shows the student list on the left and the student detail view on the right. The two halves are the same width, and you cannot resize them. The card of the student you are viewing is highlighted in the list. Cards cannot be clicked. When no student is selected, the student detail view shows `View a student to see details.` If a student's record is too long to fit, it scrolls as a whole, including the notes.
+
+You can resize the window down to 600 pixels wide and 400 pixels tall. TuteeBook3 keeps a restored window inside the current screen if the saved size or position no longer fits. The student list and record remain usable at the minimum size by scrolling their contents.
 
 `view` shows the full record of the student at the specified index on the right.
 
-The detail panel contains the student's name, school, level, subject-band pairs, address, email, tags, student phone number, guardian name, and guardian phone number, followed by the student's notes. Optional fields without a recorded value, such as the address, email, tags, student phone number, or guardian details, are shown as `Not provided`.
+The student detail view contains the student's name, school, level, subject-band pairs, address, email, tags, student phone number, guardian name, and guardian phone number, followed by the student's notes. Optional fields without a recorded value, such as the address, email, tags, student phone number, or guardian details, are shown as an em dash (`—`).
 
 Format: `view INDEX`
 
 * `INDEX` follows the rules in [Indexes and notes](#indexes-and-notes).
 * The current search results remain visible on the left while you view the student.
-* Entering `view` again replaces the student record on the right instead of opening another panel.
+* Entering `view` again shows the new student in the student detail view, replacing the previous one.
 * Enter `list` to return to the full student list, or `filter` to display new search results. Both commands clear the selected record and show the empty-state message on the right.
 * A successful `add`, `edit`, `addnote`, `editnote`, or `deletenote` shows the affected student's record on the right. A successful `delete` or `clear` shows the empty-state message.
 * Help and invalid commands leave the student record visible.
@@ -594,11 +589,10 @@ Filter | Matches students whose… | Match
 
 * A filter with partial matching can match any part of the value, even part of a word. For example, `sch/vic` matches `Victoria School`.
 * The `n/`, `sch/`, and `a/` filters take search text, not new student details. Search text can contain accents and punctuation. Accented letters cannot match saved names, schools, or addresses; punctuation can match a school when it is one of the supported school-name characters.
-* A filter with exact matching must match the whole value. For example, `lvl/S3` matches only students in S3, `sub/math` does not match `Mathematics`, and `p/9123` does not match `91234567`.
+* A filter with exact matching must match the whole value. For example, `lvl/S3` matches only students in S3, `sub/math` does not match `Mathematics`, `p/9123` does not match `91234567`, and `t/paid` does not match `unpaid`.
 * `band/` must come right after `sub/`, and the band must belong to that subject. For example, a student taking Mathematics at G1 and Science at G2 does not match `sub/Mathematics band/G2`.
 * Phone numbers are compared the way they are saved: spaces, hyphens, and a leading `+65` are removed. For example, `p/9123 4567` and `p/+65 9123-4567` both match `91234567`. An overseas number must include its `+` and country code.
 * A student without a phone never matches `p/`, a student without an email never matches `e/`, a student without an address never matches `a/`, and a student without a guardian never matches `gn/` or `gp/`.
-* Give one tag per `filter`. `t/paid` does not match `unpaid`.
 * `note/` searches all of a student's notes. `TEXT` can be up to 500 characters, the same as a note. Like `n/` and `sch/` search text, it can contain any characters, but accented letters and emoji cannot match a saved note.
 * Everything after `note/` is the note text, so put `note/` last. For example, `filter note/revise t/f` finds notes containing `revise t/f`. In `filter note/algebra lvl/S3`, `lvl/S3` is read as part of the note text, so write `filter lvl/S3 note/algebra` instead.
 * A separate prefix-shaped word that `filter` does not recognize is rejected. For example, `filter n/chloe lv/S2` reports that `lv/` is not a filter prefix instead of searching for the name `chloe lv/S2`. This check does not apply inside `a/ADDRESS` or after `note/`, because addresses and notes can contain `/` as ordinary text.
@@ -612,25 +606,18 @@ Examples, using the sample students:
 
 You type | TuteeBook3 shows
 ---------|-----------------
-`filter n/c` | `SAMPLE Chloe Tan` and `SAMPLE Marcus Lim`
-`filter sch/victoria` | `SAMPLE Daniel Lee`
-`filter n/lim sch/secondary` | `SAMPLE Marcus Lim`
-`filter lvl/s2` | `SAMPLE Chloe Tan` and `SAMPLE Ethan Kumar`
-`filter sch/bedok lvl/S2` | `SAMPLE Chloe Tan`
-`filter sub/mathematics band/G2` | `SAMPLE Marcus Lim` and `SAMPLE Daniel Lee`
-`filter sub/chemistry` | `SAMPLE Aisha Rahman` and `SAMPLE Natalie Goh`
-`filter p/9123 4567` | `SAMPLE Chloe Tan`
-`filter e/example.com` | `SAMPLE Chloe Tan`, `SAMPLE Marcus Lim`, and `SAMPLE Natalie Goh`
-`filter a/tampines` | `SAMPLE Marcus Lim` and `SAMPLE Ethan Kumar`
-`filter gp/98765432` | `SAMPLE Marcus Lim`, whose guardian is Grace Lim
-`filter gn/goh` | `SAMPLE Natalie Goh`, whose guardian is Michelle Goh
-`filter t/unpaid` | `SAMPLE Marcus Lim`
-`filter note/algebra` | `SAMPLE Chloe Tan`
-`filter lvl/S1 note/next lesson` | `SAMPLE Daniel Lee`
+`filter n/c` | `Chloe Tan` and `Marcus Lim`
+`filter n/lim sch/secondary` | `Marcus Lim`
+`filter lvl/s2` | `Chloe Tan` and `Ethan Kumar`
+`filter sub/mathematics band/G2` | `Marcus Lim` and `Daniel Lee`
+`filter gp/98765432` | `Marcus Lim`, whose guardian is Grace Lim
+`filter t/sample` | All six sample students
+`filter note/algebra` | `Chloe Tan`
+`filter lvl/S1 note/next lesson` | `Daniel Lee`
 
 The result of `filter n/c`:
 
-![Results for filter c](images/findChloeMarcusResult.png)
+![Results for filter c](images/filterChloeMarcusResult.png)
 
 ##### Errors in `filter`
 
@@ -722,13 +709,16 @@ A student's tags are stored in a `tags` array, for example `"tags" : [ "exams", 
 Phone numbers in the data file, for both students and guardians, follow the same rules as `PHONE`. They are cleaned up the same way when the app loads the file, so `+65 9123-4567` is loaded as `91234567`. The cleaned number is written back to the file the next time TuteeBook3 saves.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-If any part of the data file is invalid, such as one wrong value or a missing comma, TuteeBook3 cannot load any of it and starts with no students. The next command that runs successfully, even `list` or `exit`, replaces the file with the app's current data, so every student in the old file is lost for good. If the app starts with no students after you edit the file, close the window without running any command, then fix the file or restore your backup.<br>
-TuteeBook3 skips any field name it does not recognize, such as `"phnoe"`.<br>
-If the skipped field is `name`, `level`, or `subjects`, or is inside a `guardian` object or a subject-band object, the file is invalid.<br>
-If the skipped field is `school`, the school becomes `Unknown`, and the next save deletes the old school from the file.<br>
-If the skipped field is any other field, the student loads without that value, and the next save deletes the value from the file.<br>
-Back up the file before you edit it. Furthermore, certain edits can cause TuteeBook3 to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
+If any part of the data file is invalid, such as one wrong value or a missing comma, TuteeBook3 cannot load any of it. It starts with no students and shows a red error in the result display. The next command that runs successfully, even `list` or `exit`, replaces the file with the app's current data, so every student in the old file is lost for good. To keep them, close the window or use **File** > **Exit** without running any command, then fix the file or restore your backup.<br>
+TuteeBook3 treats a field name it does not recognize, such as `"phnoe"`, as missing, and the next save deletes it from the file.<br>
+A missing required field (`name`, `school`, `level`, `subjects`, or any field inside a `guardian` or subject-band object) makes the file invalid.<br>
+A missing optional field (`phone`, `email`, `address`, `guardian`, `tags`, or `notes`) only leaves the student without that value.<br>
+Back up the file before you edit it, and edit it only if you are confident you can update it correctly.
 </div>
+
+### Upgrading from an earlier version
+
+Earlier versions of TuteeBook3 allowed more characters in names, school names, addresses, subject names, and notes, such as accented letters and emoji. If your data file has such a value, TuteeBook3 cannot load the file (see the caution in [Editing the data file](#editing-the-data-file)). Before you upgrade, use the earlier version to change those values.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -757,7 +747,6 @@ Term | Meaning
 **Filter** | A prefix and value given to the `filter` command, such as `n/Tan`, that narrows down the student list.
 **Index** | The number shown next to a student in the list currently on screen. Commands such as `view`, `edit`, and `delete` use it to pick a student. It is not permanent: it can change when the list changes, such as after `add`, `delete`, `filter`, or `list`.
 **NID** | The number shown before a note in the student detail view. Notes are numbered 1, 2, 3 in the order they were added. After a note is deleted, the notes after it move up one number, so an NID is not permanent.
-**Normalized** | Compared after removing spaces at the start and end, treating repeated spaces as one, and ignoring capitalization. For example, `John  Doe` and `john doe` have the same normalized name.
 **Parameter** | A value that you supply in a command, shown in `UPPER_CASE` in this guide, such as `NAME` in `n/NAME`.
 **Partial matching** | The way the `n/`, `sch/`, `e/`, `a/`, `gn/`, and `note/` filters of `filter` compare values. The value only needs to contain what you typed, even part of a word, ignoring case. For example, `sch/vic` matches `Victoria School`.
 **Prefix** | A short marker ending in `/`, such as `n/` or `sch/`, that labels the value after it in a command.
@@ -768,22 +757,24 @@ Term | Meaning
 Term | Meaning
 -----|--------
 **Command box** | The text field at the top of the window where you type commands.
-**Detail view** | The panel on the right of the window that shows everything about one student, including all their notes. It is also called the "detail panel" or "student detail view". `view` shows a student there, and `list` and `filter` clear it.
-**Empty-state message** | The message `View a student to see details.`, shown in the detail view when no student is selected.
+**Empty-state message** | The message `View a student to see details.`, shown in the student detail view when no student is selected.
 **Result display** | The area below the command box that tells you whether your last command worked, and why not if it failed.
+**Student detail view** | The panel on the right of the window that shows everything about one student, including all their notes. `view` shows a student there, and `list` and `filter` clear it.
 **Student list** | The panel on the left of the window that lists students with their main details. It shows all students, or the results of your last `filter`.
 
 #### General
 
 Term | Meaning
 -----|--------
-**Alphanumeric** | Made up of only ASCII letters A to Z and digits 0 to 9. Names also allow spaces. School names allow spaces and the punctuation listed under [Parameter details](#parameter-details). For example, the name `Rajesh so Kumar` is allowed, but `Zoë Lim` and `Rajesh s/o Kumar` are not.
 **CLI** | Command-line interface. A way of using an app by typing commands instead of clicking.
 **Data file** | The file `data/addressbook.json` in the home folder, where TuteeBook3 automatically saves all your students and notes. To change it by hand, see [Editing the data file](#editing-the-data-file).
+**Digit** | One of `0` to `9`. Digits from other writing systems, such as the full-width `１`, are not digits.
+**English letter** | One of `A` to `Z` or `a` to `z`. Accented letters, such as `é`, and letters from other alphabets are not English letters.
 **GUI** | Graphical user interface. The windows, lists, and boxes that you see and click.
 **Home folder** | The folder that holds the TuteeBook3 JAR file. Run TuteeBook3 from this folder, as described in [Quick start](#quick-start), so that it saves your data there.
 **JAR** | Java Archive. The single file that contains the whole app, which you run with Java.
 **JSON** | JavaScript Object Notation. The text format that TuteeBook3 uses to save data in a file that can be read and edited by hand.
+**Keyboard symbol** | One of these 32 symbols: `` ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~ ``. Other symbols, such as `£` and `°`, curly quotes, such as `“` and `’`, long dashes, such as `–`, and emoji are not keyboard symbols.
 **Terminal** | An app where you type commands for your computer to run, such as **Terminal** on macOS or **Command Prompt** on Windows. You use it to start TuteeBook3, as described in [Quick start](#quick-start).
 
 --------------------------------------------------------------------------------------------------------------------
@@ -797,7 +788,9 @@ Term | Meaning
 
 ## Known issues
 
-1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
+1. **The window opens off-screen after you stop using a second screen.** If you move TuteeBook3 to a second screen and later use only your main screen, the window opens where the second screen was. The remedy is to delete `preferences.json` from the [home folder](#glossary) before you start TuteeBook3 again.
+1. **Names can't contain punctuation.** Student and guardian names accept only English letters, digits, and spaces, so `Rajesh s/o Kumar`, `Mary-Jane O'Brien`, and `J. Tan` are rejected. Leave out the punctuation, such as `Rajesh so Kumar`, and type the name the same way each time so that `filter n/` and the duplicate check find it. Support for hyphens, apostrophes, and periods is coming in a future version. Slashes will stay unsupported, because `s/o` and `a/l` look like prefixes.
+1. **Names, school names, and subjects can't contain accented or non-English letters.** Values such as `Zoë Lim`, `École Française`, and `Français` are rejected. Type the closest English spelling, such as `Zoe Lim`. Support for other languages in these fields is coming in a future version.
 
 --------------------------------------------------------------------------------------------------------------------
 

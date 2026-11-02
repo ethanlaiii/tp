@@ -163,6 +163,7 @@
 .student-detail-field-name {
     -fx-font-family: "Segoe UI Semibold";
     -fx-font-size: 14px;
+    -fx-text-alignment: right;
     -fx-text-fill: #b8b8b8;
 }
 

@@ -54,7 +54,11 @@ public class LogicManager implements Logic {
             }
             String cancellationNotice = confirmationManager.getCancellationNotice(pendingCommand);
             try {
-                return executeCommand(commandText).withCancellationNotice(cancellationNotice);
+                Command command = addressBookParser.parseCommand(commandText);
+                CommandResult result = executeCommand(command);
+                return isRepeatOf(pendingCommand, command)
+                        ? result
+                        : result.withCancellationNotice(cancellationNotice);
             } catch (CommandException e) {
                 throw new CommandException(cancellationNotice + System.lineSeparator() + e.getMessage(), e);
             } catch (ParseException e) {
@@ -71,10 +75,6 @@ public class LogicManager implements Logic {
         return executeCommand(command);
     }
 
-    private CommandResult executeCommand(String commandText) throws CommandException, ParseException {
-        return executeCommand(addressBookParser.parseCommand(commandText));
-    }
-
     private CommandResult executeCommand(Command command) throws CommandException, ParseException {
         if (command instanceof ConfirmationCommand confirmableCommand) {
             String confirmationMessage = confirmableCommand.getConfirmationMessage(model);
@@ -87,6 +87,15 @@ public class LogicManager implements Logic {
         }
 
         return executeAndSave(command.execute(model));
+    }
+
+    /**
+     * Returns whether {@code command} repeats {@code pendingCommand}, either exactly or in its forced form,
+     * so it replaces the pending request instead of cancelling it.
+     */
+    private static boolean isRepeatOf(ConfirmationCommand pendingCommand, Command command) {
+        return command instanceof ConfirmationCommand newCommand
+                && pendingCommand.equals(newCommand.withoutForce());
     }
 
     private CommandResult executeAndSave(CommandResult commandResult) throws CommandException {

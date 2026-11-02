@@ -117,6 +117,49 @@ public class EditCommandTest {
     }
 
     @Test
+    public void execute_schoolCaseOnlyChange_success() {
+        Person original = model.getFilteredPersonList().get(0);
+        String upperCaseSchool = original.getSchool().toString().toUpperCase();
+        Person edited = new PersonBuilder(original).withSchool(upperCaseSchool).build();
+        assertCaseOnlyEditSaved(original, edited,
+                new EditPersonDescriptorBuilder().withSchool(upperCaseSchool).build());
+    }
+
+    @Test
+    public void execute_subjectCaseOnlyChange_success() {
+        Person original = model.getFilteredPersonList().get(0);
+        Subject upperCaseSubject = new Subject("MATHEMATICS", Band.G1);
+        Person edited = new PersonBuilder(original).withSubjects(upperCaseSubject).build();
+        assertCaseOnlyEditSaved(original, edited,
+                new EditPersonDescriptorBuilder().withSubjects(upperCaseSubject).build());
+    }
+
+    @Test
+    public void execute_tagCaseOnlyChange_success() {
+        Person firstPerson = model.getFilteredPersonList().get(0);
+        Person original = new PersonBuilder(firstPerson).withTags("paid").build();
+        model.setPerson(firstPerson, original);
+        Person edited = new PersonBuilder(original).withTags("PAID").build();
+        assertCaseOnlyEditSaved(original, edited, new EditPersonDescriptorBuilder().withTags("PAID").build());
+    }
+
+    /**
+     * Asserts that editing the first student, {@code original}, with {@code descriptor} saves {@code edited},
+     * which differs from {@code original} only in capitalization.
+     */
+    private void assertCaseOnlyEditSaved(Person original, Person edited, EditPersonDescriptor descriptor) {
+        EditCommand command = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(original, edited);
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
+                Messages.format(edited));
+        assertCommandSuccess(command, model,
+                CommandResult.showStudent(expectedMessage, edited, INDEX_FIRST_PERSON), expectedModel);
+        // Person#equals ignores case in these fields, so check the saved text directly
+        assertEquals(Messages.format(edited), Messages.format(model.getFilteredPersonList().get(0)));
+    }
+
+    @Test
     public void execute_addressSetAndRemoved_updatesStudent() {
         Person original = model.getFilteredPersonList().get(0);
         Person withAddress = new PersonBuilder(original).withAddress("12 Example Road").build();

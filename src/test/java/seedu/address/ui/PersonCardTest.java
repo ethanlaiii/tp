@@ -14,12 +14,17 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
@@ -30,9 +35,17 @@ import seedu.address.testutil.PersonBuilder;
 @ExtendWith(ApplicationExtension.class)
 public class PersonCardTest {
 
+    private static final double[] SUPPORTED_CARD_WIDTHS = {950, 758, 416, 290};
+
+    private StackPane container;
+
     @Start
     public void start(Stage stage) {
-        // Starts the JavaFX toolkit so that cards can be created; no window is needed.
+        container = new StackPane();
+        stage.setScene(new Scene(container));
+        stage.getScene().getStylesheets().add(getClass().getResource("/view/DarkTheme.css").toExternalForm());
+        stage.setHeight(900);
+        stage.show();
     }
 
     @Test
@@ -107,6 +120,47 @@ public class PersonCardTest {
             assertFalse(tags.isVisible());
             assertFalse(tags.isManaged());
         });
+    }
+
+    @Test
+    public void constructor_supportedWidthsAndMaximumContent_renderCompleteText(FxRobot robot) {
+        String longEmail = "a".repeat(64) + "@" + "b".repeat(63) + "."
+                + "c".repeat(63) + "." + "d".repeat(60);
+        Person person = new PersonBuilder(ALICE)
+                .withName("Alexandra ".repeat(20).trim())
+                .withPhone("+123456789012345")
+                .withSchool("S".repeat(100))
+                .withAddress("A".repeat(200))
+                .withEmail(longEmail)
+                .withTags("A".repeat(30), "B".repeat(30), "C".repeat(30), "D".repeat(30))
+                .build();
+
+        robot.interact(() -> {
+            for (double width : SUPPORTED_CARD_WIDTHS) {
+                container.getScene().getWindow().setWidth(width);
+                PersonCard card = new PersonCard(person, 1);
+                container.getChildren().setAll(card.getRoot());
+                container.applyCss();
+                container.layout();
+
+                assertCardTextIsComplete(card);
+            }
+        });
+    }
+
+    private void assertCardTextIsComplete(PersonCard card) {
+        Bounds cardBounds = card.getRoot().localToScene(card.getRoot().getBoundsInLocal());
+        for (Node node : card.getRoot().lookupAll(".label")) {
+            Label label = (Label) node;
+            if (!label.isVisible()) {
+                continue;
+            }
+            Text renderedText = (Text) label.lookup(".text");
+            Bounds labelBounds = label.localToScene(label.getBoundsInLocal());
+            assertEquals(label.getText(), renderedText.getText());
+            assertTrue(labelBounds.getMinX() >= cardBounds.getMinX());
+            assertTrue(labelBounds.getMaxX() <= cardBounds.getMaxX());
+        }
     }
 
     private static void assertLabelText(PersonCard card, String query, String expectedText) {

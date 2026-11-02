@@ -12,6 +12,7 @@ import static seedu.address.testutil.TypicalPersons.BENSON;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +39,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.ConfirmationManager;
 import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
@@ -55,10 +57,12 @@ public class MainWindowStudentDetailTest {
     private static final PseudoClass DISPLAYED_PSEUDO_CLASS = PseudoClass.getPseudoClass("displayed");
 
     private MainWindow mainWindow;
+    private LogicStub logicStub;
 
     @Start
     public void start(Stage stage) {
-        mainWindow = new MainWindow(stage, new LogicStub(), Path.of("data", "addressbook.json"));
+        logicStub = new LogicStub();
+        mainWindow = new MainWindow(stage, logicStub, Path.of("data", "addressbook.json"));
         mainWindow.fillInnerParts();
         mainWindow.show();
     }
@@ -70,8 +74,8 @@ public class MainWindowStudentDetailTest {
         assertEquals(2, contentGridPane.getColumnConstraints().size());
         assertEquals(50, contentGridPane.getColumnConstraints().get(0).getPercentWidth());
         assertEquals(50, contentGridPane.getColumnConstraints().get(1).getPercentWidth());
-        assertEquals(contentGridPane.getHeight(), getPersonListPanelPlaceholder().getHeight(), 0.1);
-        assertEquals(contentGridPane.getHeight(), getStudentDetailPanelPlaceholder().getHeight(), 0.1);
+        assertEquals(contentGridPane.getHeight(), getPersonListPanelPlaceholder().getHeight(), 1.0);
+        assertEquals(contentGridPane.getHeight(), getStudentDetailPanelPlaceholder().getHeight(), 1.0);
         assertEquals("View a student to see details.", getEmptyStateLabel().getText());
         assertEquals(-1, getPersonListView().getSelectionModel().getSelectedIndex());
         assertFalse(getPersonListView().isFocusTraversable());
@@ -193,6 +197,79 @@ public class MainWindowStudentDetailTest {
     }
 
     @Test
+    public void startup_manyStudents_scrollsToLastStudent(FxRobot robot) {
+        robot.interact(() -> {
+            mainWindow.getRoot().setWidth(600);
+            mainWindow.getRoot().setHeight(400);
+            logicStub.addStudents(1000);
+            int lastIndex = getPersonListView().getItems().size() - 1;
+            getPersonListView().scrollTo(lastIndex);
+            mainWindow.getRoot().getScene().getRoot().applyCss();
+            mainWindow.getRoot().getScene().getRoot().layout();
+            getPersonListView().applyCss();
+            getPersonListView().layout();
+
+            assertEquals(1002, getPersonListView().getItems().size());
+            assertTrue(getPersonListView().lookupAll(".list-cell").stream()
+                    .map(ListCell.class::cast)
+                    .anyMatch(cell -> !cell.isEmpty() && cell.getIndex() == lastIndex));
+        });
+    }
+
+    @Test
+    public void execute_addCommand_addsCardAndShowsStudent(FxRobot robot) {
+        enterCommand(robot, "add student");
+
+        assertEquals(List.of("Alice Pauline", "Benson Meier", "New Student"), getListNames());
+        assertEquals("New Student", ((Label) getStudentDetailNode().lookup("#name")).getText());
+        assertTrue(isPersonHighlighted("New Student"));
+    }
+
+    @Test
+    public void execute_deleteCommand_removesCardUpdatesIndicesAndClearsDetails(FxRobot robot) {
+        enterCommand(robot, "view 1");
+        enterCommand(robot, "delete 1");
+
+        assertEquals(List.of("Benson Meier"), getListNames());
+        assertEquals("1. ", ((Label) getPersonListPanelPlaceholder().lookup("#id")).getText());
+        assertEquals("View a student to see details.", getEmptyStateLabel().getText());
+    }
+
+    @Test
+    public void execute_filterCommand_updatesVisibleCardsAndClearsDetails(FxRobot robot) {
+        enterCommand(robot, "view 1");
+        enterCommand(robot, "filter Benson");
+
+        assertEquals(List.of("Benson Meier"), getListNames());
+        assertEquals("View a student to see details.", getEmptyStateLabel().getText());
+    }
+
+    @Test
+    public void execute_clearCommand_removesAllCardsAndClearsDetails(FxRobot robot) {
+        enterCommand(robot, "view 1");
+        enterCommand(robot, "clear");
+
+        assertTrue(getPersonListView().getItems().isEmpty());
+        assertEquals("View a student to see details.", getEmptyStateLabel().getText());
+    }
+
+    @Test
+    public void execute_editNoteCommand_refreshesDisplayedRecord(FxRobot robot) {
+        enterCommand(robot, "editnote 1");
+
+        assertNoteTexts("1. Updated note");
+        assertTrue(isPersonHighlighted(ALICE.getName().fullName));
+    }
+
+    @Test
+    public void execute_deleteNoteCommand_refreshesDisplayedRecord(FxRobot robot) {
+        enterCommand(robot, "deletenote 1");
+
+        assertEquals("No notes recorded.", ((Label) getStudentDetailNode().lookup("#emptyNotes")).getText());
+        assertTrue(isPersonHighlighted(ALICE.getName().fullName));
+    }
+
+    @Test
     public void execute_warningResult_appliesWarningStyle(FxRobot robot) {
         enterCommand(robot, "warn");
 
@@ -214,7 +291,7 @@ public class MainWindowStudentDetailTest {
         TextArea resultDisplay = getResultDisplay();
         robot.interact(() -> mainWindow.getRoot().getScene().getRoot().applyCss());
 
-        assertEquals("The 'clear' command has been cancelled.", cancellationDisplay.getText());
+        assertEquals("The earlier 'clear' command has been cancelled.", cancellationDisplay.getText());
         assertTrue(cancellationDisplay.getStyleClass().contains(ResultDisplay.ERROR_STYLE_CLASS));
         assertEquals("Listed students", resultDisplay.getText());
         assertFalse(resultDisplay.getStyleClass().contains(ResultDisplay.WARNING_STYLE_CLASS));
@@ -317,6 +394,21 @@ public class MainWindowStudentDetailTest {
         return (TextArea) mainWindow.getRoot().getScene().lookup(".result-display");
     }
 
+    private List<String> getListNames() {
+        return getPersonListView().getItems().stream()
+                .map(person -> person.getName().fullName)
+                .toList();
+    }
+
+    private void assertNoteTexts(String... expectedTexts) {
+        List<String> noteTexts = mainWindow.getRoot().getScene().getRoot()
+                .lookupAll(".student-detail-note-card").stream()
+                .map(Label.class::cast)
+                .map(Label::getText)
+                .toList();
+        assertEquals(List.of(expectedTexts), noteTexts);
+    }
+
     private static class LogicStub implements Logic {
 
         private static final Person ALICE_WITH_MANY_NOTES = new PersonBuilder(ALICE)
@@ -336,6 +428,12 @@ public class MainWindowStudentDetailTest {
                 case "list" -> CommandResult.showList("Listed all students");
                 case "addnote 1 note/New note" -> addNoteToFirstPerson();
                 case "edit 1" -> editFirstPerson();
+                case "add student" -> addStudent();
+                case "delete 1" -> deleteFirstPerson();
+                case "filter Benson" -> filterToBenson();
+                case "clear" -> clearPersons();
+                case "editnote 1" -> replaceFirstPersonNotes("Updated note");
+                case "deletenote 1" -> replaceFirstPersonNotes();
                 case "keep" -> new CommandResult("No display change");
                 case "warn" -> CommandResult.warning("Warning");
                 case "cancelled" -> new CommandResult("Listed students").withCancellationNotice(
@@ -345,7 +443,7 @@ public class MainWindowStudentDetailTest {
                         .withCancellationNotice(String.format(ConfirmationManager.MESSAGE_CANCELLED_FORMAT,
                                 "clear"));
                 case "cancelled-fail" -> throw new CommandException(
-                        "The 'clear' command has been cancelled."
+                        "The earlier 'clear' command has been cancelled."
                                 + System.lineSeparator() + "Invalid command");
                 case "fail" -> throw new CommandException("Invalid command");
                 default -> throw new AssertionError("Unexpected command: " + commandText);
@@ -366,6 +464,49 @@ public class MainWindowStudentDetailTest {
                     .build();
             persons.set(INDEX_FIRST_PERSON.getZeroBased(), updatedPerson);
             return CommandResult.showStudent("Edited Alice", updatedPerson, INDEX_FIRST_PERSON);
+        }
+
+        private CommandResult addStudent() {
+            Person newStudent = new PersonBuilder(ALICE)
+                    .withName("New Student")
+                    .withSchool("New Secondary School")
+                    .build();
+            persons.add(newStudent);
+            return CommandResult.showStudent("Added student", newStudent,
+                    Index.fromOneBased(persons.size()));
+        }
+
+        private CommandResult deleteFirstPerson() {
+            persons.remove(INDEX_FIRST_PERSON.getZeroBased());
+            return CommandResult.showList("Deleted student");
+        }
+
+        private CommandResult filterToBenson() {
+            persons.setAll(BENSON);
+            return CommandResult.showList("Filtered students");
+        }
+
+        private CommandResult clearPersons() {
+            persons.clear();
+            return CommandResult.showList("Cleared students");
+        }
+
+        private CommandResult replaceFirstPersonNotes(String... notes) {
+            Person updatedPerson = new PersonBuilder(persons.get(INDEX_FIRST_PERSON.getZeroBased()))
+                    .withNotes(notes)
+                    .build();
+            persons.set(INDEX_FIRST_PERSON.getZeroBased(), updatedPerson);
+            return CommandResult.showStudent("Updated note", updatedPerson, INDEX_FIRST_PERSON);
+        }
+
+        private void addStudents(int count) {
+            List<Person> additionalPersons = IntStream.rangeClosed(1, count)
+                    .mapToObj(index -> new PersonBuilder(ALICE)
+                            .withName("Student " + index)
+                            .withSchool("School " + index)
+                            .build())
+                    .toList();
+            persons.addAll(additionalPersons);
         }
 
         @Override

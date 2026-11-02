@@ -50,6 +50,11 @@ public class ClearCommand extends Command implements ConfirmationCommand {
     }
 
     @Override
+    public ConfirmationCommand withoutForce() {
+        return new ClearCommand();
+    }
+
+    @Override
     public String getCommandWord() {
         return COMMAND_WORD;
     }

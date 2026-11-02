@@ -1,0 +1,48 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant "d:DeleteNoteCommand" as DeleteNoteCommand LOGIC_COLOR
+participant "<<class>>\nNoteCommandUtil" as NoteCommandUtil LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> DeleteNoteCommand : execute(m)
+activate DeleteNoteCommand
+
+note right of DeleteNoteCommand
+p: student at index 1
+ep: copy of p without note 2
+end note
+
+DeleteNoteCommand -> NoteCommandUtil : setPersonKeepingIndex(m, p, ep, ...)
+activate NoteCommandUtil
+
+NoteCommandUtil -> Model : keepPersonInFilteredList(ep)
+activate Model
+Model --> NoteCommandUtil
+deactivate Model
+
+NoteCommandUtil -> Model : setPerson(p, ep)
+activate Model
+Model --> NoteCommandUtil
+deactivate Model
+
+NoteCommandUtil --> DeleteNoteCommand : feedback
+deactivate NoteCommandUtil
+
+create CommandResult
+DeleteNoteCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> DeleteNoteCommand
+deactivate CommandResult
+
+[<-- DeleteNoteCommand : r
+deactivate DeleteNoteCommand
+@enduml

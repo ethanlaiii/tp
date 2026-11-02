@@ -65,7 +65,7 @@ class JsonAdaptedPerson {
             @JsonProperty("subjects") List<JsonAdaptedSubject> subjects) {
         this.name = name;
         this.phone = phone;
-        this.school = school == null ? School.DEFAULT_VALUE : school;
+        this.school = school;
         this.address = address;
         this.level = level;
         if (subjects != null) {
@@ -112,6 +112,9 @@ class JsonAdaptedPerson {
         }
         final Phone modelPhone = normalizedPhone == null ? null : new Phone(normalizedPhone);
 
+        if (school == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, School.class.getSimpleName()));
+        }
         if (!School.isValidSchool(school)) {
             throw new IllegalValueException(School.MESSAGE_CONSTRAINTS);
         }

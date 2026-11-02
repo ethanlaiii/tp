@@ -36,6 +36,7 @@ public class JsonSerializableAddressBookTest {
     private static final Path NULL_NOTES_FILE = TEST_DATA_FOLDER.resolve("nullNotesAddressBook.json");
     private static final Path NULL_NOTE_ENTRY_FILE =
             TEST_DATA_FOLDER.resolve("nullNoteEntryAddressBook.json");
+    private static final Path NULL_PERSON_FILE = TEST_DATA_FOLDER.resolve("nullPersonAddressBook.json");
     private static final Path BLANK_NOTE_FILE = TEST_DATA_FOLDER.resolve("blankNoteAddressBook.json");
     private static final Path TOO_LONG_NOTE_FILE = TEST_DATA_FOLDER.resolve("tooLongNoteAddressBook.json");
     private static final Path NON_ASCII_NOTE_FILE = TEST_DATA_FOLDER.resolve("nonAsciiNoteAddressBook.json");
@@ -134,6 +135,14 @@ public class JsonSerializableAddressBookTest {
         JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(NULL_NOTE_ENTRY_FILE,
                 JsonSerializableAddressBook.class).get();
         assertThrows(IllegalValueException.class, JsonAdaptedPerson.NULL_NOTE_MESSAGE,
+                dataFromFile::toModelType);
+    }
+
+    @Test
+    public void toModelType_nullPersonFile_throwsIllegalValueException() throws Exception {
+        JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(NULL_PERSON_FILE,
+                JsonSerializableAddressBook.class).get();
+        assertThrows(IllegalValueException.class, JsonSerializableAddressBook.MESSAGE_NULL_PERSON,
                 dataFromFile::toModelType);
     }
 
