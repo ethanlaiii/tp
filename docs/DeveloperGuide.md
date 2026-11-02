@@ -842,7 +842,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to list students, or filters them (UC4)
+1.  Tutor requests to list students, or <u>filters them (UC4)</u>
 2.  TuteeBook3 shows a list of students
 3.  Tutor requests to edit a specific student by index, giving the new values for the details to change
 4.  TuteeBook3 validates and updates the student
@@ -920,7 +920,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to list or filter students
+1.  Tutor requests to list students, or <u>filters them (UC4)</u>
 2.  TuteeBook3 shows the corresponding list of students
 3.  Tutor requests to delete a specific student by index
 4.  TuteeBook3 asks Tutor to confirm the deletion
@@ -1016,7 +1016,7 @@ Use case ends.
 
 **MSS**
 
-1.  Tutor requests to list students
+1.  Tutor requests to list students, or <u>filters them (UC4)</u>
 2.  TuteeBook3 shows a list of students
 3.  Tutor requests to add a note to a specific student in the list
 4.  TuteeBook3 adds the note to the student's notes
@@ -1052,7 +1052,7 @@ Use case ends.
 
 **MSS**
 
-1.  Tutor views a specific student's record (UC5)
+1.  Tutor <u>views a specific student's record (UC5)</u>
 2.  TuteeBook3 shows the student's record with numbered notes
 3.  Tutor requests to edit a specific note, giving the student's index, note number and new text
 4.  TuteeBook3 validates the text and replaces the note's text
@@ -1098,7 +1098,7 @@ Use case ends.
 
 **MSS**
 
-1.  Tutor requests to view a specific student by index
+1.  Tutor <u>views a specific student's record (UC5)</u>
 2.  TuteeBook3 shows the student's record with numbered notes
 3.  Tutor requests to delete a specific note, giving the student's index and NID
 4.  TuteeBook3 asks Tutor to confirm deleting the note.
@@ -1108,11 +1108,9 @@ Use case ends.
 
 **Extensions**
 
-* 1a. The given index is invalid.
+* 1a. Tutor already knows the student's index and the note's number.
 
-    * 1a1. TuteeBook3 shows an error message.
-
-      Use case ends.
+    Use case resumes at step 3.
 
 * 2a. The student has no notes.
 
