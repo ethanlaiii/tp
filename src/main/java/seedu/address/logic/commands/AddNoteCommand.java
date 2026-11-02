@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NOTE;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class AddNoteCommand extends Command {
      * Creates an {@code AddNoteCommand} to add {@code note} to the person at {@code targetIndex}.
      */
     public AddNoteCommand(Index targetIndex, Note note) {
+        requireAllNonNull(targetIndex, note);
         this.targetIndex = targetIndex;
         this.note = note;
     }
