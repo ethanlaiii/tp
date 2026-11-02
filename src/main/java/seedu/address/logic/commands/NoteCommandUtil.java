@@ -60,6 +60,7 @@ class NoteCommandUtil {
     static String setPersonKeepingIndex(Model model, Person person, Person editedPerson, String successMessage) {
         boolean isOutsideFilter = model.keepPersonInFilteredList(editedPerson);
         model.setPerson(person, editedPerson);
+        assert model.getFilteredPersonList().contains(editedPerson) : "edited student should stay in the list";
         if (!isOutsideFilter) {
             return successMessage;
         }

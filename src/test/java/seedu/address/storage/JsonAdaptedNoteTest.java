@@ -31,7 +31,7 @@ public class JsonAdaptedNoteTest {
 
     @Test
     public void toModelType_tooLongText_throwsIllegalValueException() {
-        JsonAdaptedNote note = new JsonAdaptedNote("a".repeat(501));
+        JsonAdaptedNote note = new JsonAdaptedNote("a".repeat(Note.MAX_LENGTH + 1));
         assertThrows(IllegalValueException.class, Note.MESSAGE_TOO_LONG, note::toModelType);
     }
 

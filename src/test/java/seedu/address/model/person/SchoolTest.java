@@ -65,4 +65,13 @@ public class SchoolTest {
         assertFalse(school.equals("Bedok Green Secondary School"));
         assertFalse(school.equals(new School("Victoria School")));
     }
+
+    @Test
+    public void equals_curlyAndStraightApostrophe_returnsTrue() {
+        School curly = new School("St. Joseph’s Institution");
+        School straight = new School("St. Joseph's Institution");
+        assertEquals(curly, straight);
+        assertEquals(curly.hashCode(), straight.hashCode());
+        assertEquals("St. Joseph’s Institution", curly.toString());
+    }
 }

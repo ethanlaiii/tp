@@ -39,7 +39,7 @@ public class AddNoteCommandParserTest {
 
     @Test
     public void parse_maxLengthNote_returnsAddNoteCommand() {
-        String maxLengthText = "a".repeat(500);
+        String maxLengthText = "a".repeat(Note.MAX_LENGTH);
         assertParseSuccess(parser, "1 note/" + maxLengthText,
                 new AddNoteCommand(INDEX_FIRST_PERSON, new Note(maxLengthText)));
     }
@@ -91,7 +91,7 @@ public class AddNoteCommandParserTest {
     public void parse_invalidIndexAndInvalidNote_throwsIndexError() {
         assertParseFailure(parser, " 0 note/", MESSAGE_INVALID_INDEX);
         assertParseFailure(parser, " 0 note/a note/b", MESSAGE_INVALID_INDEX);
-        assertParseFailure(parser, " 0 note/" + "a".repeat(501), MESSAGE_INVALID_INDEX);
+        assertParseFailure(parser, " 0 note/" + "a".repeat(Note.MAX_LENGTH + 1), MESSAGE_INVALID_INDEX);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class AddNoteCommandParserTest {
 
     @Test
     public void parse_tooLongNote_throwsParseException() {
-        assertParseFailure(parser, " 1 note/" + "a".repeat(501), Note.MESSAGE_TOO_LONG);
+        assertParseFailure(parser, " 1 note/" + "a".repeat(Note.MAX_LENGTH + 1), Note.MESSAGE_TOO_LONG);
     }
 
     @Test
@@ -115,7 +115,9 @@ public class AddNoteCommandParserTest {
 
     @Test
     public void parse_trailingTextTooLong_throwsParseException() {
-        assertParseFailure(parser, " 1 note/" + "a".repeat(495) + " note/abcdef", Note.MESSAGE_TOO_LONG);
+        // the text before the repeated note/ fits, but the repeated note/ and its text count toward the length
+        assertParseFailure(parser, " 1 note/" + "a".repeat(Note.MAX_LENGTH - 5) + " note/abcdef",
+                Note.MESSAGE_TOO_LONG);
     }
 
     @Test

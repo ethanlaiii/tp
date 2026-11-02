@@ -39,6 +39,7 @@ class JsonAdaptedNote {
      * @throws IllegalValueException if there were any data constraints violated in the adapted note.
      */
     public Note toModelType() throws IllegalValueException {
+        assert text != null : "JsonAdaptedPerson rejects null notes first";
         if (!Note.isValidNote(text)) {
             throw new IllegalValueException(Note.getConstraintMessage(text));
         }

@@ -3,7 +3,9 @@ layout: page
 title: User Guide
 ---
 
-TuteeBook3 is a **desktop app for private tutors who teach secondary school students (S1 to S5) in Singapore, optimized for use through a Command Line Interface (CLI)** while keeping the benefits of a Graphical User Interface (GUI). It keeps each student's information in one place, so you can look up a student's full record with a short typed command. If you type quickly, TuteeBook3 helps you manage your students faster than a spreadsheet or a traditional GUI app.
+TuteeBook3 is a **desktop app for private tutors who teach secondary school students (S1 to S5) in Singapore**. It keeps each student's contact details, guardian contact, school, level, subjects and bands, and lesson notes in one place, so you can pull up a student's full record quickly, such as when a guardian calls or just before a lesson.
+
+TuteeBook3 is **optimized for fast typists**. You do almost everything by typing short commands in a Command Line Interface (CLI), and a Graphical User Interface (GUI) shows the results, so you can manage your students faster than with a mouse-driven app or a notebook.
 
 * Table of Contents
 {:toc}
@@ -106,7 +108,7 @@ No brackets | Required | `sch/SCHOOL` must be given
 `[ ]` | Optional | `[p/PHONE]` can be left out
 `...` | Can be given more than once, or not at all if it's in `[ ]` | `[t/TAG]...` → `t/paid t/exams`
 
-The command box holds one line. In text pasted from web pages, documents, or chat apps, TuteeBook3 reads line breaks, tabs, and special spaces, such as a non-breaking space, as normal spaces, and removes invisible characters, such as a zero-width space.
+The command box holds one line. In text pasted from web pages, documents, or chat apps, TuteeBook3 reads line breaks, tabs, and special spaces, such as a non-breaking space, as normal spaces, and removes invisible characters, such as a zero-width space. It also saves curly quotes (`‘`, `’`, `“`, and `”`) as straight quotes (`'` and `"`), and en and em dashes (`–` and `—`) as hyphens (`-`).
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
 Type commands on your keyboard rather than pasting them where you can. Some pasted characters only look like keyboard symbols. For example, a full-width slash (`／`) does not start a parameter, so `n／John Doe` is not read as a name. Some PDF viewers also drop the spaces around line breaks when you copy, so check a pasted command before you press Enter.
@@ -128,8 +130,8 @@ Parameter | Prefix | Required in `add` | Rules | Examples
 ----------|--------|-------------------|-------|--------
 `NAME` | `n/` | Yes | English letters, digits, and spaces only. Accented letters and punctuation aren't supported. | ✓ `Rajesh so Kumar`<br>✗ `Zoë Lim`<br>✗ `Rajesh s/o Kumar`
 `PHONE` | `p/` | No | 3 to 15 digits, with an optional `+` at the start. See [Phone numbers](#phone-numbers). | ✓ `9123 4567`<br>✗ `12`
-`SCHOOL` | `sch/` | Yes | 1 to 100 characters, with at least one English letter. Also allows digits, spaces, periods (`.`), apostrophes (`'` or `’`), ampersands (`&`), parentheses, commas, and hyphens (`-`). Accented letters and other punctuation aren't supported. | ✓ `Victoria School`<br>✓ `St. Joseph's Institution`<br>✓ `Anglo-Chinese School (Independent)`<br>✓ `School of Science and Technology, Singapore`<br>✗ `École Française`<br>✗ `School/Name`
-`ADDRESS` | `a/` | No | Up to 200 characters, using the same characters as a note's `TEXT`: English letters, digits, spaces, keyboard symbols such as `# / , - ( ) '`, and the curly apostrophe `’`. See [Addresses](#addresses). | ✓ `Blk 123 Bedok North Avenue 2, #04-111`<br>✗ `Rue de l'Église 5`<br>✗ more than 200 characters
+`SCHOOL` | `sch/` | Yes | 1 to 100 characters, with at least one English letter. Also allows digits, spaces, periods (`.`), apostrophes (`'`), ampersands (`&`), parentheses, commas, and hyphens (`-`). Accented letters and other punctuation aren't supported. | ✓ `Victoria School`<br>✓ `St. Joseph's Institution`<br>✓ `Anglo-Chinese School (Independent)`<br>✓ `School of Science and Technology, Singapore`<br>✗ `École Française`<br>✗ `School/Name`
+`ADDRESS` | `a/` | No | Up to 200 characters, using the same characters as a note's `TEXT`: English letters, digits, spaces, and keyboard symbols such as `# / , - ( ) '`. See [Addresses](#addresses). | ✓ `Blk 123 Bedok North Avenue 2, #04-111`<br>✗ `Rue de l'Église 5`<br>✗ more than 200 characters
 `EMAIL` | `e/` | No | Up to 254 characters, in the form `local-part@domain`. See [Emails](#emails). | ✓ `chloe.tan@example.com`<br>✗ `chloe.tan@`
 `LEVEL` | `lvl/` | Yes | `S1` to `S5`. Uppercase or lowercase both work. | ✓ `S3`, `s3`<br>✗ `S6`
 `SUBJECT` | `sub/` | Yes, 1 to 8 | 1 to 40 characters: English letters, spaces, hyphens, parentheses, commas, and ampersands, with at least one letter. A subject can't appear twice, ignoring case and extra spaces. See [Subjects and bands](#subjects-and-bands). | ✓ `Mathematics`<br>✓ `Science (Physics, Chemistry)`<br>✓ `Design & Technology`<br>✗ `Maths 2`<br>✗ `Français`
@@ -147,13 +149,13 @@ Parameter | Prefix | Required in `add` | Rules | Examples
 
 </div>
 
-Names accept English letters, digits, and spaces only. School names also accept periods, apostrophes, ampersands, parentheses, commas, and hyphens, but must contain at least one English letter. Both fields reject accented letters and letters from other alphabets. Before upgrading, use the previous version to change saved names or school names that contain such letters. Otherwise, those records fail validation when the data file is loaded.
+Names accept English letters, digits, and spaces only. School names also accept periods, apostrophes, ampersands, parentheses, commas, and hyphens, but must contain at least one English letter. Both fields reject accented letters and letters from other alphabets.
 
 #### Phone numbers
 
 The phone number is optional, since younger students may not have their own phone. `PHONE` and `GUARDIAN_PHONE` follow the same rules.
 
-* You can type spaces or hyphens (`-`), such as `9123 4567` or `9123-4567`. They are removed when the number is saved. Other dashes, such as `–`, are not allowed.
+* You can type spaces or hyphens (`-`), such as `9123 4567` or `9123-4567`. They are removed when the number is saved. En and em dashes (`–` and `—`) are read as hyphens. Other dashes, such as the minus sign (`−`), are not allowed.
 * A Singapore number (8 digits starting with 6, 8, or 9) is saved as those 8 digits. A leading `+65` is removed, so `+65 9123 4567` is saved as `91234567`. If what follows `+65` isn't a Singapore number, the `+65` is kept.
 * For an overseas number, type `+` and the country code, such as `+60 12-345 6789`. For Singapore, type `+65`, not `65`.
 * If a number doesn't look like a Singapore number, TuteeBook3 still saves it but shows a warning that names the field, such as `Warning: guardian phone +60123456789 doesn't look like a Singapore number (8 digits starting with 6, 8, or 9, with or without +65). Use edit to fix it if it's wrong.`
@@ -186,7 +188,7 @@ Each student and guardian has one phone number, which is the number you use to r
 
 #### Subjects and bands
 
-Each student takes 1 to 8 subjects. A subject name can contain English letters, spaces, hyphens, parentheses, commas, and ampersands. It must be 1 to 40 characters long and contain at least one letter. For example, `Science (Physics, Chemistry)`, `Design & Technology`, and `Food & Consumer Education` are valid names. Digits, slashes, and other symbols are not allowed. Like names and school names, subject names reject accented letters and letters from other alphabets, so type `French` rather than `Français`. Before upgrading, use the previous version to change saved subject names that contain such letters. Otherwise, those records fail validation when the data file is loaded.
+Each student takes 1 to 8 subjects. A subject name can contain English letters, spaces, hyphens, parentheses, commas, and ampersands. It must be 1 to 40 characters long and contain at least one letter. For example, `Science (Physics, Chemistry)`, `Design & Technology`, and `Food & Consumer Education` are valid names. Digits, slashes, and other symbols are not allowed. Like names and school names, subject names reject accented letters and letters from other alphabets, so type `French` rather than `Français`.
 
 Give each subject with `sub/`, followed immediately by its band with `band/`, such as `sub/Science (Physics, Chemistry) band/G3 sub/English band/G3`.
 
@@ -223,12 +225,12 @@ Parameter | Prefix | Used in | Rules | Example
 ----------|--------|---------|-------|--------
 `INDEX` | none, comes straight after the command word | `view`, `edit`, `delete`, `addnote`, `editnote`, `deletenote` | The number shown beside the student in the student list, or at the top of the student detail view. A positive integer no greater than the largest index in the student list. For example, if the list shows 1 to 3, you can use 1, 2, or 3. | `2`
 `NID` | `nid/` | `editnote`, `deletenote` | The number shown before the note in the student detail view. A positive integer. Use `view INDEX` to see a student's notes and their NIDs. | `1`
-`TEXT` | `note/` | `addnote`, `editnote`, `filter` | 1 to 500 characters, counting spaces between words. Use English letters, digits, spaces, and keyboard symbols, such as `/ % : ( ) - ' " ^ +`. The curly apostrophe `’` is also allowed, as in school names. Other characters, such as accented letters and emoji, are not allowed. Spaces before and after the text are removed. Pasted line breaks and tabs become spaces, as described in [Reading a command format](#reading-a-command-format). | `WA2 Math: 36/50`
+`TEXT` | `note/` | `addnote`, `editnote`, `filter` | 1 to 500 characters, counting spaces between words. Use English letters, digits, spaces, and keyboard symbols, such as `/ % : ( ) - ' " ^ +`. Other characters, such as accented letters and emoji, are not allowed. Spaces before and after the text are removed. Pasted line breaks and tabs become spaces, and curly quotes and long dashes become keyboard symbols, as described in [Reading a command format](#reading-a-command-format). | `WA2 Math: 36/50`
 
 * `INDEX` and `NID` can change. An index changes when the list changes, such as after `filter` or `delete`. After a note is deleted, the notes after it move up one number. Check the list or the student detail view before you use them.
 * After `view`, the student's `INDEX` is also shown at the top of the student detail view, so you can use it in `edit`, `delete`, `addnote`, `editnote`, and `deletenote` without looking for the student in the list.
 * Everything after `note/` is the note text, so `TEXT` can contain other prefixes, such as `t/f` or another `note/`. For example, `addnote 1 note/Revise t/f questions` adds the note `Revise t/f questions`.
-* Notes saved by an earlier version may contain accented letters, emoji, or other characters that notes no longer allow. Before upgrading, use the previous version to change those notes. Otherwise, those records fail validation when the data file is loaded.
+* Notes saved by an earlier version may contain characters that notes no longer allow. See [Upgrading from an earlier version](#upgrading-from-an-earlier-version).
 
 ### Managing students
 
@@ -249,13 +251,7 @@ Examples:
 To add a student with… | Type
 -----------------------|-----
 Only the required details | `add n/Tim Tan sch/Victoria School lvl/S2 sub/Mathematics band/G1`
-A phone number | `add n/John Doe p/98765432 sch/Victoria School lvl/S3 sub/Mathematics band/G1`
-Parameters in a different order | `add n/Betsy Crowe lvl/S1 sch/Bedok Green Secondary School p/81234567 sub/Mathematics band/G1`
 Two subjects at different bands | `add n/Sarah Wong sch/Bedok Green Secondary School lvl/S2 sub/Mathematics band/G1 sub/English band/G3`
-An address | `add n/Mei Lin sch/Bedok Green Secondary School a/Blk 123 Bedok North Avenue 2, #04-111 lvl/S2 sub/Mathematics band/G1`
-An email | `add n/Priya Nair sch/Bedok Green Secondary School e/priya.nair@example.com lvl/S2 sub/Mathematics band/G1`
-An email with no period in its domain (saved, with a warning that an ending such as `.com` may be missing) | `add n/John Tan sch/Victoria School lvl/S3 sub/Mathematics band/G3 e/john@gmail`
-Tags | `add n/Ryan Ong sch/Bedok Green Secondary School lvl/S2 sub/Mathematics band/G1 t/exams t/paid`
 A guardian (use `view INDEX` to see the guardian's details) | `add n/Jun Wei Lim sch/Victoria School lvl/S2 sub/Mathematics band/G1 gn/Mary Lim gp/91234567`
 A guardian with an overseas number (saved as `+60123456789`, with a warning that it doesn't look like a Singapore number) | `add n/Nurul Rahman sch/Victoria School lvl/S2 sub/Mathematics band/G1 gn/Farah Rahman gp/+60 12-345 6789`
 Every detail | `add n/James Ho p/62224444 sch/Victoria School a/Blk 123 Bedok North Avenue 2, #04-111 e/james.ho@example.com lvl/S2 sub/Mathematics band/G1 sub/English band/G2 gn/Mary Ho gp/91234567 t/paid`
@@ -278,7 +274,7 @@ There are no parameters, or there is text before the first one, such as `add Joh
 `PHONE` or `GUARDIAN_PHONE` is invalid | A message saying why. See [Phone numbers](#phone-numbers).
 `sch/` has no value or only spaces | `School name cannot be blank.`
 `SCHOOL` is longer than 100 characters | `School name must be at most 100 characters; this value has 101.`, with the actual character count
-`SCHOOL` contains an unsupported character | A message naming the school and first unsupported character, and listing the allowed characters. For example, `School name "School#1" contains "#", which isn't allowed. Use English letters, digits, spaces, periods (.), apostrophes (' or ’), ampersands (&), parentheses, commas, and hyphens (-).`
+`SCHOOL` contains an unsupported character | A message naming the school and first unsupported character, and listing the allowed characters. For example, `School name "School#1" contains "#", which isn't allowed. Use English letters, digits, spaces, periods (.), apostrophes ('), ampersands (&), parentheses, commas, and hyphens (-).`
 `SCHOOL` contains only digits and allowed punctuation | `School name "123" must contain at least one English letter (A-Z).`
 `ADDRESS` is blank or longer than 200 characters | `Addresses must not be blank and must be at most 200 characters.`
 `ADDRESS` contains a character that isn't allowed, such as `É` or an emoji | `Address contains "É", which isn't allowed. Use only English letters, digits, spaces, and keyboard symbols.`, with the first such character in `ADDRESS`
@@ -339,17 +335,10 @@ Examples:
 To… | Type
 ----|-----
 Change the phone number and school of the 1st student | `edit 1 p/91234567 sch/Victoria School`
-Change the phone number, typed with `+65`, spaces, and a hyphen (saved as `81234567`) | `edit 1 p/+65 8123-4567`
-Change the name of the 2nd student | `edit 2 n/Betsy Crower`
-Change the level | `edit 1 lvl/S4`
 Replace the subjects with Mathematics at G2 and English at G3 | `edit 1 sub/Mathematics band/G2 sub/English band/G3`
 Replace the tags with `paid` and `exams` | `edit 1 t/paid t/exams`
-Add a guardian, or replace both of the guardian's details | `edit 1 gn/Mary Tan gp/91234567`
 Change only the guardian's phone number | `edit 1 gp/98765432`
-Change the guardian's phone number to an overseas number (saved as `+60123456789`, with a warning that it doesn't look like a Singapore number) | `edit 1 gp/+60 12-345 6789`
-Change the email to one with no period in its domain (saved, with a warning that an ending such as `.com` may be missing) | `edit 1 e/john@gmail`
 Remove the phone number of the 3rd student | `edit 3 p/`
-Remove all tags | `edit 1 t/`
 Remove the guardian | `edit 1 gn/ gp/`
 
 ##### Errors in `edit`
@@ -606,7 +595,7 @@ Filter | Matches students whose… | Match
 * `note/` searches all of a student's notes. `TEXT` can be up to 500 characters, the same as a note. Like `n/` and `sch/` search text, it can contain any characters, but accented letters and emoji cannot match a saved note.
 * Everything after `note/` is the note text, so put `note/` last. For example, `filter note/revise t/f` finds notes containing `revise t/f`. In `filter note/algebra lvl/S3`, `lvl/S3` is read as part of the note text, so write `filter lvl/S3 note/algebra` instead.
 * A separate prefix-shaped word that `filter` does not recognize is rejected. For example, `filter n/chloe lv/S2` reports that `lv/` is not a filter prefix instead of searching for the name `chloe lv/S2`. This check does not apply inside `a/ADDRESS` or after `note/`, because addresses and notes can contain `/` as ordinary text.
-* Filters are not case-sensitive, extra spaces are ignored, and curly quotes (`‘`, `’`, `“`, and `”`) match straight ones (`'` and `"`).
+* Filters are not case-sensitive, extra spaces are ignored, curly quotes (`‘`, `’`, `“`, and `”`) match straight ones (`'` and `"`), and en and em dashes (`–` and `—`) match hyphens (`-`).
 * Each value is matched as one piece of text, including its spaces: `n/david lim` matches `David Lim`, but `n/lim david` does not.
 * If no student matches, the student list is empty and a message tells you how to see all students again.
 * Running `filter` clears the selected student record and shows `View a student to see details.` on the right.
@@ -617,18 +606,10 @@ Examples, using the sample students:
 You type | TuteeBook3 shows
 ---------|-----------------
 `filter n/c` | `Chloe Tan` and `Marcus Lim`
-`filter sch/victoria` | `Daniel Lee`
 `filter n/lim sch/secondary` | `Marcus Lim`
 `filter lvl/s2` | `Chloe Tan` and `Ethan Kumar`
-`filter sch/bedok lvl/S2` | `Chloe Tan`
 `filter sub/mathematics band/G2` | `Marcus Lim` and `Daniel Lee`
-`filter sub/chemistry` | `Aisha Rahman` and `Natalie Goh`
-`filter p/9123 4567` | `Chloe Tan`
-`filter e/example.com` | `Chloe Tan`, `Marcus Lim`, and `Natalie Goh`
-`filter a/tampines` | `Marcus Lim` and `Ethan Kumar`
 `filter gp/98765432` | `Marcus Lim`, whose guardian is Grace Lim
-`filter gn/goh` | `Natalie Goh`, whose guardian is Michelle Goh
-`filter t/unpaid` | `Marcus Lim`
 `filter t/sample` | All six sample students
 `filter note/algebra` | `Chloe Tan`
 `filter lvl/S1 note/next lesson` | `Daniel Lee`
@@ -732,6 +713,10 @@ A missing required field (`name`, `school`, `level`, `subjects`, or any field in
 A missing optional field (`phone`, `email`, `address`, `guardian`, `tags`, or `notes`) only leaves the student without that value.<br>
 Back up the file before you edit it, and edit it only if you are confident you can update it correctly.
 </div>
+
+### Upgrading from an earlier version
+
+Earlier versions of TuteeBook3 allowed more characters in names, school names, addresses, subject names, and notes, such as accented letters and emoji. If your data file has such a value, TuteeBook3 cannot load the file (see the caution in [Editing the data file](#editing-the-data-file)). Before you upgrade, use the earlier version to change those values.
 
 --------------------------------------------------------------------------------------------------------------------
 

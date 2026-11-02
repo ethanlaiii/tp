@@ -10,3 +10,71 @@
     height: 21px;
     width: 21px
 }
+
+// Sticky "On this page" sidebar, shown only on wide screens for pages with a {:toc}
+.toc-sidebar {
+  display: none;
+}
+
+@media screen and (min-width: 1200px) {
+  .has-toc-sidebar .wrapper {
+    max-width: 1140px;
+  }
+
+  .has-toc-sidebar .page-with-toc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    column-gap: 40px;
+    align-items: start;
+  }
+
+  .has-toc-sidebar .toc-sidebar {
+    display: block;
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    padding-left: 16px;
+    border-left: 1px solid #e8e8e8;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .toc-sidebar-title {
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .toc-sidebar ul {
+    margin: 0 0 0 12px;
+    list-style: none;
+  }
+
+  .toc-sidebar > ul {
+    margin-left: 0;
+  }
+
+  // Show headings down to h4, which holds each command in the User Guide
+  .toc-sidebar ul ul ul ul {
+    display: none;
+  }
+
+  .toc-sidebar li {
+    margin: 4px 0;
+  }
+
+  .toc-sidebar a {
+    color: #555;
+  }
+
+  .toc-sidebar a.active {
+    color: #e46c0a;
+    font-weight: 600;
+  }
+}
+
+@media print {
+  .toc-sidebar {
+    display: none !important;
+  }
+}
