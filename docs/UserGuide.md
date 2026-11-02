@@ -795,6 +795,7 @@ Command history | Lets you press the Up and Down arrow keys in the command box t
 Inactive students | Marks a student who is on a break as inactive, so you keep their record and notes without deleting them. | Tag them `inactive`, and use `filter t/inactive` to find them. `edit` replaces all tags, so list the student's other tags too, such as `edit 1 t/paid t/inactive`.
 Groups | Groups students who attend the same class, so you can work with the whole group at once. | Give the students the same tag, such as `sat-class`, and use `filter t/sat-class` to list them.
 Shared guardians | Links siblings to one guardian, so a change to the guardian's details updates every child. | Use `edit` on each sibling.
+Punctuation in names | Lets student and guardian names contain hyphens, apostrophes, periods, and slashes, such as `Mary-Jane O'Brien`, `J. Tan`, and `Rajesh s/o Kumar`. | Leave out the punctuation, such as `Mary Jane OBrien` or `Rajesh so Kumar`. See [Known issues](#known-issues).
 Command aliases | Adds short forms of command words, such as `a` for `add`. | Type the full command word.
 
 --------------------------------------------------------------------------------------------------------------------
@@ -802,7 +803,7 @@ Command aliases | Adds short forms of command words, such as `a` for `add`. | Ty
 ## Known issues
 
 1. **The window opens off-screen after you stop using a second screen.** If you move TuteeBook3 to a second screen and later use only your main screen, the window opens where the second screen was. The remedy is to delete `preferences.json` from the [home folder](#glossary) before you start TuteeBook3 again.
-1. **Names can't contain punctuation.** Student and guardian names accept only English letters, digits, and spaces, so `Rajesh s/o Kumar`, `Mary-Jane O'Brien`, and `J. Tan` are rejected. Leave out the punctuation, such as `Rajesh so Kumar`, and type the name the same way each time so that `filter n/` and the duplicate check find it. Support for hyphens, apostrophes, and periods is coming in a future version. Slashes will stay unsupported, because `s/o` and `a/l` look like prefixes.
+1. **Names can't contain punctuation.** Student and guardian names accept only English letters, digits, and spaces, so `Rajesh s/o Kumar`, `Mary-Jane O'Brien`, and `J. Tan` are rejected. Leave out the punctuation, such as `Rajesh so Kumar`, and type the name the same way each time so that `filter n/` and the duplicate check find it. Support for hyphens, apostrophes, periods, and slashes is coming in a future version. See [Coming soon](#coming-soon).
 1. **Names, school names, and subjects can't contain accented or non-English letters.** Values such as `Zoë Lim`, `École Française`, and `Français` are rejected. Type the closest English spelling, such as `Zoe Lim`. Support for other languages in these fields is coming in a future version.
 
 --------------------------------------------------------------------------------------------------------------------
