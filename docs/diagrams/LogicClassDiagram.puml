@@ -16,8 +16,6 @@ Class "{abstract}\nCommand" as Command
 
 Class "<<interface>>\nLogic" as Logic
 Class LogicManager
-Class ConfirmationManager
-Class "<<interface>>\nConfirmationCommand" as ConfirmationCommand
 }
 
 package Model {
@@ -42,15 +40,16 @@ LogicManager --> Storage
 Storage --[hidden] Model
 Command .[hidden]up.> Storage
 Command .right.> Model
-note left of XYZCommand: XYZCommand = AddCommand, \nFilterCommand, etc
-
-LogicManager -down->"1" ConfirmationManager
-ConfirmationManager -->"0..1" ConfirmationCommand : pending >
-XYZCommand .right.|> ConfirmationCommand
-note bottom of ConfirmationCommand: Implemented by AddCommand, EditCommand,\nDeleteCommand, DeleteNoteCommand, and ClearCommand
+note right of XYZCommand: XYZCommand = AddCommand, \nFilterCommand, etc
 
 Logic ..> CommandResult
 LogicManager .down.> CommandResult
 Command .up.> CommandResult : <<create>>
 CommandResult *--> "1" DisplayMode
+
+note as N1
+Partial diagram: ConfirmationManager and
+ConfirmationCommand, which handle commands
+that need CONFIRM, are omitted.
+end note
 @enduml
