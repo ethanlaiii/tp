@@ -19,7 +19,6 @@ Class LogicManager
 }
 
 package Model {
-Class HiddenModel #FFFFFF
 }
 
 package Storage {
@@ -45,11 +44,5 @@ note right of XYZCommand: XYZCommand = AddCommand, \nFilterCommand, etc
 Logic ..> CommandResult
 LogicManager .down.> CommandResult
 Command .up.> CommandResult : <<create>>
-CommandResult *--> "1" DisplayMode
-
-note as N1
-Partial diagram: ConfirmationManager and
-ConfirmationCommand, which handle commands
-that need CONFIRM, are omitted.
-end note
+CommandResult -left-> "1" DisplayMode
 @enduml

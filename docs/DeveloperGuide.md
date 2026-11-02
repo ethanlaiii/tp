@@ -99,7 +99,7 @@ The `UI` component,
 
 **API** : [`Logic.java`](https://github.com/AY2627S1-CS2103T-T09-1/tp/tree/master/src/main/java/seedu/address/logic/Logic.java)
 
-Here's a (partial) class diagram of the `Logic` component:
+Here's a (partial) class diagram of the `Logic` component. It leaves out `ConfirmationManager` and `ConfirmationCommand`, which are described in [Command confirmations](#command-confirmations).
 
 <img src="images/LogicClassDiagram.png" width="550"/>
 
