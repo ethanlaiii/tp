@@ -160,7 +160,7 @@ public class EditCommand extends Command implements ConfirmationCommand {
         // keep the edited person at the same index, so the list and view panel don't shift
         boolean isOutsideFilter = model.keepPersonInFilteredList(editedPerson);
         model.setPerson(personToEdit, editedPerson);
-        logger.info("Edited student " + index.getOneBased() + ": " + editedPerson.getName());
+        logger.fine("Edited student " + index.getOneBased() + ": " + editedPerson.getName());
         String feedback = String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
         if (isOutsideFilter) {
             feedback += "\n" + String.format(MESSAGE_NO_LONGER_MATCHES, editedPerson.getName(),
