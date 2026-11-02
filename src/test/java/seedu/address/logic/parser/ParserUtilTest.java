@@ -250,6 +250,8 @@ public class ParserUtilTest {
         assertThrows(ParseException.class, "Guardian phone 9123a contains \"a\", which isn't allowed. "
                 + "Use only digits, spaces, hyphens (-), and a + at the start.", () ->
                 ParserUtil.parseGuardianPhone("9123a"));
+        assertThrows(ParseException.class, "Guardian phone - needs 3 to 15 digits, counting the country code, "
+                + "but has 0.", () -> ParserUtil.parseGuardianPhone(" - "));
     }
 
     @Test
