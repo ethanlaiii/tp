@@ -1108,6 +1108,10 @@ Use case ends.
 
 **Extensions**
 
+* 1a. Tutor already knows the student's index and the note's number.
+
+    Use case resumes at step 3.
+
 * 2a. The student has no notes.
 
     Use case ends.
