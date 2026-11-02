@@ -171,7 +171,7 @@ The `view INDEX` command passes the selected student from `Logic` to the student
 
 <img src="images/ViewStudentDetailSequenceDiagram.png" width="1000" />
 
-The diagram expands only the `UI` component and treats `Logic` as a black box. To keep the main flow readable, it omits `CommandResult` getter calls, routine logging, JavaFX calls that replace the detail placeholder, `LogicManager` delegation to `Model`, parsing and command execution inside `Logic`, the `Storage#saveAddressBook` call after command execution, and rendering within each UI part. The `view` command does not change the data being saved.
+The diagram expands only the `UI` component and treats `Logic` as a black box. It summarizes the `CommandResult` getter calls and detail-placeholder update in notes. It omits routine logging, rendering within each UI part, and `Logic` internals such as parsing, command execution, delegation to `Model`, and the `Storage#saveAddressBook` call. The `view` command does not change the data being saved.
 
 1. `Logic#execute` returns a `CommandResult` containing `DisplayMode.SHOW_STUDENT`, the selected `Person`, and the displayed index. An out-of-range index throws a `CommandException` instead, so `MainWindow` does not replace the current student detail view.
 1. `MainWindow` reads the feedback, warning state, and cancellation notice from the result, then updates `ResultDisplay`.

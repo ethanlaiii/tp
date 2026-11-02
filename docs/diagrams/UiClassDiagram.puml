@@ -18,11 +18,11 @@ Class CommandBox
 }
 
 package Model <<Rectangle>> {
-Class HiddenModel #FFFFFF
+Class Person MODEL_COLOR
 }
 
 package Logic <<Rectangle>> {
-Class HiddenLogic #FFFFFF
+Class "<<interface>>\nLogic" as LogicApi LOGIC_COLOR
 }
 
 Class HiddenOutside #FFFFFF
@@ -30,8 +30,8 @@ HiddenOutside ..> Ui
 
 UiManager .up.|> Ui
 UiManager -down-> "1" MainWindow
-UiManager -left-> Logic
-MainWindow -left-> Logic
+UiManager -left-> LogicApi
+MainWindow -left-> LogicApi
 
 MainWindow *-down-> "1" CommandBox
 MainWindow *-down-> "1" ResultDisplay
@@ -48,8 +48,8 @@ StudentDetailPanel -down-|> UiPart
 PersonCard -left-|> UiPart
 MainWindow -down-|> UiPart
 
-PersonCard ..> Model
-StudentDetailPanel ..> Model
+PersonCard ..> Person
+StudentDetailPanel ..> Person
 
 CommandBox -[hidden]right- ResultDisplay
 ResultDisplay -[hidden]right- StatusBarFooter
@@ -57,7 +57,8 @@ StatusBarFooter -[hidden]right- PersonListPanel
 PersonListPanel -[hidden]right- StudentDetailPanel
 
 note as N1
-Partial diagram: minor dependencies on
-Logic and Model types are omitted.
+Partial diagram: other cross-component relationships are omitted,
+including Model relationships used by MainWindow and PersonListPanel
+and Logic dependencies used by CommandBox and StudentDetailPanel.
 end note
 @enduml

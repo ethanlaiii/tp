@@ -10,7 +10,7 @@ participant ":PersonListPanel" as PersonListPanel UI_COLOR
 end box
 
 box Logic LOGIC_COLOR_T1
-participant ":Logic" as Logic LOGIC_COLOR
+participant "logic:Logic" as Logic LOGIC_COLOR
 end box
 
 [-> MainWindow : executeCommand("view 1")
@@ -18,7 +18,7 @@ activate MainWindow
 
 MainWindow -> Logic : execute("view 1")
 activate Logic
-Logic --> MainWindow : result
+Logic --> MainWindow : commandResult
 deactivate Logic
 
 MainWindow -> ResultDisplay : setFeedbackToUser(...)
@@ -26,12 +26,12 @@ activate ResultDisplay
 ResultDisplay --> MainWindow
 deactivate ResultDisplay
 
-MainWindow -> MainWindow : updateMainContent(result)
+MainWindow -> MainWindow : updateMainContent(commandResult)
 activate MainWindow
 
 note right of MainWindow
-person and index are
-read from result.
+display mode, person, and index are
+read from commandResult.
 end note
 
 MainWindow -> Logic : getFilteredPersonList()
@@ -45,10 +45,10 @@ activate StudentDetailPanel
 StudentDetailPanel --> MainWindow
 deactivate StudentDetailPanel
 
-MainWindow -> MainWindow : show panel in detail area
-activate MainWindow
-MainWindow --> MainWindow
-deactivate MainWindow
+note over MainWindow, StudentDetailPanel
+MainWindow replaces the detail placeholder
+content with the panel's root.
+end note
 
 MainWindow -> PersonListPanel : highlightPerson(person)
 activate PersonListPanel
@@ -58,6 +58,6 @@ deactivate PersonListPanel
 MainWindow --> MainWindow
 deactivate MainWindow
 
-[<-- MainWindow : result
+[<-- MainWindow : commandResult
 deactivate MainWindow
 @enduml
