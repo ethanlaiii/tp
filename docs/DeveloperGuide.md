@@ -737,7 +737,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *` | busy tutor | add a short note to a student | tailor the next lesson to their weak topics                                 |
 | `* * *` | tutor | delete a note about a student | keep the student's record focused on what matters now                       |
 | `* * *` | tutor | have my data saved automatically | avoid losing records when I close the app                                   |
-| `* * *` | tutor | exit the app | end my session when I'm done                                                |
+| `* * *` | tutor | exit the app | close it knowing my data is saved                                           |
 | `* * *` | new user | clear all sample students | start with only my own students                                             |
 | `* * *` | tutor | record the band each subject is taken at (G1, G2, or G3) | pitch the material at the right difficulty                                  |
 | `* *` | tutor receiving unknown calls | find students by their guardian's phone number | identify the caller and see their children's records                        |
@@ -747,6 +747,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *` | tutor | edit a note | update a student's progress without deleting and retyping it                |
 | `* *` | careless typist | undo my last command | recover from a mistyped delete                                              |
 | `* *` | tutor | find students whose notes contain a keyword, such as a topic | group students with the same weakness for revision                          |
+| `* *` | tutor | record a student's email | send them materials and updates                                             |
+| `* *` | tutor giving home tuition | record a student's address | find their home for lessons                                                 |
+| `* *` | tutor | tag a student, such as `paid` or `exams` | flag students at a glance                                                   |
+| `* *` | tutor | filter students by tag | see everyone who still needs to pay                                         |
 | `*` | expert user | use short aliases for commands | type commands faster once I know the app                                    |
 | `*` | tutor with students on break | mark a student as inactive instead of deleting them | keep their history in case they come back                                   |
 | `*` | tutor teaching siblings | link siblings to the same guardian | update a shared guardian's details once for all their children              |
@@ -754,6 +758,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*` | expert user | recall my previous command | fix a mistake in it quickly without retyping                                |
 | `*` | careless typist | confirm before a note is deleted | avoid deleting the wrong note after mistyping a note number                 |
 | `*` | fast typist | launch the app from the terminal | start the app without switching to the mouse                                |
+| `*` | expert user | skip the confirmation for a delete or clear | work faster when I'm sure                                                   |
 
 ### Use cases
 
@@ -763,7 +768,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to add a student, giving the name, school, level, at least one subject, each with its subject band (for example Chemistry at G3), and optionally a phone number and guardian details
+1.  Tutor requests to add a student, giving the name, school, level, at least one subject, each with its subject band (for example Chemistry at G3), and optionally a phone number, email, address, tags, and guardian details
 2.  TuteeBook3 validates the details
 3.  TuteeBook3 saves the student
 4.  TuteeBook3 shows the student list with the new student selected
@@ -772,7 +777,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 2a. A required detail is missing or invalid.
+* 2a. A required detail is missing, or a detail is invalid.
 
     * 2a1. TuteeBook3 shows an error message stating which detail is wrong.
 
@@ -830,9 +835,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       The pending add is cancelled, and TuteeBook3 processes the input as a command.
 
+      Use case ends.
+
 * 2g. The phone number or guardian phone number is not a Singapore number.
 
     * 2g1. TuteeBook3 accepts the number, and shows a warning asking Tutor to check it after saving the student.
+
+      Use case resumes at step 3.
+
+* 2h. The email has no `.` in its domain.
+
+    * 2h1. TuteeBook3 accepts the email, and shows a warning asking Tutor to check it after saving the student.
 
       Use case resumes at step 3.
 
@@ -890,6 +903,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       The pending edit is cancelled, and TuteeBook3 processes the input as a command.
 
+      Use case ends.
+
 * 3e. The student has no guardian, and Tutor gives only one of guardian name and guardian phone.
 
     * 3e1. TuteeBook3 shows an error message that both are needed to add a guardian, and leaves the student unchanged.
@@ -907,6 +922,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 3g1. TuteeBook3 accepts the number, and shows a warning asking Tutor to check it after updating the student.
 
       Use case resumes at step 4.
+
+* 3h. The new values are the same as the student's current details.
+
+    * 3h1. TuteeBook3 leaves the student unchanged and warns that no changes were made.
+
+      Use case ends.
 
 * 4a. The list shows search results, and the updated student no longer matches the search.
 
@@ -941,11 +962,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 2.
 
+* 3b. Tutor requests to delete the student with `delete -f`.
+
+    * 3b1. TuteeBook3 deletes the student without asking for confirmation.
+
+      Use case resumes at step 6.
+
 * 5a. Tutor enters non-blank input other than the exact uppercase word `CONFIRM` after trimming leading and trailing spaces.
 
-    * 5a1. TuteeBook3 cancels the pending deletion, displays a red cancellation notice, and processes the input as a command.
+    * 5a1. TuteeBook3 cancels the pending deletion, shows that it was cancelled, and processes the input as a command.
 
-      Use case resumes at the relevant step for that command.
+      Use case ends.
 
 * 6a. The active filter has no matches after the deletion, but other students remain.
 
@@ -955,7 +982,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 6b. TuteeBook3 fails to save the change.
 
-    * 6b1. TuteeBook3 shows an error message and no data is changed.
+    * 6b1. TuteeBook3 shows an error message, and the data file is not updated.
 
       Use case ends.
 
@@ -994,21 +1021,23 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 
 1. Tutor requests to view a specific student by index.
-2. TuteeBook3 keeps the fixed, equal-width student list on the left, highlights the student's non-clickable list card, and opens the student's details and notes in one scrollable record on the right.
+2. TuteeBook3 highlights the student in the list and shows the student's details and notes.
 
-Use case ends.
+    Use case ends.
 
 **Extensions**
 
 * 1a. The given index is invalid.
-  * 1a1. TuteeBook3 shows an error message.
 
-  Use case resumes at step 1.
+    * 1a1. TuteeBook3 shows an error message.
+
+      Use case resumes at step 1.
 
 * 2a. The student has no notes.
-  * 2a1. TuteeBook3 shows the card with an empty notes section.
 
-  Use case ends.
+    * 2a1. TuteeBook3 shows the student's details with no notes.
+
+      Use case ends.
 
 ---
 
@@ -1036,7 +1065,7 @@ Use case ends.
 
       Use case resumes at step 2.
 
-* 3b. The note text is blank or too long.
+* 3b. The note text is blank, too long, or has a character that isn't allowed.
 
     * 3b1. TuteeBook3 shows an error message.
 
@@ -1076,7 +1105,7 @@ Use case ends.
 
       Use case resumes at step 3.
 
-* 3b. The new text is blank or too long.
+* 3b. The new text is blank, too long, or has a character that isn't allowed.
 
     * 3b1. TuteeBook3 shows an error message.
 
@@ -1124,9 +1153,15 @@ Use case ends.
 
       Use case resumes at step 2.
 
-* 4a. Tutor cancels the deletion.
+* 3b. Tutor requests to delete the note with `deletenote -f`.
 
-    * 4a1. TuteeBook3 keeps the note and reports that no changes were made.
+    * 3b1. TuteeBook3 deletes the note without asking for confirmation, renumbers the remaining notes, and shows the updated student record and a success message.
+
+      Use case ends.
+
+* 5a. Tutor enters non-blank input other than the exact uppercase word `CONFIRM` after trimming leading and trailing spaces.
+
+    * 5a1. TuteeBook3 cancels the pending deletion, shows that it was cancelled, and processes the input as a command.
 
       Use case ends.
 
@@ -1137,23 +1172,17 @@ Use case ends.
 **MSS**
 
 1. Tutor requests help.
-1. TuteeBook3 shows the User Guide URL as selectable plain text, followed by each available command as a summary and a minimal example on the next line, with blank lines between commands. TuteeBook3 does not copy the URL automatically.
+1. TuteeBook3 shows the User Guide link and a summary of each command with an example.
 
     Use case ends.
 
 **Extensions**
 
-* 1a. Help is already shown in the result display.
-
-    * 1a1. TuteeBook3 reuses the result display and returns the help content to the top.
-
-      Use case resumes at step 2.
-
 * 2a. Tutor wants more detailed instructions.
 
-    * 2a1. Tutor selects and copies the User Guide URL using the operating system's copy shortcut.
+    * 2a1. Tutor copies the User Guide link.
 
-    * 2a2. Tutor pastes the URL into a browser and opens the User Guide.
+    * 2a2. Tutor opens the link in a browser.
 
       Use case ends.
 
@@ -1166,7 +1195,7 @@ Use case ends.
 1.  Tutor requests to list students
 2.  TuteeBook3 shows the students, including the sample students
 3.  Tutor requests to clear all students
-4.  TuteeBook3 shows an amber warning that all students and notes will be deleted, and asks Tutor to enter `CONFIRM`; any other non-blank input cancels the request and runs as a command
+4.  TuteeBook3 warns that all students and notes will be deleted, and asks Tutor to enter `CONFIRM`; any other non-blank input cancels the request and runs as a command
 5.  Tutor enters `CONFIRM`
 6.  TuteeBook3 removes all students and their notes
 7.  TuteeBook3 shows an empty roster
@@ -1190,9 +1219,9 @@ Use case ends.
 
 * 5a. Tutor enters non-blank input other than the exact uppercase word `CONFIRM` after trimming leading and trailing spaces.
 
-    * 5a1. TuteeBook3 cancels the pending `clear` request, displays a red cancellation notice, and processes the input as a command.
+    * 5a1. TuteeBook3 cancels the pending `clear` request, shows that it was cancelled, and processes the input as a command.
 
-      Use case resumes at the relevant step for that command.
+      Use case ends.
 
 ### Non-Functional Requirements
 
