@@ -258,7 +258,7 @@ Each student has 1 to 8 subjects. Every subject has a name and one band: `G1`, `
 
 #### Implementation
 
-<img src="images/SubjectBandClassDiagram.png" width="700" />
+<img src="images/SubjectBandClassDiagram.png" width="396" />
 
 1. `AddCommandParser` and `EditCommandParser` tokenize `sub/` and `band/`. `ArgumentMultimap#verifyEachFollowedBy` checks that each `sub/` is immediately followed by one `band/`. `add` requires at least one pair. For `edit`, giving neither prefix leaves the subjects unchanged; giving either prefix requires complete pairs and replaces the subject list.
 1. `ParserUtil#parseSubjects` checks that the subject-name and band lists have the same number of values and that there are no more than eight pairs. It creates each `Subject` from the name and band at the same position, then calls `Person#validateSubjects` to reject repeated names.
@@ -855,7 +855,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to list students, or filters them (UC4)
+1.  Tutor requests to list students, or <u>filters them (UC4)</u>
 2.  TuteeBook3 shows a list of students
 3.  Tutor requests to edit a specific student by index, giving the new values for the details to change
 4.  TuteeBook3 validates and updates the student
@@ -947,7 +947,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to list or filter students
+1.  Tutor requests to list students, or <u>filters them (UC4)</u>
 2.  TuteeBook3 shows the corresponding list of students
 3.  Tutor requests to delete a specific student by index
 4.  TuteeBook3 asks Tutor to confirm the deletion
@@ -1045,7 +1045,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to list students
+1.  Tutor requests to list students, or <u>filters them (UC4)</u>
 2.  TuteeBook3 shows a list of students
 3.  Tutor requests to add a note to a specific student in the list
 4.  TuteeBook3 adds the note to the student's notes
@@ -1081,7 +1081,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor views a specific student's record (UC5)
+1.  Tutor <u>views a specific student's record (UC5)</u>
 2.  TuteeBook3 shows the student's record with numbered notes
 3.  Tutor requests to edit a specific note, giving the student's index, note number and new text
 4.  TuteeBook3 validates the text and replaces the note's text
@@ -1127,7 +1127,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to view a specific student by index
+1.  Tutor <u>views a specific student's record (UC5)</u>
 2.  TuteeBook3 shows the student's record with numbered notes
 3.  Tutor requests to delete a specific note of the student
 4.  TuteeBook3 asks Tutor to confirm deleting the note
@@ -1138,11 +1138,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 1a. The given index is invalid.
+* 1a. Tutor already knows the student's index and the note's number.
 
-    * 1a1. TuteeBook3 shows an error message.
-
-      Use case ends.
+    Use case resumes at step 3.
 
 * 2a. The student has no notes.
 
@@ -1215,19 +1213,19 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1. Should run on any _mainstream OS_ with only Java `25` installed, without OS-specific libraries or features.
 2. Should respond to commands within two seconds with up to 1000 student records.
-3. Should prioritize typed commands for tutors who prefer typing, with GUI feedback and keyboard access to all student and note commands.
+3. Should let a tutor run every command by typing alone, without using the mouse.
 4. Should support all student and note commands offline, without a team-operated remote server.
 5. Should save successful changes in local, human-editable JSON files, without a DBMS, and retain them after restarting.
-6. Should reject invalid commands without crashing or changing records, and explain errors and corrections.
+6. Should reject an invalid command with an error message that names the problem, without crashing or changing any records.
 7. Should work well at resolutions of 1920 × 1080 or higher at 100% and 125% scaling, and remain usable at 1280 × 720 or higher at 150% scaling.
-8. Should keep student and guardian data, including the log file, only in the home folder (the folder TuteeBook3 is run from) and its subfolders, and never send it over the network.
-9. Should report save failures and preserve previously saved records.
-10. A first-time tutor should be able to add, find, and view a student and add a note within ten minutes using the supplied help.
+8. Should read and write files only in the folder TuteeBook3 is run from and its subfolders, change no OS settings, and send no student or guardian data over the network.
+9. Should show an error when the data file cannot be saved, such as when it is read-only.
+10. Should let a first-time tutor add, filter, and view a student, and add a note, within ten minutes using the User Guide.
 11. Should serve one tutor, without shared-computer accounts or shared data files between users.
-12. Should support manual data-file editing at least as well as AB3: load valid edits and report invalid files without crashing.
+12. Should support manual edits to the data file at least as well as AB3: load a correctly edited file, and start with no students, showing an error instead of crashing when the file is invalid.
 13. Should use a primarily object-oriented design.
-14. Should use free, permissively licensed dependencies approved by the teaching team, with no user installation; libraries and frameworks must be open source.
-15. Should ship without an installer as one JAR (or one ZIP if necessary), no larger than 100 MB.
+14. Should use only third-party libraries that are free, open source, permissively licensed, and approved by the teaching team, and that need no installation by the user.
+15. Should run without an installer, as one JAR file of at most 100 MB that works on Windows (including WSL), Linux, and macOS (Intel and ARM).
 
 ### Glossary
 
