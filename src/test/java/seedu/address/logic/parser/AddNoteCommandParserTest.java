@@ -125,4 +125,10 @@ public class AddNoteCommandParserTest {
         assertParseSuccess(parser, "1 note/a note/b",
                 new AddNoteCommand(INDEX_FIRST_PERSON, new Note("a note/b")));
     }
+
+    @Test
+    public void parse_fullWidthDigitIndex_throwsParseException() {
+        assertParseFailure(parser, "１ note/x",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddNoteCommand.MESSAGE_USAGE));
+    }
 }
