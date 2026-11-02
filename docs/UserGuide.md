@@ -802,7 +802,6 @@ Command aliases | Adds short forms of command words, such as `ls` for `list`. | 
 
 ## Known issues
 
-1. **The window opens off-screen after you stop using a second screen.** If you move TuteeBook3 to a second screen and later use only your main screen, the window opens where the second screen was. The remedy is to delete `preferences.json` from the [home folder](#glossary) before you start TuteeBook3 again.
 1. **Names can't contain punctuation.** Student and guardian names accept only English letters, digits, and spaces, so `Rajesh s/o Kumar`, `Mary-Jane O'Brien`, and `J. Tan` are rejected. Leave out the punctuation, such as `Rajesh so Kumar`, and type the name the same way each time so that `filter n/` and the duplicate check find it. Support for hyphens, apostrophes, periods, and slashes is coming in a future version. See [Coming soon](#coming-soon).
 1. **Names, school names, and subjects can't contain accented or non-English letters.** Values such as `Zoë Lim`, `École Française`, and `Français` are rejected. Type the closest English spelling, such as `Zoe Lim`. Support for other languages in these fields is coming in a future version.
 
