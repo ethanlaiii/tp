@@ -1198,19 +1198,19 @@ Use case ends.
 
 1. Should run on any _mainstream OS_ with only Java `25` installed, without OS-specific libraries or features.
 2. Should respond to commands within two seconds with up to 1000 student records.
-3. Should prioritize typed commands for tutors who prefer typing, with GUI feedback and keyboard access to all student and note commands.
+3. Should let a tutor run every command by typing alone, without using the mouse.
 4. Should support all student and note commands offline, without a team-operated remote server.
 5. Should save successful changes in local, human-editable JSON files, without a DBMS, and retain them after restarting.
-6. Should reject invalid commands without crashing or changing records, and explain errors and corrections.
+6. Should reject an invalid command with an error message that names the problem, without crashing or changing any records.
 7. Should work well at resolutions of 1920 × 1080 or higher at 100% and 125% scaling, and remain usable at 1280 × 720 or higher at 150% scaling.
-8. Should keep student and guardian data, including the log file, only in the home folder (the folder TuteeBook3 is run from) and its subfolders, and never send it over the network.
-9. Should report save failures and preserve previously saved records.
-10. A first-time tutor should be able to add, find, and view a student and add a note within ten minutes using the supplied help.
+8. Should read and write files only in the home folder (the folder TuteeBook3 is run from) and its subfolders, change no OS settings, and send no student or guardian data over the network.
+9. Should show an error when the data file cannot be saved, such as when it is read-only.
+10. Should let a first-time tutor add, filter, and view a student, and add a note, within ten minutes using the User Guide.
 11. Should serve one tutor, without shared-computer accounts or shared data files between users.
-12. Should support manual data-file editing at least as well as AB3: load valid edits and report invalid files without crashing.
+12. Should support manual edits to the data file at least as well as AB3: load a correctly edited file, and start with no students instead of crashing when the file is invalid.
 13. Should use a primarily object-oriented design.
-14. Should use free, permissively licensed dependencies approved by the teaching team, with no user installation; libraries and frameworks must be open source.
-15. Should ship without an installer as one JAR (or one ZIP if necessary), no larger than 100 MB.
+14. Should use only third-party libraries that are free, open source, permissively licensed, and approved by the teaching team, and that need no installation by the user.
+15. Should run without an installer, as one JAR file of at most 100 MB that works on Windows (including WSL), Linux, and macOS (Intel and ARM).
 
 ### Glossary
 
