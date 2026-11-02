@@ -15,6 +15,10 @@ title: Developer Guide
 * Tests use [JUnit 5](https://junit.org/junit5/), and GUI tests use [TestFX](https://github.com/TestFX/TestFX).
 * The diagrams in this guide are made with [PlantUML](https://plantuml.com/).
 
+Notable uses of AI:
+
+* @matthewbiju used Claude Code (Anthropic) to help write code, tests, and parts of the User Guide and Developer Guide, and for preliminary reviews of PRs.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Setting up, getting started**
