@@ -250,13 +250,7 @@ Examples:
 To add a student with… | Type
 -----------------------|-----
 Only the required details | `add n/Tim Tan sch/Victoria School lvl/S2 sub/Mathematics band/G1`
-A phone number | `add n/John Doe p/98765432 sch/Victoria School lvl/S3 sub/Mathematics band/G1`
-Parameters in a different order | `add n/Betsy Crowe lvl/S1 sch/Bedok Green Secondary School p/81234567 sub/Mathematics band/G1`
 Two subjects at different bands | `add n/Sarah Wong sch/Bedok Green Secondary School lvl/S2 sub/Mathematics band/G1 sub/English band/G3`
-An address | `add n/Mei Lin sch/Bedok Green Secondary School a/Blk 123 Bedok North Avenue 2, #04-111 lvl/S2 sub/Mathematics band/G1`
-An email | `add n/Priya Nair sch/Bedok Green Secondary School e/priya.nair@example.com lvl/S2 sub/Mathematics band/G1`
-An email with no period in its domain (saved, with a warning that an ending such as `.com` may be missing) | `add n/John Tan sch/Victoria School lvl/S3 sub/Mathematics band/G3 e/john@gmail`
-Tags | `add n/Ryan Ong sch/Bedok Green Secondary School lvl/S2 sub/Mathematics band/G1 t/exams t/paid`
 A guardian (use `view INDEX` to see the guardian's details) | `add n/Jun Wei Lim sch/Victoria School lvl/S2 sub/Mathematics band/G1 gn/Mary Lim gp/91234567`
 A guardian with an overseas number (saved as `+60123456789`, with a warning that it doesn't look like a Singapore number) | `add n/Nurul Rahman sch/Victoria School lvl/S2 sub/Mathematics band/G1 gn/Farah Rahman gp/+60 12-345 6789`
 Every detail | `add n/James Ho p/62224444 sch/Victoria School a/Blk 123 Bedok North Avenue 2, #04-111 e/james.ho@example.com lvl/S2 sub/Mathematics band/G1 sub/English band/G2 gn/Mary Ho gp/91234567 t/paid`
@@ -340,17 +334,10 @@ Examples:
 To… | Type
 ----|-----
 Change the phone number and school of the 1st student | `edit 1 p/91234567 sch/Victoria School`
-Change the phone number, typed with `+65`, spaces, and a hyphen (saved as `81234567`) | `edit 1 p/+65 8123-4567`
-Change the name of the 2nd student | `edit 2 n/Betsy Crower`
-Change the level | `edit 1 lvl/S4`
 Replace the subjects with Mathematics at G2 and English at G3 | `edit 1 sub/Mathematics band/G2 sub/English band/G3`
 Replace the tags with `paid` and `exams` | `edit 1 t/paid t/exams`
-Add a guardian, or replace both of the guardian's details | `edit 1 gn/Mary Tan gp/91234567`
 Change only the guardian's phone number | `edit 1 gp/98765432`
-Change the guardian's phone number to an overseas number (saved as `+60123456789`, with a warning that it doesn't look like a Singapore number) | `edit 1 gp/+60 12-345 6789`
-Change the email to one with no period in its domain (saved, with a warning that an ending such as `.com` may be missing) | `edit 1 e/john@gmail`
 Remove the phone number of the 3rd student | `edit 3 p/`
-Remove all tags | `edit 1 t/`
 Remove the guardian | `edit 1 gn/ gp/`
 
 ##### Errors in `edit`
@@ -618,18 +605,10 @@ Examples, using the sample students:
 You type | TuteeBook3 shows
 ---------|-----------------
 `filter n/c` | `Chloe Tan` and `Marcus Lim`
-`filter sch/victoria` | `Daniel Lee`
 `filter n/lim sch/secondary` | `Marcus Lim`
 `filter lvl/s2` | `Chloe Tan` and `Ethan Kumar`
-`filter sch/bedok lvl/S2` | `Chloe Tan`
 `filter sub/mathematics band/G2` | `Marcus Lim` and `Daniel Lee`
-`filter sub/chemistry` | `Aisha Rahman` and `Natalie Goh`
-`filter p/9123 4567` | `Chloe Tan`
-`filter e/example.com` | `Chloe Tan`, `Marcus Lim`, and `Natalie Goh`
-`filter a/tampines` | `Marcus Lim` and `Ethan Kumar`
 `filter gp/98765432` | `Marcus Lim`, whose guardian is Grace Lim
-`filter gn/goh` | `Natalie Goh`, whose guardian is Michelle Goh
-`filter t/unpaid` | `Marcus Lim`
 `filter t/sample` | All six sample students
 `filter note/algebra` | `Chloe Tan`
 `filter lvl/S1 note/next lesson` | `Daniel Lee`
