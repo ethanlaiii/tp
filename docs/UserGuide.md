@@ -73,21 +73,9 @@ You type | TuteeBook3 reads
 `add n/John Doe p/98765432 ...` | name `John Doe`, phone `98765432`
 `add n/John Doep/98765432 ...` | name `John Doep/98765432`, which is not a valid name
 
-When a value that cannot contain `/` contains one, the error also asks you to check that each prefix is one the
-command accepts and has a space before it. For addresses, which can contain `/`, TuteeBook3 checks whether a known
-prefix and a valid value for that field appear immediately after a slash. If they do, it reports the missing space
-instead of saving or searching the joined text as part of the address.
+When a value that cannot contain `/` contains one, the error also asks you to check that each prefix is one the command accepts and has a space before it. Addresses can contain `/`, so they are checked differently. See [Addresses](#addresses).
 
-In `add`, if a required prefix (`n/`, `sch/`, `lvl/`, or `sub/`) is joined to the value before it, the error may
-instead say that the parameter is missing. In `edit`, a joined `sub/` may produce the missing `sub/` error when
-`band/` is present.
-
-For example, `a/Blk 1/2` remains a valid address. But `a/Blk 1/2P/91234567` produces a red error explaining that
-`P/` is case-sensitive, and that to start the `p/` parameter you write `p/` with a space before it.
-`a/Blk 1/2p/91234567` produces a red error explaining that to start the `p/` parameter you put a space before it. Write `a/Blk 1/2 p/91234567` to give both values correctly. The same check
-applies to `add`, `edit`, and `filter a/...`.
-
-This check uses the text after the candidate prefix to avoid rejecting ordinary address slashes. It can still mistake a slash for a joined prefix when the word before the slash ends in a prefix's letters and the text after it is a valid value for that field. For example, `a/Ang Mo Kio Town/Central` is read as `Tow` followed by `n/Central`, and `a/Jurong East/West` as `Eas` followed by `t/West`. To keep such a slash in the address, put a space before it, as in `a/Ang Mo Kio Town /Central`. The error message suggests this too.
+In `add`, if a required prefix (`n/`, `sch/`, `lvl/`, or `sub/`) is joined to the value before it, the error may instead say that the parameter is missing. In `edit`, a joined `sub/` may produce the missing `sub/` error when `band/` is present.
 
 ### Confirming a command
 
@@ -143,7 +131,7 @@ Parameter | Prefix | Required in `add` | Rules | Examples
 `NAME` | `n/` | Yes | English letters, digits, and spaces only. Accented letters and punctuation aren't supported. | ✓ `Rajesh so Kumar`<br>✗ `Zoë Lim`<br>✗ `Rajesh s/o Kumar`
 `PHONE` | `p/` | No | 3 to 15 digits, with an optional `+` at the start. See [Phone numbers](#phone-numbers). | ✓ `9123 4567`<br>✗ `12`
 `SCHOOL` | `sch/` | Yes | 1 to 100 characters, with at least one English letter. Also allows digits, spaces, periods (`.`), apostrophes (`'`), ampersands (`&`), parentheses, commas, and hyphens (`-`). Accented letters and other punctuation aren't supported. | ✓ `Victoria School`<br>✓ `St. Joseph's Institution`<br>✓ `Anglo-Chinese School (Independent)`<br>✓ `School of Science and Technology, Singapore`<br>✗ `École Française`<br>✗ `School/Name`
-`ADDRESS` | `a/` | No | Up to 200 characters, using the same characters as a note's `TEXT`: English letters, digits, spaces, and keyboard symbols such as `# / , - ( ) '`. | ✓ `Blk 123 Bedok North Avenue 2, #04-111`<br>✗ `Rue de l'Église 5`<br>✗ more than 200 characters
+`ADDRESS` | `a/` | No | Up to 200 characters, using the same characters as a note's `TEXT`: English letters, digits, spaces, and keyboard symbols such as `# / , - ( ) '`. See [Addresses](#addresses). | ✓ `Blk 123 Bedok North Avenue 2, #04-111`<br>✗ `Rue de l'Église 5`<br>✗ more than 200 characters
 `EMAIL` | `e/` | No | Up to 254 characters, in the form `local-part@domain`. See [Emails](#emails). | ✓ `chloe.tan@example.com`<br>✗ `chloe.tan@`
 `LEVEL` | `lvl/` | Yes | `S1` to `S5`. Uppercase or lowercase both work. | ✓ `S3`, `s3`<br>✗ `S6`
 `SUBJECT` | `sub/` | Yes, 1 to 8 | 1 to 40 characters: English letters, spaces, hyphens, parentheses, commas, and ampersands, with at least one letter. A subject can't appear twice, ignoring case and extra spaces. See [Subjects and bands](#subjects-and-bands). | ✓ `Mathematics`<br>✓ `Science (Physics, Chemistry)`<br>✓ `Design & Technology`<br>✗ `Maths 2`<br>✗ `Français`
@@ -163,8 +151,6 @@ Parameter | Prefix | Required in `add` | Rules | Examples
 
 Names accept English letters, digits, and spaces only. School names also accept periods, apostrophes, ampersands, parentheses, commas, and hyphens, but must contain at least one English letter. Both fields reject accented letters and letters from other alphabets.
 
-Addresses accept the same characters as notes.
-
 #### Phone numbers
 
 The phone number is optional, since younger students may not have their own phone. `PHONE` and `GUARDIAN_PHONE` follow the same rules.
@@ -174,6 +160,19 @@ The phone number is optional, since younger students may not have their own phon
 * For an overseas number, type `+` and the country code, such as `+60 12-345 6789`. For Singapore, type `+65`, not `65`.
 * If a number doesn't look like a Singapore number, TuteeBook3 still saves it but shows a warning that names the field, such as `Warning: guardian phone +60123456789 doesn't look like a Singapore number (8 digits starting with 6, 8, or 9, with or without +65). Use edit to fix it if it's wrong.`
 * If a number can't be saved, the error message says why, such as `Phone 12 needs 3 to 15 digits, counting the country code, but has 2.` or `Phone 9123.4567 contains ".", which isn't allowed. Use only digits, spaces, hyphens (-), and a + at the start.` Messages for the guardian's number start with `Guardian phone`.
+
+#### Addresses
+
+An address can contain `/`, such as `Blk 1/2`. If the letters just before a slash form a prefix, and the text after it is a valid value for that field, TuteeBook3 treats it as a prefix with a missing space. It shows a red error instead of saving or searching the joined text as part of the address. This applies to `add`, `edit`, and `filter a/`.
+
+You type | What happens
+---------|-------------
+`a/Blk 1/2` | The address `Blk 1/2` is accepted
+`a/Blk 1/2p/91234567` | A red error saying to put a space before `p/`
+`a/Blk 1/2P/91234567` | A red error saying that `P/` is case-sensitive, and to write `p/` with a space before it
+`a/Blk 1/2 p/91234567` | The address `Blk 1/2` and the phone `91234567` are both accepted
+
+The check can mistake an ordinary slash for a joined prefix when the word before the slash ends in a prefix's letters and the text after it is a valid value for that field. For example, `a/Ang Mo Kio Town/Central` is read as `Tow` followed by `n/Central`, and `a/Jurong East/West` as `Eas` followed by `t/West`. To keep such a slash in the address, put a space before it, as in `a/Ang Mo Kio Town /Central`. The error message suggests this too.
 
 #### Emails
 
@@ -640,8 +639,7 @@ A filter other than `t/` appears more than once | `Each filter can be given only
 `TAG` is blank, too long, or contains a symbol other than a single hyphen between letters or digits | The same message as `add`, starting `Tags must be one word of 1-30 English letters or digits.`
 `GUARDIAN_NAME` is empty | `The guardian name to search for cannot be blank.`
 `NAME`, `SCHOOL`, `EMAIL`, or `GUARDIAN_NAME` contains `/`, such as `n/Chloesch/Victoria` | `No student's name can contain "/", so "Chloesch/Victoria" matches no one.` followed by `If "/" was meant to start a new parameter, check that each prefix is one this command accepts and has a space before it.`
-`ADDRESS` has another filter's prefix joined to it, such as `a/tampinest/paid` | `Put a space before the "t/" prefix.`, naming the prefix you typed
-`ADDRESS` has another filter's prefix in capitals, such as `a/blk N/tan` | `The "N/" prefix is case-sensitive. Use "n/" with a space before it.`, naming the prefix you typed
+`ADDRESS` has another filter's prefix joined to it, such as `a/tampinest/paid` or `a/blk N/tan` | A red error about the missing space. See [Addresses](#addresses).
 `TEXT` after `note/` is empty | `The note text to search for cannot be blank.`
 `TEXT` after `note/` is longer than 500 characters | `The note text to search for must be at most 500 characters.`
 `nid/` is given | `To filter by notes, use note/, such as: filter note/algebra`
