@@ -484,7 +484,7 @@ Problem | Message
 `INDEX` is not an integer, such as `abc`, or there is text between `INDEX` and the first prefix, such as `editnote 1 abc nid/2 note/hi` | `Invalid command format!` followed by how to use `editnote`
 `INDEX` is zero, negative, or too large to use, such as `0`, `-1`, or `99999999999` | `Index must be a positive integer shown in the displayed student list.`
 `nid/` appears more than once before `note/` | `Multiple values specified for the following single-valued field(s): nid/`
-`NID` is empty or is not a positive integer, such as `0`, `-1`, or `abc` | `NID must be a positive integer.`
+`NID` is empty, is not a positive integer, or is too large to use, such as `0`, `-1`, `abc`, or `99999999999` | `NID must be a positive integer shown before a note in the student detail view.`
 `TEXT` is empty or only spaces | `Note text cannot be blank.`
 `TEXT` contains a character that isn't allowed, such as `é` or an emoji | `Note text contains "é", which isn't allowed. Use only English letters, digits, spaces, and keyboard symbols.`, with the first such character in `TEXT`
 `TEXT` is longer than 500 characters | `Note text must be at most 500 characters.`
@@ -525,7 +525,7 @@ Problem | Message
 `INDEX` is zero, negative, too large to use, or larger than the number of students shown, such as `0`, `-1`, or `99999999999` | `Index must be a positive integer shown in the displayed student list.`
 `INDEX` is not an integer, such as `abc`, or there is other text between `INDEX` and `nid/`, such as `deletenote 1 abc nid/2` | `Invalid command format!` followed by how to use `deletenote`
 `-f` is not straight after `deletenote`, such as `deletenote 1 nid/2 -f` | `Invalid command format!` followed by how to use `deletenote`
-`NID` is empty or is not a positive integer, such as `0`, `-1`, or `abc` | `NID must be a positive integer.`
+`NID` is empty, is not a positive integer, or is too large to use, such as `0`, `-1`, `abc`, or `99999999999` | `NID must be a positive integer shown before a note in the student detail view.`
 The student has no notes | `NAME at SCHOOL (LEVEL) has no notes to delete.`
 `NID` is larger than the number of notes the student has | `NID 5 does not exist. NAME at SCHOOL (LEVEL) has only 3 notes.`, with the NID you typed and the number of notes the student has (`1 note` if they have one)
 `nid/` appears more than once | `Multiple values specified for the following single-valued field(s): nid/`

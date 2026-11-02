@@ -36,7 +36,8 @@ public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 
-    public static final String MESSAGE_INVALID_NID = "NID must be a positive integer.";
+    public static final String MESSAGE_INVALID_NID =
+            "NID must be a positive integer shown before a note in the student detail view.";
 
     public static final String PHONE_LABEL = "Phone";
 
@@ -114,7 +115,7 @@ public class ParserUtil {
      * Parses {@code oneBasedNid}, the number shown before a note, into an {@code Index} and returns it.
      * Leading and trailing whitespaces will be trimmed.
      *
-     * @throws ParseException if the given NID is not a positive integer.
+     * @throws ParseException if the given NID is not a positive integer or is too large to use.
      */
     public static Index parseNid(String oneBasedNid) throws ParseException {
         try {
