@@ -1,5 +1,6 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
@@ -18,6 +19,9 @@ import seedu.address.logic.commands.DeleteCommand;
  */
 public class DeleteCommandParserTest {
 
+    private static final String MESSAGE_INVALID_FORMAT =
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE);
+
     private DeleteCommandParser parser = new DeleteCommandParser();
 
     @Test
@@ -32,8 +36,8 @@ public class DeleteCommandParserTest {
 
     @Test
     public void parse_forceOptionWrongPositionOrCase_throwsParseException() {
-        assertParseFailure(parser, "1 -f", DeleteCommand.MESSAGE_INVALID_FORMAT);
-        assertParseFailure(parser, "-F 1", DeleteCommand.MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "1 -f", MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "-F 1", MESSAGE_INVALID_FORMAT);
     }
 
     @Test
@@ -51,20 +55,20 @@ public class DeleteCommandParserTest {
 
     @Test
     public void parse_nonWholeNumber_throwsParseException() {
-        assertParseFailure(parser, "3.5", DeleteCommand.MESSAGE_INVALID_FORMAT);
-        assertParseFailure(parser, "abc", DeleteCommand.MESSAGE_INVALID_FORMAT);
-        assertParseFailure(parser, "Chloe Tan", DeleteCommand.MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "3.5", MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "abc", MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "Chloe Tan", MESSAGE_INVALID_FORMAT);
     }
 
     @Test
     public void parse_emptyArgs_throwsParseException() {
-        assertParseFailure(parser, "", DeleteCommand.MESSAGE_INVALID_FORMAT);
-        assertParseFailure(parser, "   ", DeleteCommand.MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "", MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "   ", MESSAGE_INVALID_FORMAT);
     }
 
     @Test
     public void parse_extraArgs_throwsParseException() {
-        assertParseFailure(parser, "3 extra", DeleteCommand.MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "3 extra", MESSAGE_INVALID_FORMAT);
     }
 
     @Test
