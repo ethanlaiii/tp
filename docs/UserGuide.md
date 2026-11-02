@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-TuteeBook3 is a **desktop app for private tutors who teach secondary school students (S1 to S5) in Singapore**. It keeps each student's contact details, guardian contact, school, level, subjects and bands, and lesson notes in one place, so you can pull up a student's full record in seconds, such as when a guardian calls or just before a lesson.
+TuteeBook3 is a **desktop app for private tutors who teach secondary school students (S1 to S5) in Singapore**. It keeps each student's contact details, guardian contact, school, level, subjects and bands, and lesson notes in one place, so you can pull up a student's full record quickly, such as when a guardian calls or just before a lesson.
 
 TuteeBook3 is **optimized for fast typists**. You do almost everything by typing short commands in a Command Line Interface (CLI), and a Graphical User Interface (GUI) shows the results. If you type quickly, you can manage your students faster than with a spreadsheet or an app you click through.
 
