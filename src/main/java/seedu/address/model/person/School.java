@@ -39,7 +39,8 @@ public class School {
         requireNonNull(school);
         checkArgument(isValidSchool(school), MESSAGE_CONSTRAINTS);
         value = school;
-        comparisonValue = school.trim().replaceAll(" +", " ").toLowerCase(Locale.ROOT);
+        // A data file can hold ’, while typed input is saved with '
+        comparisonValue = school.trim().replace('’', '\'').replaceAll(" +", " ").toLowerCase(Locale.ROOT);
     }
 
     /**
@@ -93,7 +94,7 @@ public class School {
 
     private static String getAllowedCharacters() {
         return "English letters, digits, spaces, periods (.), "
-                + "apostrophes (' or ’), ampersands (&), parentheses, commas, and hyphens (-)";
+                + "apostrophes ('), ampersands (&), parentheses, commas, and hyphens (-)";
     }
 
     private static boolean isAsciiLetter(int codePoint) {

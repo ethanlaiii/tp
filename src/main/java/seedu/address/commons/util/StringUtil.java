@@ -28,6 +28,9 @@ public class StringUtil {
     private static final String CURLY_APOSTROPHE_REGEX = "[\\u2018\\u2019]";
     private static final String CURLY_DOUBLE_QUOTE_REGEX = "[\\u201C\\u201D]";
 
+    /** En and em dashes, which pasted or autocorrected text often has in place of a hyphen. */
+    private static final String LONG_DASH_REGEX = "[\\u2013\\u2014]";
+
     /**
      * Returns true if the {@code sentence} contains the {@code word}.
      *   Ignores case, but a full word match is required.
@@ -56,7 +59,8 @@ public class StringUtil {
 
     /**
      * Returns true if {@code text} contains {@code searchText}, ignoring case, treating
-     * any run of whitespace in either as a single space, and treating curly quotes as straight ones.
+     * any run of whitespace in either as a single space, and treating curly quotes and long dashes
+     * as {@code '}, {@code "}, and {@code -}.
      *   <br>examples:<pre>
      *       containsIgnoreCaseAndSpaces("Victoria  School", "TORIA sch") == true
      *       containsIgnoreCaseAndSpaces("Victoria School", "raffles") == false
@@ -75,16 +79,21 @@ public class StringUtil {
 
     private static String normalizeForSearch(String value) {
         String spacedValue = value.replaceAll(WHITESPACE_REGEX + "+", " ").strip();
-        return spacedValue.replaceAll(CURLY_APOSTROPHE_REGEX, "'")
+        return straightenPunctuation(spacedValue).toLowerCase(Locale.ROOT);
+    }
+
+    private static String straightenPunctuation(String value) {
+        return value.replaceAll(CURLY_APOSTROPHE_REGEX, "'")
                 .replaceAll(CURLY_DOUBLE_QUOTE_REGEX, "\"")
-                .toLowerCase(Locale.ROOT);
+                .replaceAll(LONG_DASH_REGEX, "-");
     }
 
     /**
      * Returns {@code input} as if it had been typed with a standard keyboard, so that text pasted
      * from web pages or documents is read the same way as typed text.
      * Every kind of whitespace becomes a normal space, invisible characters are removed,
-     * and accented letters are composed into their single-character form.
+     * accented letters are composed into their single-character form,
+     * and curly quotes and en and em dashes become {@code '}, {@code "}, and {@code -}.
      * For example, a non-breaking space before {@code p/} becomes a normal space, so the prefix is recognized,
      * and a zero-width space pasted inside {@code Bedok} is removed.
      *
@@ -97,7 +106,7 @@ public class StringUtil {
         String spacedInput = input.replaceAll(WHITESPACE_REGEX, " ");
         // An invisible character between a letter and its accent stops them composing, so remove it first
         String visibleInput = spacedInput.replaceAll(INVISIBLE_CHARACTER_REGEX, "");
-        return Normalizer.normalize(visibleInput, Normalizer.Form.NFC);
+        return straightenPunctuation(Normalizer.normalize(visibleInput, Normalizer.Form.NFC));
     }
 
     /**

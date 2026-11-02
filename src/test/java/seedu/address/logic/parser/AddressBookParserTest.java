@@ -35,6 +35,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Note;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.predicate.AddressContainsTextPredicate;
 import seedu.address.model.person.predicate.NameContainsKeywordsPredicate;
 import seedu.address.model.person.predicate.StudentMatchesAllPredicate;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
@@ -217,6 +218,38 @@ public class AddressBookParserTest {
         Person person = new PersonBuilder().withoutAddress().build();
         String userInput = PersonUtil.getAddCommand(person) + " " + PREFIX_ADDRESS + NON_BREAKING_SPACE;
         assertThrows(ParseException.class, Address.MESSAGE_CONSTRAINTS, () -> parser.parseCommand(userInput));
+    }
+
+    @Test
+    public void parseCommand_curlyQuotesInAddress_savedAsStraight() throws Exception {
+        Person person = new PersonBuilder().withAddress("Blk 5 'Sunrise' \"Court\"").build();
+        String userInput = PersonUtil.getAddCommand(person)
+                .replace("'Sunrise' \"Court\"", "‘Sunrise’ “Court”");
+        assertEquals(new AddCommand(person), parser.parseCommand(userInput));
+    }
+
+    @Test
+    public void parseCommand_curlyApostropheInSchool_matchesStraightApostrophe() throws Exception {
+        Person person = new PersonBuilder().withSchool("St. Joseph's Institution").build();
+        String userInput = PersonUtil.getAddCommand(person).replace("Joseph's", "Joseph’s");
+        assertEquals(new AddCommand(person), parser.parseCommand(userInput));
+    }
+
+    @Test
+    public void parseCommand_longDashInPhone_readAsHyphen() throws Exception {
+        Person person = new PersonBuilder().withPhone("91234567").build();
+        String addCommand = PersonUtil.getAddCommand(person);
+        assertEquals(new AddCommand(person), parser.parseCommand(addCommand.replace("91234567", "9123–4567")));
+        assertEquals(new AddCommand(person), parser.parseCommand(addCommand.replace("91234567", "9123—4567")));
+    }
+
+    @Test
+    public void parseCommand_filterWithLongDash_searchesForHyphen() throws Exception {
+        FilterCommand command = (FilterCommand) parser.parseCommand(
+                FilterCommand.COMMAND_WORD + " " + PREFIX_ADDRESS + "1–3");
+        StudentMatchesAllPredicate expectedPredicate = new StudentMatchesAllPredicate(
+                List.of(new AddressContainsTextPredicate("1-3")));
+        assertEquals(new FilterCommand(expectedPredicate), command);
     }
 
     @Test
