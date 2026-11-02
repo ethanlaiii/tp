@@ -190,7 +190,7 @@ The `StudentDetailPanel` places the student's details and notes in one vertical 
 
 ### Student duplicate handling
 
-The app compares a student's normalized name, school, and level as the strict duplicate key. Name comparison trims surrounding spaces, collapses repeated spaces, and ignores case. School comparison uses the same case- and space-insensitive behavior. Levels are compared by their `Level` values. The original text remains available for display. Phone, subject, and band do not contribute to the key.
+The app compares a student's normalized name, school, and level as the _student key_. Name comparison trims surrounding spaces, collapses repeated spaces, and ignores case. School comparison uses the same case- and space-insensitive behavior. Levels are compared by their `Level` values. The original text remains available for display. Phone, subject, and band do not contribute to the key.
 
 `AddCommand` and `EditCommand` first reject an exact key collision with command-specific error text, which `MainWindow` displays in red. The errors recommend adding a distinguishing identifier to the saved name (for example, `Chloe Tan 2`) when the records are different people; otherwise, identical name, school, and level values would make the students indistinguishable in the app. If only the normalized name matches, the commands request confirmation with command-specific prompt text, displayed in amber. Each matching school and level pair is separated by a semicolon so commas inside school names remain unambiguous. Each command also supplies an action-specific instruction on a separate line, followed by the shared cancellation guidance. On confirmation, they recheck the exact key before changing the model. For an edit, the record being edited is excluded from both checks; edits that leave name, school, and level unchanged do not prompt. This prevents a prompt against itself or an unrelated phone, subject, or note change, and prevents a confirmed operation from bypassing the model's invariant.
 
@@ -522,7 +522,7 @@ In the data file, `JsonAdaptedPerson` stores the guardian as a nested `JsonAdapt
 1. If `keepPersonInFilteredList` returned `true`, `EditCommand` adds a line to the result saying that the student no longer matches the last search but stays in the list. Any phone warning comes after this line.
 1. `EditCommand` returns a `CommandResult` that keeps the current display, so an open `StudentDetailPanel`, which shows the student at its index in the filtered list, shows the updated details.
 
-The filter matches the edited student by the normalized name, school, and level key rather than by name alone or `Person#equals`. This distinguishes two allowed same-name students in different schools or levels. A later command that changes only notes, such as `addnote`, still keeps the student in the list.
+The filter matches the edited student by the student key rather than by name alone or `Person#equals`. This distinguishes two allowed same-name students in different schools or levels. A later command that changes only notes, such as `addnote`, still keeps the student in the list.
 
 Each edit wraps the current filter, so after several edits in a row, every edited student stays in the list, not just the last one. The next `filter` or `list` replaces the whole filter, so the extra rules never build up across searches.
 
@@ -1283,6 +1283,7 @@ Term | Meaning
 **Normalized** | Compared after removing spaces at the start and end, treating repeated spaces as one, and ignoring capitalization. For example, `John  Doe` and `john doe` have the same normalized name.
 **Partial matching** | The way the `n/`, `sch/`, `e/`, `a/`, `gn/`, and `note/` filters of `filter` compare values. The value only needs to contain what you typed, even part of a word, ignoring case. For example, `sch/vic` matches `Victoria School`.
 **Prefix** | A short marker ending in `/`, such as `n/` or `sch/`, that labels the value after it in a command.
+**Student key** | A student's normalized name, school, and level. No two students can share one. A student with only the same normalized name as another can be added after a confirmation prompt.
 **Warning** | An amber message that flags something that might be a mistake, without stopping the command. For example, TuteeBook3 saves a phone number that doesn't look like a Singapore number, but shows a warning so that you can check it.
 
 #### Screen layout
@@ -1363,21 +1364,21 @@ testers are expected to do more *exploratory* testing.
       Expected: Ali Hassan is added. The full list is shown, and the student detail view shows him with the subjects `Mathematics (G1)` and `English (G2)`.
 
    1. Test case: `add n/Wei Ming sch/Victoria School lvl/S3 sub/Mathematics band/G3 e/weiming@gmail`<br>
-      Expected: Wei Ming is added. The status message is shown in amber, with a warning that the email has no `.` after the `@`.
+      Expected: Wei Ming is added. The result display is shown in amber, with a warning that the email has no `.` after the `@`.
 
 1. Adding a student with missing or invalid details
 
    1. Test case: `add n/Ken Ho`<br>
-      Expected: No student is added. The status message says `Missing required parameters: sch/, lvl/, sub/, band/.`
+      Expected: No student is added. The result display says `Missing required parameters: sch/, lvl/, sub/, band/.`
 
    1. Test case: `add n/Ken Ho sch/Victoria School sub/Mathematics lvl/S2 band/G1`<br>
-      Expected: No student is added. The status message says that each `sub/` must be immediately followed by one `band/`.
+      Expected: No student is added. The result display says that each `sub/` must be immediately followed by one `band/`.
 
    1. Test case: `add n/Ken Ho sch/Victoria School lvl/S2 sub/Mathematics band/G1 sub/mathematics band/G2`<br>
-      Expected: No student is added. The status message says `Subject is repeated: mathematics.`
+      Expected: No student is added. The result display says `Subject is repeated: mathematics.`
 
    1. Test case: `add n/Ken Ho sch/Victoria School lvl/S6 sub/Mathematics band/G4`<br>
-      Expected: No student is added. The status message says that the level must be one of `S1` to `S5`.
+      Expected: No student is added. The result display says that the level must be one of `S1` to `S5`.
 
 1. Adding a student who may already be recorded
 
@@ -1387,7 +1388,7 @@ testers are expected to do more *exploratory* testing.
       Expected: No student is added yet. A confirmation prompt says that Chloe Tan is also recorded at Bedok Green Secondary School (S2) and asks you to type `CONFIRM`. Enter `CONFIRM`, and the new Chloe Tan is added.
 
    1. Test case: `add n/chloe  tan sch/bedok green secondary school lvl/S2 sub/Mathematics band/G1`<br>
-      Expected: No student is added, and no prompt is shown. The status message says that a student with this name, school, and level already exists.
+      Expected: No student is added, and no prompt is shown. The result display says that a student with this name, school, and level already exists.
 
 ### Editing a student
 
@@ -1399,7 +1400,7 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
       Expected: Marcus Lim's subjects are replaced. The student detail view shows only `Science (Physics, Chemistry) (G3)` and `English (G2)`.
 
    1. Test case: the same command again<br>
-      Expected: Nothing changes. The status message is shown in amber and says `No changes made`.
+      Expected: Nothing changes. The result display is shown in amber and says `No changes made`.
 
    1. Test case: `edit 1 e/`<br>
       Expected: The email is removed, and the student detail view shows `—` for the email.
@@ -1407,13 +1408,13 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
 1. Editing with missing or invalid details
 
    1. Test case: `edit 1`<br>
-      Expected: Marcus Lim is unchanged. The status message says that at least one field to edit must be provided.
+      Expected: Marcus Lim is unchanged. The result display says that at least one field to edit must be provided.
 
    1. Test case: `edit 1 sch/`<br>
-      Expected: Marcus Lim is unchanged. The status message says that the school name cannot be blank.
+      Expected: Marcus Lim is unchanged. The result display says that the school name cannot be blank.
 
    1. Test case: `edit 1 band/G1`<br>
-      Expected: Marcus Lim is unchanged. The status message says `Missing required parameter: sub/.`
+      Expected: Marcus Lim is unchanged. The result display says `Missing required parameter: sub/.`
 
    1. Test case: `edit 1 n/Chloe Tan`, then `list`<br>
       Expected: The first input shows a confirmation prompt, because Chloe Tan is also recorded at Bedok Green Secondary School (S2). `list` cancels the edit: a red notice says that the `edit` command has been cancelled, followed by `Listed all students.` Marcus Lim's name is unchanged.
@@ -1431,7 +1432,7 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
       Expected: The filtered list shows `Chloe Tan` followed by `Ethan Kumar`, and the full record of `Ethan Kumar` is shown.
 
    1. Test case: `view 99`<br>
-      Expected: The displayed student record does not change. The status message reports that the index is invalid.
+      Expected: The displayed student record does not change. The result display reports that the index is invalid.
 
 ### Deleting a student
 
@@ -1440,13 +1441,13 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
    1. Prerequisites: Use the `list` command to show multiple students.
 
    1. Test case: Enter `delete 1`, then enter `CONFIRM`.<br>
-      Expected: The first student is deleted. The status message shows the deleted student's details.
+      Expected: The first student is deleted. The result display shows the deleted student's details.
 
    1. Test case: `delete -f 1`<br>
-      Expected: The first student is deleted without a confirmation prompt. The status message shows the deleted student's details.
+      Expected: The first student is deleted without a confirmation prompt. The result display shows the deleted student's details.
 
    1. Test case: `delete 0`<br>
-      Expected: No student is deleted. The status message shows an invalid index error.
+      Expected: No student is deleted. The result display shows an invalid index error.
 
 ### Clearing all students
 
@@ -1472,7 +1473,7 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
    1. Prerequisites: Start with the sample data. Run the test cases in order.
 
    1. Test case: `CONFIRM`<br>
-      Expected: Nothing changes. The status message says that no command is waiting for confirmation.
+      Expected: Nothing changes. The result display says that no command is waiting for confirmation.
 
    1. Test case: Enter `delete 1`, then `CONFIRM` with spaces before and after it.<br>
       Expected: Chloe Tan is deleted. Spaces around `CONFIRM` are ignored.
@@ -1485,10 +1486,10 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
 1. Showing the command summary
 
    1. Test case: `help`<br>
-      Expected: The status message shows the User Guide URL as plain text, followed by each command with an example. Pressing F1 or choosing **Help** from the menu shows the same text.
+      Expected: The result display shows the User Guide URL as plain text, followed by each command with an example. Pressing F1 or choosing **Help** from the menu shows the same text.
 
    1. Test case: `help me`<br>
-      Expected: The status message says `Invalid command format!`, followed by how to use `help`.
+      Expected: The result display says `Invalid command format!`, followed by how to use `help`.
 
 ### Adding and editing a guardian
 
@@ -1498,7 +1499,7 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
       Expected: Tim Tan is added. Viewing his student details shows guardian Mary Tan with phone number `91234567`.
 
    1. Test case: `add n/Ken Lim sch/Victoria School lvl/S2 sub/Mathematics band/G1 gn/Mary Lim`<br>
-      Expected: No student is added. The status message says that guardian name and guardian phone must be given together.
+      Expected: No student is added. The result display says that guardian name and guardian phone must be given together.
 
    1. Test case: `add n/Ken Lim sch/Victoria School lvl/S2 sub/Mathematics band/G1`<br>
       Expected: Ken Lim is added. Viewing his student details shows `—` for both guardian fields.
@@ -1511,16 +1512,16 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
       Expected: Only the guardian's phone changes. Viewing Tim Tan's student details shows guardian Mary Tan with phone number `98765432`.
 
    1. Test case: `edit 1 gn/Peter Lim` on Ken Lim<br>
-      Expected: Ken Lim is unchanged. The status message says to give both guardian fields when adding a guardian.
+      Expected: Ken Lim is unchanged. The result display says to give both guardian fields when adding a guardian.
 
    1. Test case: `edit 1 gn/ gp/91234567` on Tim Tan<br>
-      Expected: Tim Tan is unchanged. The status message says that guardian name and guardian phone cannot be empty.
+      Expected: Tim Tan is unchanged. The result display says that guardian name and guardian phone cannot be empty.
 
    1. Test case: `edit 1 gn/ gp/` on Tim Tan<br>
       Expected: The guardian is removed, and viewing the student's details shows `—` for both guardian name and guardian phone.
 
    1. Test case: `edit 1 gn/ gp/` on Ken Lim<br>
-      Expected: Ken Lim is unchanged. The status message says that the student has no guardian to remove.
+      Expected: Ken Lim is unchanged. The result display says that the student has no guardian to remove.
 
 ### Adding and editing tags
 
@@ -1530,16 +1531,16 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
       Expected: Mei Lin is added. Her list card shows the tags `exams` and `Paid`, in that order.
 
    1. Test case: `add n/Ken Ong sch/Victoria School lvl/S2 sub/Mathematics band/G1 t/Paid t/paid`<br>
-      Expected: No student is added. The status message reports the duplicate tag.
+      Expected: No student is added. The result display reports the duplicate tag.
 
    1. Test case: `add n/Ken Ong sch/Victoria School lvl/S2 sub/Mathematics band/G1 t/exam_prep`<br>
-      Expected: No student is added. The status message explains that a tag can contain only letters, digits, and single hyphens.
+      Expected: No student is added. The result display explains that a tag can contain only letters, digits, and single hyphens.
 
    1. Test case: `add n/Ken Ong sch/Victoria School lvl/S2 sub/Mathematics band/G1 t/O-level`<br>
       Expected: Ken Ong is added with the tag `O-level`.
 
    1. Test case: `add n/Ken Ong sch/Victoria School lvl/S2 sub/Mathematics band/G1 t/exam prep`<br>
-      Expected: No student is added. The status message explains that each tag is one word and needs its own `t/` prefix.
+      Expected: No student is added. The result display explains that each tag is one word and needs its own `t/` prefix.
 
 1. Editing tags
 
@@ -1556,26 +1557,26 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
 1. Adding a student with a formatted Singapore number
 
    1. Test case: `add n/Ravi Kumar sch/Victoria School lvl/S2 sub/Mathematics band/G1 p/+65 9123-4567`<br>
-      Expected: Ravi Kumar is added with phone number `91234567`. The status message shows no warning about the phone number.
+      Expected: Ravi Kumar is added with phone number `91234567`. The result display shows no warning about the phone number.
 
 1. Editing the phone number
 
    1. Prerequisites: Ravi Kumar was added as above. Before each test case, use `filter n/Ravi` so that Ravi Kumar is first in the list.
 
    1. Test case: `edit 1 p/+44 7911 123456`<br>
-      Expected: The phone number is saved as `+447911123456`. The status message is shown in amber, with a warning that phone `+447911123456` doesn't look like a Singapore number.
+      Expected: The phone number is saved as `+447911123456`. The result display is shown in amber, with a warning that phone `+447911123456` doesn't look like a Singapore number.
 
    1. Test case: `edit 1 sch/Bedok Green Secondary School`<br>
-      Expected: The school changes. The status message shows no warning about the phone number.
+      Expected: The school changes. The result display shows no warning about the phone number.
 
    1. Test case: `edit 1 p/12`<br>
-      Expected: Ravi Kumar is unchanged. The status message says that a phone number must have 3 to 15 digits.
+      Expected: Ravi Kumar is unchanged. The result display says that a phone number must have 3 to 15 digits.
 
 ### Filtering students
 
 Prerequisites for every case: start with the sample data. Enter `list` between cases to show all 6 sample students again.
 
-When students match, the status message says `N student(s) listed!`, where `N` is the number of students listed. When none match, it starts with `No students match your search.`
+When students match, the result display says `N student(s) listed!`, where `N` is the number of students listed. When none match, it starts with `No students match your search.`
 
 1. Filters with partial matching
 
@@ -1649,10 +1650,10 @@ When students match, the status message says `N student(s) listed!`, where `N` i
    1. Prerequisites: Start with the sample data. Enter `filter n/an`, which lists `Chloe Tan`, `Aisha Rahman`, `Daniel Lee`, and `Ethan Kumar`, then `view 1`. Run the test cases in order.
 
    1. Test case: `edit 1 n/Chloe Lim`<br>
-      Expected: The student record stays open and shows Chloe Lim. The status message says that she no longer matches the last search but remains in the list until the next `list` or `filter` command.
+      Expected: The student record stays open and shows Chloe Lim. The result display says that she no longer matches the last search but remains in the list until the next `list` or `filter` command.
 
    1. Test case: `edit 2 lvl/S4`<br>
-      Expected: The student record still shows Chloe Lim, so she is still first in the list even though another student was edited. The status message reports that Aisha Rahman was edited without a search warning. Enter `list`, then `filter n/an`: the list shows Aisha Rahman (now `S4`), Daniel Lee, and Ethan Kumar, and Chloe Lim is no longer in the results.
+      Expected: The student record still shows Chloe Lim, so she is still first in the list even though another student was edited. The result display reports that Aisha Rahman was edited without a search warning. Enter `list`, then `filter n/an`: the list shows Aisha Rahman (now `S4`), Daniel Lee, and Ethan Kumar, and Chloe Lim is no longer in the results.
 
 ### Adding, editing, and deleting notes
 
@@ -1666,15 +1667,15 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
       Expected: Marcus Lim's record shows `WA2 Math: 36/50` as note 2, after his existing note.
 
    1. Test case: `addnote 0 note/Weak in algebra`<br>
-      Expected: No note is added. The status message says that the index must be a positive integer shown in the student list.
+      Expected: No note is added. The result display says that the index must be a positive integer shown in the student list.
 
 1. Editing a note
 
    1. Test case: `editnote 1 nid/2 note/WA2 Math: 42/50`<br>
-      Expected: Note 2 now reads `WA2 Math: 42/50`, and note 1 is unchanged. The status message shows the old and new text.
+      Expected: Note 2 now reads `WA2 Math: 42/50`, and note 1 is unchanged. The result display shows the old and new text.
 
    1. Test case: `editnote 1 nid/5 note/Weak in algebra`<br>
-      Expected: No note is changed. The status message says that NID 5 does not exist and that Marcus Lim has only 2 notes.
+      Expected: No note is changed. The result display says that NID 5 does not exist and that Marcus Lim has only 2 notes.
 
 1. Deleting a note
 
@@ -1694,7 +1695,7 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
    1. Prerequisites: Delete the `data` folder next to the JAR file, if there is one.
 
    1. Test case: Launch the app.<br>
-      Expected: The list shows the six sample students, each tagged `sample`. The status message is empty.
+      Expected: The list shows the six sample students, each tagged `sample`. The result display is empty.
 
    1. Test case: Enter `list`, then close the window.<br>
       Expected: `data/addressbook.json` now exists and holds the sample students.
@@ -1704,7 +1705,7 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
    1. Prerequisites: `data/addressbook.json` exists, as after the test above. Back it up, then change one student's `"phone"` value to `"abc"`. Run the test cases in order.
 
    1. Test case: Launch the app.<br>
-      Expected: The list is empty. The status message is shown in red. It says the data file could not be loaded, and tells you to close the window without using the `exit` command, then fix or restore the file.
+      Expected: The list is empty. The result display is shown in red. It says the data file could not be loaded, and tells you to close the window without using the `exit` command, then fix or restore the file.
 
    1. Test case: Close the window, then open `data/addressbook.json`.<br>
       Expected: The file is unchanged, and the phone is still `"abc"`.
