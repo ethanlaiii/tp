@@ -786,7 +786,7 @@ Term | Meaning
 
 ## Coming soon
 
-These features are planned for a future version. Until then, typing `undo` or a short form such as `a` shows `Unknown command.` and changes nothing.
+These features are planned for a future version. Until then, typing `undo` or a short form such as `ls` shows `Unknown command.` and changes nothing.
 
 Feature | What it will do | What to do for now
 --------|-----------------|-------------------
@@ -796,7 +796,7 @@ Inactive students | Marks a student who is on a break as inactive, so you keep t
 Groups | Groups students who attend the same class, so you can work with the whole group at once. | Give the students the same tag, such as `sat-class`, and use `filter t/sat-class` to list them.
 Shared guardians | Links siblings to one guardian, so a change to the guardian's details updates every child. | Use `edit` on each sibling.
 Punctuation in names | Lets student and guardian names contain hyphens, apostrophes, periods, and slashes, such as `Mary-Jane O'Brien`, `J. Tan`, and `Rajesh s/o Kumar`. | Leave out the punctuation, such as `Mary Jane OBrien` or `Rajesh so Kumar`. See [Known issues](#known-issues).
-Command aliases | Adds short forms of command words, such as `a` for `add`. | Type the full command word.
+Command aliases | Adds short forms of command words, such as `ls` for `list`. | Type the full command word.
 
 --------------------------------------------------------------------------------------------------------------------
 
