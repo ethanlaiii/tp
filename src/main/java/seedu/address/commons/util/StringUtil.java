@@ -93,6 +93,8 @@ public class StringUtil {
      */
     public static String normalizeInput(String input) {
         requireNonNull(input);
+        // Solution below inspired by https://github.com/AY2627S1-CS2103T-T16-1/tp/pull/303
+        // and https://github.com/AY2627S1-CS2103T-T16-1/tp/pull/516
         // Whitespace goes first, so that a tab or line break becomes a space instead of being removed
         String spacedInput = input.replaceAll(WHITESPACE_REGEX, " ");
         // An invisible character between a letter and its accent stops them composing, so remove it first
