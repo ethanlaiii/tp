@@ -18,11 +18,11 @@ Class CommandBox
 }
 
 package Model <<Rectangle>> {
-Class Person MODEL_COLOR
+Class HiddenModel #FFFFFF
 }
 
 package Logic <<Rectangle>> {
-Class "<<interface>>\nLogic" as LogicApi LOGIC_COLOR
+Class HiddenLogic #FFFFFF
 }
 
 Class HiddenOutside #FFFFFF
@@ -30,8 +30,8 @@ HiddenOutside ..> Ui
 
 UiManager .up.|> Ui
 UiManager -down-> "1" MainWindow
-UiManager -left-> LogicApi
-MainWindow -left-> LogicApi
+UiManager -left-> Logic
+MainWindow -left-> Logic
 
 MainWindow *-down-> "1" CommandBox
 MainWindow *-down-> "1" ResultDisplay
@@ -48,8 +48,8 @@ StudentDetailPanel -down-|> UiPart
 PersonCard -left-|> UiPart
 MainWindow -down-|> UiPart
 
-PersonCard ..> Person
-StudentDetailPanel ..> Person
+PersonCard ..> Model
+StudentDetailPanel ..> Model
 
 CommandBox -[hidden]right- ResultDisplay
 ResultDisplay -[hidden]right- StatusBarFooter

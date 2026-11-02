@@ -45,7 +45,7 @@ activate StudentDetailPanel
 StudentDetailPanel --> MainWindow
 deactivate StudentDetailPanel
 
-note over MainWindow, StudentDetailPanel
+note right of MainWindow
 MainWindow replaces the detail placeholder
 content with the panel's root.
 end note
