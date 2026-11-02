@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class DeleteNoteCommand extends Command implements ConfirmationCommand {
      * Creates a {@code DeleteNoteCommand} that bypasses confirmation when {@code isForced} is true.
      */
     public DeleteNoteCommand(Index targetIndex, Index targetNid, boolean isForced) {
+        requireAllNonNull(targetIndex, targetNid);
         this.targetIndex = targetIndex;
         this.targetNid = targetNid;
         this.isForced = isForced;
