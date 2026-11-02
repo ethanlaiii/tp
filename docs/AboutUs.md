@@ -14,7 +14,6 @@ You can reach us at the email `e1525201@u.nus.edu`
 <img src="images/adwaithanoop.png" width="200px">
 
 [[github](https://github.com/adwaithanoop)]
-[[portfolio](team/adwaithanoop.md)]
 
 * Role: Team Lead
 * Responsibilities: Ensure team is on track
@@ -25,7 +24,6 @@ You can reach us at the email `e1525201@u.nus.edu`
 <img src="images/azora04.png" width="200px">
 
 [[github](http://github.com/Azora04)]
-[[portfolio](team/johndoe.md)]
 
 * Role: Developer
 * Responsibilities: UI
@@ -35,7 +33,6 @@ You can reach us at the email `e1525201@u.nus.edu`
 <img src="images/lawjiakai11.png" width="200px">
 
 [[github](https://github.com/lawjiakai11)] 
-[[portfolio](team/johndoe.md)]
 
 * Role: Developer
 * Responsibilities: All
@@ -46,7 +43,6 @@ You can reach us at the email `e1525201@u.nus.edu`
 <img src="images/matthewbiju.png" width="200px">
 
 [[github](https://github.com/matthewbiju)]
-[[portfolio](team/johndoe.md)]
 
 * Role: Developer
 * Responsibilities: Development and testing
@@ -56,7 +52,6 @@ You can reach us at the email `e1525201@u.nus.edu`
 <img src="images/ethanlaiii.png" width="200px">
 
 [[github](https://github.com/ethanlaiii)]
-[[portfolio](team/johndoe.md)]
 
 * Role: Developer
 * Responsibilities: All

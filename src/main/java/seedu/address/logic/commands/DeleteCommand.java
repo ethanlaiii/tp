@@ -33,9 +33,6 @@ public class DeleteCommand extends Command implements ConfirmationCommand {
     public static final String MESSAGE_FILTERED_LIST_EMPTY =
             "The filtered list is now empty, so all remaining students are shown.";
 
-    public static final String MESSAGE_INVALID_FORMAT = "Invalid format. Usage: " + COMMAND_WORD
-            + " [-f] INDEX";
-
     public static final String MESSAGE_INVALID_STUDENT_INDEX = Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 
     private final Index targetIndex;
