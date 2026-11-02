@@ -157,7 +157,7 @@ Parameter | Prefix | Required in `add` | Rules | Examples
 :bulb: **Tip:**
 
 * When you add or edit a student, spaces at the start and end of each value are removed, and repeated ordinary spaces are collapsed to one. Capitalization is kept as you typed it. For example, `n/John  Doe` is saved as `John Doe`.
-* If you leave out an optional field, the student list hides it and the student detail view shows an em dash (`—`).
+* If you leave out an optional field, the student list hides it and the student detail view shows an em dash (`—`). `a/-`, `a/–`, and `a/—` save `-` as the address instead of leaving it empty.
 
 </div>
 
