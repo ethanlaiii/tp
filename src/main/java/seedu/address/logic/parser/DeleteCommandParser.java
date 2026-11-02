@@ -11,9 +11,6 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class DeleteCommandParser implements Parser<DeleteCommand> {
 
-    private static final String MESSAGE_INVALID_FORMAT =
-            String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE);
-
     /**
      * Parses the given {@code String} of arguments in the context of the DeleteCommand
      * and returns a DeleteCommand object for execution.
@@ -25,26 +22,10 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         boolean isForced = parts.length == 2 && parts[0].equals(DeleteCommand.FORCE_OPTION);
         String indexArgument = isForced ? parts[1] : parts.length == 1 ? parts[0] : trimmedArgs;
         if (parts.length != 1 && !isForced) {
-            throw new ParseException(MESSAGE_INVALID_FORMAT);
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         }
-        try {
-            Index index = ParserUtil.parseIndex(indexArgument);
-            return new DeleteCommand(index, isForced);
-        } catch (ParseException pe) {
-            throw createParseException(indexArgument, pe);
-        }
-    }
-
-    /**
-     * Returns the error for an index that could not be parsed.
-     * Integer values that cannot identify a displayed student, including zero, negative values, and values too large
-     * to store, keep the shared index error. Other values use the command format error.
-     */
-    private static ParseException createParseException(String indexArgument, ParseException cause) {
-        if (ParserUtil.isInteger(indexArgument)) {
-            return cause;
-        }
-        return new ParseException(MESSAGE_INVALID_FORMAT, cause);
+        Index index = ParserUtil.parseIndex(indexArgument, DeleteCommand.MESSAGE_USAGE);
+        return new DeleteCommand(index, isForced);
     }
 
 }
