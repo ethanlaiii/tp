@@ -737,7 +737,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *` | busy tutor | add a short note to a student | tailor the next lesson to their weak topics                                 |
 | `* * *` | tutor | delete a note about a student | keep the student's record focused on what matters now                       |
 | `* * *` | tutor | have my data saved automatically | avoid losing records when I close the app                                   |
-| `* * *` | tutor | exit the app | close it knowing my data is saved                                           |
+| `* * *` | tutor | exit the app | end my session when I'm done                                                |
 | `* * *` | new user | clear all sample students | start with only my own students                                             |
 | `* * *` | tutor | record the band each subject is taken at (G1, G2, or G3) | pitch the material at the right difficulty                                  |
 | `* *` | tutor receiving unknown calls | find students by their guardian's phone number | identify the caller and see their children's records                        |
@@ -758,7 +758,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*` | expert user | recall my previous command | fix a mistake in it quickly without retyping                                |
 | `*` | careless typist | confirm before a note is deleted | avoid deleting the wrong note after mistyping a note number                 |
 | `*` | fast typist | launch the app from the terminal | start the app without switching to the mouse                                |
-| `*` | expert user | skip the confirmation for a delete or clear | work faster when I'm sure                                                   |
+| `*` | expert user | skip the confirmation when deleting a student or note, or clearing all students | work faster when I'm sure |
 
 ### Use cases
 
@@ -771,7 +771,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 1.  Tutor requests to add a student, giving the name, school, level, at least one subject, each with its subject band (for example Chemistry at G3), and optionally a phone number, email, address, tags, and guardian details
 2.  TuteeBook3 validates the details
 3.  TuteeBook3 saves the student
-4.  TuteeBook3 shows the student list with the new student selected
+4.  TuteeBook3 shows the new student's details
 
     Use case ends.
 
@@ -817,7 +817,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 3.
 
-* 2e. The student has the same normalized name, school, and level as an existing student.
+* 2e. The student has the same student key as an existing student.
 
     * 2e1. TuteeBook3 shows an error message identifying the existing student and does not add the student.
 
@@ -827,11 +827,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     * 2f1. TuteeBook3 shows a confirmation prompt with the existing student's school and level.
 
-    * 2f2. Tutor confirms the addition by entering `CONFIRM`.
+    * 2f2. Tutor confirms the addition.
 
       Use case resumes at step 3.
 
-    * 2f3. Tutor enters any other non-blank input.
+    * 2f3. Tutor enters another command instead.
 
       The pending add is cancelled, and TuteeBook3 processes the input as a command.
 
@@ -885,7 +885,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 4.
 
-* 3c. The edit would give the student the same normalized name, school, and level as another student.
+* 3c. The edit would give the student the same student key as another student.
 
     * 3c1. TuteeBook3 shows an error message and leaves the student unchanged.
 
@@ -895,11 +895,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     * 3d1. TuteeBook3 shows a confirmation prompt with the matching student's school and level.
 
-    * 3d2. Tutor confirms the edit by entering `CONFIRM`.
+    * 3d2. Tutor confirms the edit.
 
       Use case resumes at step 4.
 
-    * 3d3. Tutor enters any other non-blank input.
+    * 3d3. Tutor enters another command instead.
 
       The pending edit is cancelled, and TuteeBook3 processes the input as a command.
 
@@ -928,6 +928,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 3h1. TuteeBook3 leaves the student unchanged and warns that no changes were made.
 
       Use case ends.
+
+* 3i. The new email has no `.` in its domain.
+
+    * 3i1. TuteeBook3 accepts the email, and shows a warning asking Tutor to check it after updating the student.
+
+      Use case resumes at step 4.
 
 * 4a. The list shows search results, and the updated student no longer matches the search.
 
@@ -962,27 +968,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 2.
 
-* 3b. Tutor requests to delete the student with `delete -f`.
+* 3b. Tutor requests to delete the student without confirmation.
 
-    * 3b1. TuteeBook3 deletes the student without asking for confirmation.
+    * 3b1. TuteeBook3 skips the confirmation.
 
       Use case resumes at step 6.
 
-* 5a. Tutor enters non-blank input other than the exact uppercase word `CONFIRM` after trimming leading and trailing spaces.
+* 5a. Tutor enters another command instead of confirming.
 
-    * 5a1. TuteeBook3 cancels the pending deletion, shows that it was cancelled, and processes the input as a command.
+    * 5a1. TuteeBook3 cancels the deletion, shows that it was cancelled, and runs that command.
 
       Use case ends.
 
 * 6a. The active filter has no matches after the deletion, but other students remain.
 
     * 6a1. TuteeBook3 shows the full list and explains that the filtered list became empty.
-
-      Use case ends.
-
-* 6b. TuteeBook3 fails to save the change.
-
-    * 6b1. TuteeBook3 shows an error message, and the data file is not updated.
 
       Use case ends.
 
@@ -1020,8 +1020,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. Tutor requests to view a specific student by index.
-2. TuteeBook3 highlights the student in the list and shows the student's details and notes.
+1. Tutor requests to view a specific student by index
+2. TuteeBook3 shows the student's details and notes
 
     Use case ends.
 
@@ -1129,9 +1129,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1.  Tutor requests to view a specific student by index
 2.  TuteeBook3 shows the student's record with numbered notes
-3.  Tutor requests to delete a specific note, giving the student's index and NID
-4.  TuteeBook3 asks Tutor to confirm deleting the note.
-5.  Tutor confirms, and TuteeBook3 deletes the note, renumbers the remaining notes, and shows the updated student record and a success message.
+3.  Tutor requests to delete a specific note of the student
+4.  TuteeBook3 asks Tutor to confirm deleting the note
+5.  Tutor confirms
+6.  TuteeBook3 deletes the note, renumbers the remaining notes, and shows the updated record
 
     Use case ends.
 
@@ -1147,21 +1148,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case ends.
 
-* 3a. The given index or NID is invalid, or the student has no such note.
+* 3a. The given index or note number is invalid, or the student has no such note.
 
     * 3a1. TuteeBook3 shows an error message.
 
-      Use case resumes at step 2.
+      Use case resumes at step 3.
 
-* 3b. Tutor requests to delete the note with `deletenote -f`.
+* 3b. Tutor requests to delete the note without confirmation.
 
-    * 3b1. TuteeBook3 deletes the note without asking for confirmation, renumbers the remaining notes, and shows the updated student record and a success message.
+    * 3b1. TuteeBook3 skips the confirmation.
 
-      Use case ends.
+      Use case resumes at step 6.
 
-* 5a. Tutor enters non-blank input other than the exact uppercase word `CONFIRM` after trimming leading and trailing spaces.
+* 5a. Tutor enters another command instead of confirming.
 
-    * 5a1. TuteeBook3 cancels the pending deletion, shows that it was cancelled, and processes the input as a command.
+    * 5a1. TuteeBook3 cancels the deletion, shows that it was cancelled, and runs that command.
 
       Use case ends.
 
@@ -1171,20 +1172,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. Tutor requests help.
-1. TuteeBook3 shows the User Guide link and a summary of each command with an example.
+1. Tutor requests help
+2. TuteeBook3 shows the User Guide link and a summary of each command with an example
 
     Use case ends.
-
-**Extensions**
-
-* 2a. Tutor wants more detailed instructions.
-
-    * 2a1. Tutor copies the User Guide link.
-
-    * 2a2. Tutor opens the link in a browser.
-
-      Use case ends.
 
 ---
 
@@ -1192,34 +1183,31 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  Tutor requests to list students
-2.  TuteeBook3 shows the students, including the sample students
-3.  Tutor requests to clear all students
-4.  TuteeBook3 warns that all students and notes will be deleted, and asks Tutor to enter `CONFIRM`; any other non-blank input cancels the request and runs as a command
-5.  Tutor enters `CONFIRM`
-6.  TuteeBook3 removes all students and their notes
-7.  TuteeBook3 shows an empty roster
+1.  Tutor requests to clear all students
+2.  TuteeBook3 warns that all students and notes will be deleted, and asks Tutor to confirm
+3.  Tutor confirms
+4.  TuteeBook3 removes all students and their notes
+5.  TuteeBook3 shows an empty roster
 
     Use case ends.
 
 **Extensions**
 
-* 3a. TuteeBook3 is already empty.
+* 1a. TuteeBook3 is already empty.
 
-    * 3a1. TuteeBook3 informs Tutor that it is already empty and does not ask for confirmation.
-
-      Use case ends.
-
-* 3b. Tutor requests to clear all students using `clear -f`.
-
-    * 3b1. TuteeBook3 removes all students and their notes without asking for confirmation.
-    * 3b2. TuteeBook3 shows an empty roster.
+    * 1a1. TuteeBook3 informs Tutor that it is already empty and does not ask for confirmation.
 
       Use case ends.
 
-* 5a. Tutor enters non-blank input other than the exact uppercase word `CONFIRM` after trimming leading and trailing spaces.
+* 1b. Tutor requests to clear all students without confirmation.
 
-    * 5a1. TuteeBook3 cancels the pending `clear` request, shows that it was cancelled, and processes the input as a command.
+    * 1b1. TuteeBook3 skips the confirmation.
+
+      Use case resumes at step 4.
+
+* 3a. Tutor enters another command instead of confirming.
+
+    * 3a1. TuteeBook3 cancels the clear, shows that it was cancelled, and runs that command.
 
       Use case ends.
 
@@ -1283,7 +1271,7 @@ Term | Meaning
 **Normalized** | Compared after removing spaces at the start and end, treating repeated spaces as one, and ignoring capitalization. For example, `John  Doe` and `john doe` have the same normalized name.
 **Partial matching** | The way the `n/`, `sch/`, `e/`, `a/`, `gn/`, and `note/` filters of `filter` compare values. The value only needs to contain what you typed, even part of a word, ignoring case. For example, `sch/vic` matches `Victoria School`.
 **Prefix** | A short marker ending in `/`, such as `n/` or `sch/`, that labels the value after it in a command.
-**Student key** | A student's normalized name, school, and level. No two students can share one. A student with only the same normalized name as another can be added after a confirmation prompt.
+**Student key** | A unique identifier made up of a student's normalized name, school, and level. A student with only the same normalized name as another can be added after a confirmation prompt.
 **Warning** | An amber message that flags something that might be a mistake, without stopping the command. For example, TuteeBook3 saves a phone number that doesn't look like a Singapore number, but shows a warning so that you can check it.
 
 #### Screen layout
