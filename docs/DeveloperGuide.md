@@ -19,6 +19,7 @@ title: Developer Guide
 Notable uses of AI:
 
 * @matthewbiju used Claude Code (Anthropic) to help write code, tests, and parts of the User Guide and Developer Guide, to draw the app icon, and for preliminary reviews of PRs.
+* @ethanlaiii used Claude Code (Anthropic) to help write code, tests, and parts of the User Guide and Developer Guide, to test edge cases in the app, to draft issues, commit messages, and PR descriptions, and for preliminary reviews of PRs.
 
 --------------------------------------------------------------------------------------------------------------------
 
