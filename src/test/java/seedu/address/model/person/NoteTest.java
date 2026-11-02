@@ -26,7 +26,8 @@ public class NoteTest {
 
     @Test
     public void constructor_tooLongText_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, Note.MESSAGE_TOO_LONG, () -> new Note("a".repeat(501)));
+        String tooLongText = "a".repeat(Note.MAX_LENGTH + 1);
+        assertThrows(IllegalArgumentException.class, Note.MESSAGE_TOO_LONG, () -> new Note(tooLongText));
     }
 
     @Test
@@ -58,14 +59,14 @@ public class NoteTest {
         // leading and trailing whitespace -> returns true
         assertTrue(Note.isValidNote("  Weak in algebra  "));
 
-        // exactly 500 characters -> returns true
-        assertTrue(Note.isValidNote("a".repeat(500)));
+        // exactly the maximum length -> returns true
+        assertTrue(Note.isValidNote("a".repeat(Note.MAX_LENGTH)));
 
-        // 500 characters with padding -> returns true, padding is not counted
-        assertTrue(Note.isValidNote("  " + "a".repeat(500) + "  "));
+        // maximum length with padding -> returns true, padding is not counted
+        assertTrue(Note.isValidNote("  " + "a".repeat(Note.MAX_LENGTH) + "  "));
 
-        // 501 characters -> returns false
-        assertFalse(Note.isValidNote("a".repeat(501)));
+        // one more than the maximum length -> returns false
+        assertFalse(Note.isValidNote("a".repeat(Note.MAX_LENGTH + 1)));
 
         // emoji -> returns false
         assertFalse(Note.isValidNote(EMOJI));

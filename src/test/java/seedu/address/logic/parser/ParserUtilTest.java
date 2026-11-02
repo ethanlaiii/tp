@@ -371,7 +371,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseNote_tooLongValue_throwsParseException() {
-        String tooLongNote = "a".repeat(501);
+        String tooLongNote = "a".repeat(Note.MAX_LENGTH + 1);
         assertThrows(ParseException.class, Note.MESSAGE_TOO_LONG, () -> ParserUtil.parseNote(tooLongNote));
     }
 

@@ -31,16 +31,7 @@ public class AddNoteCommandTest {
 
     @Test
     public void execute_validIndex_addsNote() {
-        Person person = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person editedPerson = new PersonBuilder(person).withNotes(NOTE_TEXT).build();
-        String expectedMessage = String.format(AddNoteCommand.MESSAGE_SUCCESS, person.getName(), person.getSchool(),
-                person.getLevel(), NOTE);
-
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setPerson(person, editedPerson);
-
-        assertCommandSuccess(new AddNoteCommand(INDEX_FIRST_PERSON, NOTE), model,
-                CommandResult.showStudent(expectedMessage, editedPerson, INDEX_FIRST_PERSON), expectedModel);
+        assertAddNoteSuccess(NOTE, NOTE_TEXT);
     }
 
     @Test
@@ -48,43 +39,22 @@ public class AddNoteCommandTest {
         Person original = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Person person = new PersonBuilder(original).withGuardian("Mary Tan", "91234567").build();
         model.setPerson(original, person);
-        Person editedPerson = new PersonBuilder(person).withNotes(NOTE_TEXT).build();
-        String expectedMessage = String.format(AddNoteCommand.MESSAGE_SUCCESS, person.getName(), person.getSchool(),
-                person.getLevel(), NOTE);
 
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setPerson(person, editedPerson);
-
-        assertCommandSuccess(new AddNoteCommand(INDEX_FIRST_PERSON, NOTE), model,
-                CommandResult.showStudent(expectedMessage, editedPerson, INDEX_FIRST_PERSON), expectedModel);
+        assertAddNoteSuccess(NOTE, NOTE_TEXT);
     }
 
     @Test
     public void execute_existingNotes_appendsNoteAtEnd() {
-        Person person = addNotesToFirstPerson(NOTE_TEXT);
-        Person editedPerson = new PersonBuilder(person).withNotes(NOTE_TEXT, OTHER_NOTE_TEXT).build();
-        String expectedMessage = String.format(AddNoteCommand.MESSAGE_SUCCESS, person.getName(), person.getSchool(),
-                person.getLevel(), OTHER_NOTE);
+        addNotesToFirstPerson(NOTE_TEXT);
 
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setPerson(person, editedPerson);
-
-        assertCommandSuccess(new AddNoteCommand(INDEX_FIRST_PERSON, OTHER_NOTE), model,
-                CommandResult.showStudent(expectedMessage, editedPerson, INDEX_FIRST_PERSON), expectedModel);
+        assertAddNoteSuccess(OTHER_NOTE, NOTE_TEXT, OTHER_NOTE_TEXT);
     }
 
     @Test
     public void execute_duplicateNote_keepsBothNotes() {
-        Person person = addNotesToFirstPerson(NOTE_TEXT);
-        Person editedPerson = new PersonBuilder(person).withNotes(NOTE_TEXT, NOTE_TEXT).build();
-        String expectedMessage = String.format(AddNoteCommand.MESSAGE_SUCCESS, person.getName(), person.getSchool(),
-                person.getLevel(), NOTE);
+        addNotesToFirstPerson(NOTE_TEXT);
 
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setPerson(person, editedPerson);
-
-        assertCommandSuccess(new AddNoteCommand(INDEX_FIRST_PERSON, NOTE), model,
-                CommandResult.showStudent(expectedMessage, editedPerson, INDEX_FIRST_PERSON), expectedModel);
+        assertAddNoteSuccess(NOTE, NOTE_TEXT, NOTE_TEXT);
     }
 
     @Test
@@ -148,6 +118,23 @@ public class AddNoteCommandTest {
 
         // different type -> returns false
         assertFalse(addNoteCommand.equals(new ClearCommand()));
+    }
+
+    /**
+     * Asserts that adding {@code note} to the first person in {@code model} succeeds, reports {@code note},
+     * and leaves the person with {@code expectedNotes} in order.
+     */
+    private void assertAddNoteSuccess(Note note, String... expectedNotes) {
+        Person person = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person editedPerson = new PersonBuilder(person).withNotes(expectedNotes).build();
+        String expectedMessage = String.format(AddNoteCommand.MESSAGE_SUCCESS, person.getName(), person.getSchool(),
+                person.getLevel(), note);
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.setPerson(person, editedPerson);
+
+        assertCommandSuccess(new AddNoteCommand(INDEX_FIRST_PERSON, note), model,
+                CommandResult.showStudent(expectedMessage, editedPerson, INDEX_FIRST_PERSON), expectedModel);
     }
 
     /**
