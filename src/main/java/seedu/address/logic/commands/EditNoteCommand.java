@@ -59,6 +59,7 @@ public class EditNoteCommand extends Command {
 
         Person person = lastShownList.get(targetIndex.getZeroBased());
         NoteCommandUtil.verifyNoteExists(person, targetNid, MESSAGE_NO_NOTES);
+        assert targetNid.getZeroBased() < person.getNotes().size() : "NID was checked by verifyNoteExists";
         Note oldNote = person.getNotes().get(targetNid.getZeroBased());
         if (oldNote.equals(newNote)) {
             return CommandResult.showStudentWarning(String.format(MESSAGE_NOTE_UNCHANGED, targetNid.getOneBased(),
