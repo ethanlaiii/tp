@@ -32,7 +32,7 @@ You can reach us at the email `e1525201@u.nus.edu`
 
 <img src="images/lawjiakai11.png" width="200px">
 
-[[github](https://github.com/lawjiakai11)] 
+[[github](https://github.com/lawjiakai11)]
 
 * Role: Developer
 * Responsibilities: All
