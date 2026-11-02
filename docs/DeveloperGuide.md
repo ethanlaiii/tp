@@ -1443,6 +1443,9 @@ Prerequisites: Start with the sample data. Enter `filter n/Marcus` so that `Marc
    1. Test case: `delete 0`<br>
       Expected: No student is deleted. The result display shows an invalid index error.
 
+   1. Test case: `delete abc`<br>
+      Expected: No student is deleted. The result display says `Invalid command format!`, followed by how to use `delete`.
+
 ### Clearing all students
 
 1. Clearing with confirmation, cancellation, and `-f`

@@ -295,7 +295,8 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_uppercaseCommandWordInvalidArgument_throwsCommandSpecificParseException() {
-        assertThrows(ParseException.class, DeleteCommand.MESSAGE_INVALID_FORMAT, () ->
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE), () ->
                 parser.parseCommand("DELETE abc"));
     }
 

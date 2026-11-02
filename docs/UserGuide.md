@@ -412,8 +412,7 @@ If the command is wrong, `delete` shows one of these messages and does not delet
 Problem | Message
 --------|--------
 `INDEX` is zero, negative, too large to use, or larger than the number of students shown, such as `0`, `-1`, or `99999999999` | `Index must be a positive integer shown in the displayed student list.`
-`INDEX` is missing or is not an integer, such as `abc` | `Invalid format. Usage: delete [-f] INDEX`
-There is more than one value, such as `delete 1 2` | `Invalid format. Usage: delete [-f] INDEX`
+`INDEX` is missing or is not an integer, such as `abc`, or there is more than one value, such as `delete 1 2` | `Invalid command format!` followed by how to use `delete`
 
 ### Managing notes
 
