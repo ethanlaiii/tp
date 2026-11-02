@@ -608,6 +608,7 @@ You type | TuteeBook3 shows
 `filter n/lim sch/secondary` | `Marcus Lim`
 `filter lvl/s2` | `Chloe Tan` and `Ethan Kumar`
 `filter sub/mathematics band/G2` | `Marcus Lim` and `Daniel Lee`
+`filter gp/98765432` | `Marcus Lim`, whose guardian is Grace Lim
 `filter t/sample` | All six sample students
 `filter note/algebra` | `Chloe Tan`
 `filter lvl/S1 note/next lesson` | `Daniel Lee`
