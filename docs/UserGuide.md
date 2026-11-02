@@ -22,7 +22,7 @@ TuteeBook3 is **optimized for fast typists**. You do almost everything by typing
 1. Copy the file to the folder you want to use as the _home folder_ for TuteeBook3.
 
 1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar TuteeBook3.jar`.<br>
-   A GUI similar to the one below should appear in a few seconds. Note how the app contains some sample data.<br>
+   A GUI similar to the one below should appear in a few seconds, with some sample data. The picture shows the app after `view 1`, which opens the first student's record on the right.<br>
    ![Ui](images/Ui.png)
 
 1. Familiarize yourself with TuteeBook3 by trying its commands using the sample data. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to show the available commands in the result display.<br>
@@ -43,6 +43,18 @@ TuteeBook3 is **optimized for fast typists**. You do almost everything by typing
 1. When you finish trying the commands and before you enter your own student records, type `clear`, then enter `CONFIRM` to remove all sample students. Each sample student has the tag `sample`, so `filter t/sample` lists them. Alternatively, type `clear -f` to remove them immediately without confirmation. Both methods remove every student and note currently stored.
 
 1. Refer to [How commands are written](#how-commands-are-written) to learn how to type commands, then the [Features](#features) section for details of each command.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## The main window
+
+![The main window, with the command box, result display, student list, and student detail view labelled](images/UiAnnotated.png)
+
+The window has four areas. This guide uses their names throughout, and the [Glossary](#screen-layout) defines them.
+
+The student list and the student detail view are the same width, and you cannot resize them. The card of the student you are viewing is highlighted in the list. Cards cannot be clicked. When no student is selected, the student detail view shows `View a student to see details.` If a student's record is too long to fit, it scrolls as a whole, including the notes.
+
+You can resize the window down to 600 pixels wide and 400 pixels tall. TuteeBook3 keeps a restored window inside the current screen if the saved size or position no longer fits. The student list and record remain usable at the minimum size by scrolling their contents.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -85,6 +97,8 @@ Some commands ask you to confirm before they go ahead:
 * `add` and `edit`, when another student already has the same name. See [Duplicate students](#duplicate-students).
 
 The command shows a confirmation prompt that says what will happen. The next line tells you how to go ahead, such as `Type CONFIRM (uppercase) to delete this student and all their notes.`
+
+![The confirmation prompt after delete 2](images/deleteConfirmationPrompt.png)
 
 * To go ahead, type `CONFIRM` in uppercase and press Enter. Spaces before or after it are ignored.
 * Any other non-blank input, including `confirm` or a mistyped command, cancels the request. TuteeBook3 then runs what you typed as a normal command, with the red notice `The earlier 'delete' command has been cancelled.` (or the name of the command you cancelled) above its result.
@@ -427,7 +441,7 @@ Add a note to the student shown by `view 2` | `view 2`, then `addnote 2 note/WA2
 
 ##### Errors in `addnote`
 
-If the command is wrong, `addnote` shows one of these messages and does not change any student. If `INDEX` is zero, negative, or too large, `addnote` reports that first, even if `TEXT` is also wrong.
+If the command is wrong, `addnote` shows one of these messages and does not change any student. If `INDEX` is zero, negative, or too large to use, `addnote` reports that first, even if `TEXT` is also wrong. An `INDEX` larger than the number of students shown is reported only after `TEXT` is valid.
 
 Problem | Message
 --------|--------
@@ -467,12 +481,13 @@ Problem | Message
 `nid/NID` comes after `note/TEXT`, such as `editnote 1 note/hi nid/2` | `Put nid/NID before note/TEXT. Everything after note/ is read as the note text.`
 `INDEX`, `nid/NID`, or `note/TEXT` is missing, or there is no space before `nid/` or `note/` | `Invalid command format!` followed by how to use `editnote`
 `INDEX` is not an integer, such as `abc`, or there is text between `INDEX` and the first prefix, such as `editnote 1 abc nid/2 note/hi` | `Invalid command format!` followed by how to use `editnote`
-`INDEX` is zero, negative, too large to use, or larger than the number of students shown, such as `0`, `-1`, or `99999999999` | `Index must be a positive integer shown in the displayed student list.`
+`INDEX` is zero, negative, or too large to use, such as `0`, `-1`, or `99999999999` | `Index must be a positive integer shown in the displayed student list.`
 `nid/` appears more than once before `note/` | `Multiple values specified for the following single-valued field(s): nid/`
 `NID` is empty or is not a positive integer, such as `0`, `-1`, or `abc` | `NID must be a positive integer.`
 `TEXT` is empty or only spaces | `Note text cannot be blank.`
 `TEXT` contains a character that isn't allowed, such as `é` or an emoji | `Note text contains "é", which isn't allowed. Use only English letters, digits, spaces, and keyboard symbols.`, with the first such character in `TEXT`
 `TEXT` is longer than 500 characters | `Note text must be at most 500 characters.`
+`INDEX` is larger than the number of students shown, such as `7` when the list shows 6 students | `Index must be a positive integer shown in the displayed student list.`
 The student has no notes | `NAME at SCHOOL (LEVEL) has no notes to edit.`
 `NID` is larger than the number of notes the student has | `NID 5 does not exist. NAME at SCHOOL (LEVEL) has only 3 notes.`, with the NID you typed and the number of notes the student has (`1 note` if they have one)
 
@@ -502,7 +517,7 @@ Delete note 1 of the 2nd student without confirming | `deletenote -f 2 nid/1`
 
 ##### Errors in `deletenote`
 
-If the command is wrong, `deletenote` shows one of these messages and does not change any student. If `INDEX` is zero, negative, or too large, `deletenote` reports that first, even if `NID` is also wrong.
+If the command is wrong, `deletenote` shows one of these messages and does not change any student. If `INDEX` is zero, negative, or too large to use, `deletenote` reports that first, even if `NID` is also wrong. An `INDEX` larger than the number of students shown is reported only after `NID` is valid.
 
 Problem | Message
 --------|--------
@@ -529,13 +544,11 @@ The command does not accept additional arguments.
 
 #### Viewing a student: `view`
 
-TuteeBook3 shows the student list on the left and the student detail view on the right. The two halves are the same width, and you cannot resize them. The card of the student you are viewing is highlighted in the list. Cards cannot be clicked. When no student is selected, the student detail view shows `View a student to see details.` If a student's record is too long to fit, it scrolls as a whole, including the notes.
-
-You can resize the window down to 600 pixels wide and 400 pixels tall. TuteeBook3 keeps a restored window inside the current screen if the saved size or position no longer fits. The student list and record remain usable at the minimum size by scrolling their contents.
-
 `view` shows the full record of the student at the specified index on the right.
 
 The student detail view contains the student's name, school, level, subject-band pairs, address, email, tags, student phone number, guardian name, and guardian phone number, followed by the student's notes. Optional fields without a recorded value, such as the address, email, tags, student phone number, or guardian details, are shown as an em dash (`—`).
+
+<img src="images/viewStudentResult.png" width="460" alt="The student detail view after view 1, showing two notes numbered 1 and 2" />
 
 Format: `view INDEX`
 
@@ -629,13 +642,13 @@ A separate word looks like a filter prefix but is not recognized, such as `lv/` 
 A filter is empty, such as `sch/` | `The school to search for cannot be blank.` (or `name`, `email`, or `address`)
 A filter other than `t/` appears more than once | `Each filter can be given only once, but you repeated: sub/. To see students who match either value, run filter once for each value.`, with the repeated filters listed in place of `sub/`. If `t/` is also repeated, the `t/` message is shown first.
 `LEVEL` is not one of `S1` to `S5`, or is empty | `Level must be one of S1, S2, S3, S4, S5.`
-`SUBJECT` is empty or invalid | `Subjects must be 1-40 characters using only English letters without accents, spaces, hyphens, parentheses, commas and ampersands, with at least one letter.`
+`SUBJECT` is empty or invalid | `Subjects must be 1-40 characters, contain at least one English letter (A-Z), and use only English letters, spaces, hyphens (-), parentheses, commas, and ampersands (&).`
 `BAND` is not one of `G1` to `G3`, or is empty | `Band must be one of G1, G2, G3.`
 `band/` is not right after `sub/`, or there is no `sub/` | `band/ must come right after sub/, such as: filter sub/Mathematics band/G2`
 `PHONE` or `GUARDIAN_PHONE` is empty or not a valid phone number | The same message as `add`, such as `Phone cannot be empty.`
 `TAG` contains a space | `Tag "paid exams" contains a space. filter takes one tag of one word, such as: filter t/paid`, with the tag you typed in place of `paid exams`
 `t/` appears more than once | `filter takes one tag, so give t/ only once, such as: filter t/paid`
-`TAG` is blank, too long, or contains a symbol other than a single hyphen between letters or digits | The same message as `add`, starting `Tags must be one word of 1-30 English letters or digits.`
+`TAG` is blank, too long, or contains a symbol other than a single hyphen between letters or digits | The same message as `add`, starting `Tags must be one word of 1-30 English letters (A-Z) or digits (0-9).`
 `GUARDIAN_NAME` is empty | `The guardian name to search for cannot be blank.`
 `NAME`, `SCHOOL`, `EMAIL`, or `GUARDIAN_NAME` contains `/`, such as `n/Chloesch/Victoria` | `No student's name can contain "/", so "Chloesch/Victoria" matches no one.` followed by `If "/" was meant to start a new parameter, check that each prefix is one this command accepts and has a space before it.`
 `ADDRESS` has another filter's prefix joined to it, such as `a/tampinest/paid` or `a/blk N/tan` | A red error about the missing space. See [Addresses](#addresses).
@@ -783,10 +796,25 @@ Term | Meaning
 
 --------------------------------------------------------------------------------------------------------------------
 
+## Coming soon
+
+These features are planned for a future version. Until then, typing `undo` or a short form such as `ls` shows `Unknown command.` and changes nothing.
+
+Feature | What it will do | What to do for now
+--------|-----------------|-------------------
+Undo: `undo` | Reverses your last command that changed your data, such as a mistyped `edit`. | `delete`, `deletenote`, and `clear` ask you to confirm first. See [Confirming a command](#confirming-a-command).
+Command history | Lets you press the Up and Down arrow keys in the command box to bring back earlier commands. | Type or paste the command again.
+Inactive students | Marks a student who is on a break as inactive, so you keep their record and notes without deleting them. | Tag them `inactive`, and use `filter t/inactive` to find them. `edit` replaces all tags, so list the student's other tags too, such as `edit 1 t/paid t/inactive`.
+Groups | Groups students who attend the same class, so you can work with the whole group at once. | Give the students the same tag, such as `sat-class`, and use `filter t/sat-class` to list them.
+Shared guardians | Links siblings to one guardian, so a change to the guardian's details updates every child. | Use `edit` on each sibling.
+Punctuation in names | Lets student and guardian names contain hyphens, apostrophes, periods, and slashes, such as `Mary-Jane O'Brien`, `J. Tan`, and `Rajesh s/o Kumar`. | Leave out the punctuation, such as `Mary Jane OBrien` or `Rajesh so Kumar`. See [Known issues](#known-issues).
+Command aliases | Adds short forms of command words, such as `ls` for `list`. | Type the full command word.
+
+--------------------------------------------------------------------------------------------------------------------
+
 ## Known issues
 
-1. **The window opens off-screen after you stop using a second screen.** If you move TuteeBook3 to a second screen and later use only your main screen, the window opens where the second screen was. The remedy is to delete `preferences.json` from the [home folder](#glossary) before you start TuteeBook3 again.
-1. **Names can't contain punctuation.** Student and guardian names accept only English letters, digits, and spaces, so `Rajesh s/o Kumar`, `Mary-Jane O'Brien`, and `J. Tan` are rejected. Leave out the punctuation, such as `Rajesh so Kumar`, and type the name the same way each time so that `filter n/` and the duplicate check find it. Support for hyphens, apostrophes, and periods is coming in a future version. Slashes will stay unsupported, because `s/o` and `a/l` look like prefixes.
+1. **Names can't contain punctuation.** Student and guardian names accept only English letters, digits, and spaces, so `Rajesh s/o Kumar`, `Mary-Jane O'Brien`, and `J. Tan` are rejected. Leave out the punctuation, such as `Rajesh so Kumar`, and type the name the same way each time so that `filter n/` and the duplicate check find it. Support for hyphens, apostrophes, periods, and slashes is coming in a future version. See [Coming soon](#coming-soon).
 1. **Names, school names, and subjects can't contain accented or non-English letters.** Values such as `Zoë Lim`, `École Française`, and `Français` are rejected. Type the closest English spelling, such as `Zoe Lim`. Support for other languages in these fields is coming in a future version.
 
 --------------------------------------------------------------------------------------------------------------------

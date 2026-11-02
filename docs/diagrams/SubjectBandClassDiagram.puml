@@ -8,7 +8,7 @@ skinparam classAttributeFontColor #FFFFFF
 Package Model as ModelPackage <<Rectangle>> {
     Class Person
     Class Subject
-    enum Band <<enumeration>> {
+    Class "<<enumeration>>\nBand" as Band {
         G1
         G2
         G3
@@ -16,7 +16,8 @@ Package Model as ModelPackage <<Rectangle>> {
 }
 
 show Band fields
+hide <<Rectangle>> stereotype
 
-Person -right-> "1..8" Subject : subjects
+Person *-right-> "1..8" Subject : subjects
 Subject -right-> "1" Band : band
 @enduml
