@@ -1203,11 +1203,11 @@ Use case ends.
 5. Should save successful changes in local, human-editable JSON files, without a DBMS, and retain them after restarting.
 6. Should reject an invalid command with an error message that names the problem, without crashing or changing any records.
 7. Should work well at resolutions of 1920 × 1080 or higher at 100% and 125% scaling, and remain usable at 1280 × 720 or higher at 150% scaling.
-8. Should read and write files only in the home folder (the folder TuteeBook3 is run from) and its subfolders, change no OS settings, and send no student or guardian data over the network.
+8. Should read and write files only in the folder TuteeBook3 is run from and its subfolders, change no OS settings, and send no student or guardian data over the network.
 9. Should show an error when the data file cannot be saved, such as when it is read-only.
 10. Should let a first-time tutor add, filter, and view a student, and add a note, within ten minutes using the User Guide.
 11. Should serve one tutor, without shared-computer accounts or shared data files between users.
-12. Should support manual edits to the data file at least as well as AB3: load a correctly edited file, and start with no students instead of crashing when the file is invalid.
+12. Should support manual edits to the data file at least as well as AB3: load a correctly edited file, and start with no students, showing an error instead of crashing when the file is invalid.
 13. Should use a primarily object-oriented design.
 14. Should use only third-party libraries that are free, open source, permissively licensed, and approved by the teaching team, and that need no installation by the user.
 15. Should run without an installer, as one JAR file of at most 100 MB that works on Windows (including WSL), Linux, and macOS (Intel and ARM).
