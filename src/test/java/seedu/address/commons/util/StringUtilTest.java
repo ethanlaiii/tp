@@ -35,6 +35,10 @@ public class StringUtilTest {
         assertFalse(StringUtil.isNonZeroUnsignedInteger("-1"));
         assertFalse(StringUtil.isNonZeroUnsignedInteger("+1"));
 
+        // EP: digits from other writing systems
+        assertFalse(StringUtil.isNonZeroUnsignedInteger("１")); // full-width 1
+        assertFalse(StringUtil.isNonZeroUnsignedInteger("١")); // Arabic-Indic 1
+
         // EP: numbers with white space
         assertFalse(StringUtil.isNonZeroUnsignedInteger(" 10 ")); // Leading/trailing spaces
         assertFalse(StringUtil.isNonZeroUnsignedInteger("1 0")); // Spaces in the middle
