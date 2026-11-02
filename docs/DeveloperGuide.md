@@ -14,6 +14,7 @@ title: Developer Guide
 * The data file is read and written with [Jackson](https://github.com/FasterXML/jackson).
 * Tests use [JUnit 5](https://junit.org/junit5/), and GUI tests use [TestFX](https://github.com/TestFX/TestFX).
 * The diagrams in this guide are made with [PlantUML](https://plantuml.com/).
+* The way commands are cleaned of special spaces and invisible characters before parsing (`StringUtil#normalizeInput`) was inspired by bugs reported and fixed in [TAB](https://github.com/AY2627S1-CS2103T-T16-1/tp) (issues [#129](https://github.com/AY2627S1-CS2103T-T16-1/tp/issues/129), [#188](https://github.com/AY2627S1-CS2103T-T16-1/tp/issues/188), and [#496](https://github.com/AY2627S1-CS2103T-T16-1/tp/issues/496), and PRs [#303](https://github.com/AY2627S1-CS2103T-T16-1/tp/pull/303) and [#516](https://github.com/AY2627S1-CS2103T-T16-1/tp/pull/516)), although our implementation is our own.
 
 Notable uses of AI:
 
