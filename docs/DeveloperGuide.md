@@ -175,17 +175,14 @@ This section describes some noteworthy details on how certain features are imple
 
 The `view INDEX` command passes the selected student from `Logic` to the student detail view without storing UI state in the `Model`.
 
-<img src="images/ViewStudentDetailSequenceDiagram.png" width="1000" />
+<img src="images/ViewStudentDetailSequenceDiagram.png" />
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `ViewCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, it extends slightly past the center of the marker.
-</div>
+The diagram expands only the `UI` component and treats `Logic` as a black box. It summarizes the `CommandResult` getter calls and detail-placeholder update in notes. It omits routine logging, rendering within each UI part, and `Logic` internals such as parsing, command execution, delegation to `Model`, and the `Storage#saveAddressBook` call. The `view` command does not change the data being saved.
 
-The diagram omits the routine `Storage#saveAddressBook` call that `LogicManager` makes after command execution. The `view` command does not change the data being saved.
-
-1. `AddressBookParser` delegates the index argument to `ViewCommandParser`, which creates a `ViewCommand`.
-1. `ViewCommand#execute` reads the current filtered student list from the `Model`. It validates the displayed index and obtains the student at that position. An out-of-range index throws a `CommandException`, so `MainWindow` does not replace the current student detail view.
-1. For a valid index, `ViewCommand` returns a `CommandResult` containing `DisplayMode.SHOW_STUDENT`, the selected `Person`, and the displayed index. The command does not modify the `Model`.
-1. `MainWindow#updateMainContent` handles `SHOW_STUDENT` by creating a `StudentDetailPanel` with the selected student, index, and current filtered list. It replaces the content of the detail placeholder with the new panel and asks `PersonListPanel` to highlight and scroll to the same student.
+1. `Logic#execute` returns a `CommandResult` containing `DisplayMode.SHOW_STUDENT`, the selected `Person`, and the displayed index. An out-of-range index throws a `CommandException` instead, so `MainWindow` does not replace the current student detail view.
+1. `MainWindow` reads the feedback, warning state, and cancellation notice from the result, then updates `ResultDisplay`.
+1. `MainWindow#updateMainContent` reads the display mode, displayed index, and selected student from the result. It asks `Logic` for the current filtered list, which `Logic` obtains from `Model`.
+1. `MainWindow` creates a `StudentDetailPanel` with the selected student, index, and current filtered list. It replaces the content of the detail placeholder with the new panel and asks `PersonListPanel` to highlight and scroll to the same student.
 
 The `StudentDetailPanel` places the student's details and notes in one vertical scroll pane. It listens to the filtered list and refreshes the record at the displayed index when that list changes. This allows edits to update an open student detail view while keeping the command's displayed index consistent with the list.
 
