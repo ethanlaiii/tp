@@ -442,7 +442,7 @@ Add a note to the student shown by `view 2` | `view 2`, then `addnote 2 note/WA2
 
 ##### Errors in `addnote`
 
-If the command is wrong, `addnote` shows one of these messages and does not change any student. If `INDEX` is zero, negative, or too large, `addnote` reports that first, even if `TEXT` is also wrong.
+If the command is wrong, `addnote` shows one of these messages and does not change any student. If `INDEX` is zero, negative, or too large to use, `addnote` reports that first, even if `TEXT` is also wrong. An `INDEX` larger than the number of students shown is reported only after `TEXT` is valid.
 
 Problem | Message
 --------|--------
@@ -482,12 +482,13 @@ Problem | Message
 `nid/NID` comes after `note/TEXT`, such as `editnote 1 note/hi nid/2` | `Put nid/NID before note/TEXT. Everything after note/ is read as the note text.`
 `INDEX`, `nid/NID`, or `note/TEXT` is missing, or there is no space before `nid/` or `note/` | `Invalid command format!` followed by how to use `editnote`
 `INDEX` is not an integer, such as `abc`, or there is text between `INDEX` and the first prefix, such as `editnote 1 abc nid/2 note/hi` | `Invalid command format!` followed by how to use `editnote`
-`INDEX` is zero, negative, too large to use, or larger than the number of students shown, such as `0`, `-1`, or `99999999999` | `Index must be a positive integer shown in the displayed student list.`
+`INDEX` is zero, negative, or too large to use, such as `0`, `-1`, or `99999999999` | `Index must be a positive integer shown in the displayed student list.`
 `nid/` appears more than once before `note/` | `Multiple values specified for the following single-valued field(s): nid/`
 `NID` is empty or is not a positive integer, such as `0`, `-1`, or `abc` | `NID must be a positive integer.`
 `TEXT` is empty or only spaces | `Note text cannot be blank.`
 `TEXT` contains a character that isn't allowed, such as `é` or an emoji | `Note text contains "é", which isn't allowed. Use only English letters, digits, spaces, and keyboard symbols.`, with the first such character in `TEXT`
 `TEXT` is longer than 500 characters | `Note text must be at most 500 characters.`
+`INDEX` is larger than the number of students shown, such as `7` when the list shows 6 students | `Index must be a positive integer shown in the displayed student list.`
 The student has no notes | `NAME at SCHOOL (LEVEL) has no notes to edit.`
 `NID` is larger than the number of notes the student has | `NID 5 does not exist. NAME at SCHOOL (LEVEL) has only 3 notes.`, with the NID you typed and the number of notes the student has (`1 note` if they have one)
 
@@ -517,7 +518,7 @@ Delete note 1 of the 2nd student without confirming | `deletenote -f 2 nid/1`
 
 ##### Errors in `deletenote`
 
-If the command is wrong, `deletenote` shows one of these messages and does not change any student. If `INDEX` is zero, negative, or too large, `deletenote` reports that first, even if `NID` is also wrong.
+If the command is wrong, `deletenote` shows one of these messages and does not change any student. If `INDEX` is zero, negative, or too large to use, `deletenote` reports that first, even if `NID` is also wrong. An `INDEX` larger than the number of students shown is reported only after `NID` is valid.
 
 Problem | Message
 --------|--------
