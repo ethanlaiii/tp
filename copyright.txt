@@ -1,8 +1,1 @@
 ﻿Some code adapted from http://code.makery.ch/library/javafx-8-tutorial/ by Marco Jakob
-
-Copyright by Susumu Yoshida - http://www.mcdodesign.com/
-- AddressApp.ico
-
-Copyright by Jan Jan Kovařík - http://glyphicons.com/
-- calendar.png
-- edit.png
