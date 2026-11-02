@@ -250,6 +250,8 @@ public class ParserUtilTest {
         assertThrows(ParseException.class, "Guardian phone 9123a contains \"a\", which isn't allowed. "
                 + "Use only digits, spaces, hyphens (-), and a + at the start.", () ->
                 ParserUtil.parseGuardianPhone("9123a"));
+        assertThrows(ParseException.class, "Guardian phone - needs 3 to 15 digits, counting the country code, "
+                + "but has 0.", () -> ParserUtil.parseGuardianPhone(" - "));
     }
 
     @Test
@@ -371,7 +373,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseNote_tooLongValue_throwsParseException() {
-        String tooLongNote = "a".repeat(501);
+        String tooLongNote = "a".repeat(Note.MAX_LENGTH + 1);
         assertThrows(ParseException.class, Note.MESSAGE_TOO_LONG, () -> ParserUtil.parseNote(tooLongNote));
     }
 

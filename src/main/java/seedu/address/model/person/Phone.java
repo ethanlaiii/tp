@@ -79,7 +79,7 @@ public class Phone {
         if (isValidPhone(compact)) {
             return Optional.empty();
         }
-        if (compact.isEmpty()) {
+        if (phone.isEmpty()) {
             return Optional.of(String.format(MESSAGE_EMPTY, label));
         }
 

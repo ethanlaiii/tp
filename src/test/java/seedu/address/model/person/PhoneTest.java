@@ -139,6 +139,14 @@ public class PhoneTest {
     }
 
     @Test
+    public void getInvalidReason_onlyHyphensOrSpaces_returnsDigitCount() {
+        assertEquals(Optional.of("Phone - needs 3 to 15 digits, counting the country code, but has 0."),
+                Phone.getInvalidReason("Phone", "-"));
+        assertEquals(Optional.of("Phone - - needs 3 to 15 digits, counting the country code, but has 0."),
+                Phone.getInvalidReason("Phone", "- -"));
+    }
+
+    @Test
     public void equals() {
         Phone phone = new Phone("91234567");
 

@@ -152,6 +152,12 @@ public class StringUtilTest {
     }
 
     @Test
+    public void containsIgnoreCaseAndSpaces_longDash_matchesHyphen() {
+        assertTrue(StringUtil.containsIgnoreCaseAndSpaces("Blk 1–3 Bedok", "1-3"));
+        assertTrue(StringUtil.containsIgnoreCaseAndSpaces("Blk 1-3 Bedok", "1—3"));
+    }
+
+    @Test
     public void containsIgnoreCaseAndSpaces_nonBreakingSpaceInText_returnsTrue() {
         assertTrue(StringUtil.containsIgnoreCaseAndSpaces("Bedok\u00A0North", "bedok north"));
     }
@@ -218,6 +224,28 @@ public class StringUtilTest {
 
         // a zero-width space between the letter and its accent
         assertEquals("école", StringUtil.normalizeInput("e​́cole"));
+    }
+
+    @Test
+    public void normalizeInput_curlyApostrophes_returnsStraightApostrophe() {
+        assertEquals("Blk 5 'Sunrise' Court", StringUtil.normalizeInput("Blk 5 ‘Sunrise’ Court"));
+    }
+
+    @Test
+    public void normalizeInput_curlyDoubleQuotes_returnsStraightDoubleQuote() {
+        assertEquals("revise \"quadratic\"", StringUtil.normalizeInput("revise “quadratic”"));
+    }
+
+    @Test
+    public void normalizeInput_enAndEmDashes_returnHyphens() {
+        assertEquals("9123-4567", StringUtil.normalizeInput("9123–4567"));
+        assertEquals("algebra - weak", StringUtil.normalizeInput("algebra — weak"));
+    }
+
+    @Test
+    public void normalizeInput_otherDashes_kept() {
+        // non-breaking hyphen and minus sign
+        assertEquals("a‑b−c", StringUtil.normalizeInput("a‑b−c"));
     }
 
     @Test

@@ -19,8 +19,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.CollectionUtil;
 import seedu.address.commons.util.ToStringBuilder;
@@ -45,15 +47,9 @@ public class EditCommand extends Command implements ConfirmationCommand {
 
     public static final String COMMAND_WORD = "edit";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the student identified "
-            + "by the index number used in the displayed student list. "
-            + "Existing values will be overwritten by the input values. "
-            + "Use " + PREFIX_PHONE + " with no number to remove the phone, and "
-            + PREFIX_ADDRESS + " with no value to remove the address, "
-            + PREFIX_EMAIL + " with no value to remove the email. Use "
-            + PREFIX_GUARDIAN_NAME + " " + PREFIX_GUARDIAN_PHONE + " with no values to remove the guardian. "
-            + "Tags given with " + PREFIX_TAG + " replace all existing tags; use " + PREFIX_TAG
-            + " with no value to remove them all.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the student at INDEX in the displayed "
+            + "student list. " + PREFIX_PHONE + ", " + PREFIX_ADDRESS + ", " + PREFIX_EMAIL + ", " + PREFIX_TAG
+            + ", or " + PREFIX_GUARDIAN_NAME + " " + PREFIX_GUARDIAN_PHONE + " with no value removes that detail.\n"
             + "Parameters: INDEX (must be a positive integer) "
             + "[" + PREFIX_NAME + "NAME] "
             + "[" + PREFIX_PHONE + "PHONE] "
@@ -90,6 +86,8 @@ public class EditCommand extends Command implements ConfirmationCommand {
     public static final String MESSAGE_GUARDIAN_INCOMPLETE = "This student has no guardian yet. Give both "
             + PREFIX_GUARDIAN_NAME + " and " + PREFIX_GUARDIAN_PHONE + " to add one.";
     public static final String MESSAGE_NO_GUARDIAN_TO_REMOVE = "This student has no guardian to remove.";
+
+    private static final Logger logger = LogsCenter.getLogger(EditCommand.class);
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -156,6 +154,7 @@ public class EditCommand extends Command implements ConfirmationCommand {
         // keep the edited person at the same index, so the list and view panel don't shift
         boolean isOutsideFilter = model.keepPersonInFilteredList(editedPerson);
         model.setPerson(personToEdit, editedPerson);
+        logger.fine("Edited student " + index.getOneBased() + ": " + editedPerson.getName());
         String feedback = String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
         if (isOutsideFilter) {
             feedback += "\n" + String.format(MESSAGE_NO_LONGER_MATCHES, editedPerson.getName(),
