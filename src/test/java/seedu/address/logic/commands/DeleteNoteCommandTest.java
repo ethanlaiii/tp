@@ -22,6 +22,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Note;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.predicate.NoteContainsTextPredicate;
 import seedu.address.testutil.PersonBuilder;
 
 public class DeleteNoteCommandTest {
@@ -34,9 +35,7 @@ public class DeleteNoteCommandTest {
     private static final Index NID_SECOND = Index.fromOneBased(2);
     private static final Index NID_THIRD = Index.fromOneBased(3);
 
-    // stands in for a search by note text, which no command offers yet
-    private static final Predicate<Person> HAS_ALGEBRA_NOTE =
-            person -> person.getNotes().contains(new Note(NOTE_ALGEBRA));
+    private static final Predicate<Person> HAS_ALGEBRA_NOTE = new NoteContainsTextPredicate(NOTE_ALGEBRA);
 
     private final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
@@ -226,6 +225,9 @@ public class DeleteNoteCommandTest {
 
         // different NID -> returns false
         assertFalse(deleteNoteCommand.equals(new DeleteNoteCommand(INDEX_FIRST_PERSON, NID_SECOND)));
+
+        // different force option -> returns false
+        assertFalse(deleteNoteCommand.equals(new DeleteNoteCommand(INDEX_FIRST_PERSON, NID_FIRST, true)));
 
         // null -> returns false
         assertFalse(deleteNoteCommand.equals(null));
