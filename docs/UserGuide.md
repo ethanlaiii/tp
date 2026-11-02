@@ -149,8 +149,6 @@ Parameter | Prefix | Required in `add` | Rules | Examples
 
 Names accept English letters, digits, and spaces only. School names also accept periods, apostrophes, ampersands, parentheses, commas, and hyphens, but must contain at least one English letter. Both fields reject accented letters and letters from other alphabets. Before upgrading, use the previous version to change saved names or school names that contain such letters. Otherwise, those records fail validation when the data file is loaded.
 
-Addresses accept the same characters as notes. Before upgrading, use the previous version to change saved addresses that contain other characters, such as accented letters or emoji. Otherwise, those records fail validation when the data file is loaded.
-
 #### Phone numbers
 
 The phone number is optional, since younger students may not have their own phone. `PHONE` and `GUARDIAN_PHONE` follow the same rules.
@@ -163,7 +161,7 @@ The phone number is optional, since younger students may not have their own phon
 
 #### Addresses
 
-An address can contain `/`, such as `Blk 1/2`. If a known prefix and a valid value for that field come right after a slash, TuteeBook3 treats it as a prefix with a missing space. It shows a red error instead of saving or searching the joined text as part of the address. This applies to `add`, `edit`, and `filter a/`.
+An address can contain `/`, such as `Blk 1/2`. If the letters just before a slash form a prefix, and the text after it is a valid value for that field, TuteeBook3 treats it as a prefix with a missing space. It shows a red error instead of saving or searching the joined text as part of the address. This applies to `add`, `edit`, and `filter a/`.
 
 You type | What happens
 ---------|-------------
@@ -660,8 +658,7 @@ A filter other than `t/` appears more than once | `Each filter can be given only
 `TAG` is blank, too long, or contains a symbol other than a single hyphen between letters or digits | The same message as `add`, starting `Tags must be one word of 1-30 English letters or digits.`
 `GUARDIAN_NAME` is empty | `The guardian name to search for cannot be blank.`
 `NAME`, `SCHOOL`, `EMAIL`, or `GUARDIAN_NAME` contains `/`, such as `n/Chloesch/Victoria` | `No student's name can contain "/", so "Chloesch/Victoria" matches no one.` followed by `If "/" was meant to start a new parameter, check that each prefix is one this command accepts and has a space before it.`
-`ADDRESS` has another filter's prefix joined to it, such as `a/tampinest/paid` | `Put a space before the "t/" prefix.`, naming the prefix you typed
-`ADDRESS` has another filter's prefix in capitals, such as `a/blk N/tan` | `The "N/" prefix is case-sensitive. Use "n/" with a space before it.`, naming the prefix you typed
+`ADDRESS` has another filter's prefix joined to it, such as `a/tampinest/paid` or `a/blk N/tan` | A red error about the missing space. See [Addresses](#addresses).
 `TEXT` after `note/` is empty | `The note text to search for cannot be blank.`
 `TEXT` after `note/` is longer than 500 characters | `The note text to search for must be at most 500 characters.`
 `nid/` is given | `To filter by notes, use note/, such as: filter note/algebra`
