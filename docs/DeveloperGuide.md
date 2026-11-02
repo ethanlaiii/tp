@@ -134,7 +134,7 @@ The `Model` component,
 
 Each `Person` is one student. The classes that make up a `Person` are shown below.
 
-<img src="images/PersonClassDiagram.png" width="550" />
+<img src="images/PersonClassDiagram.png" width="610" />
 
 The diagram does not show these rules, which the classes check when an object is created:
 
