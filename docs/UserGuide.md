@@ -22,7 +22,7 @@ TuteeBook3 is **optimized for fast typists**. You do almost everything by typing
 1. Copy the file to the folder you want to use as the _home folder_ for TuteeBook3.
 
 1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar TuteeBook3.jar`.<br>
-   A GUI similar to the one below should appear in a few seconds. Note how the app contains some sample data.<br>
+   A GUI similar to the one below should appear in a few seconds, with some sample data. The picture shows the app after `view 1`, which opens the first student's record on the right.<br>
    ![Ui](images/Ui.png)
 
 1. Familiarize yourself with TuteeBook3 by trying its commands using the sample data. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to show the available commands in the result display.<br>
@@ -43,6 +43,18 @@ TuteeBook3 is **optimized for fast typists**. You do almost everything by typing
 1. When you finish trying the commands and before you enter your own student records, type `clear`, then enter `CONFIRM` to remove all sample students. Each sample student has the tag `sample`, so `filter t/sample` lists them. Alternatively, type `clear -f` to remove them immediately without confirmation. Both methods remove every student and note currently stored.
 
 1. Refer to [How commands are written](#how-commands-are-written) to learn how to type commands, then the [Features](#features) section for details of each command.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## The main window
+
+![The main window, with the command box, result display, student list, and student detail view labelled](images/UiAnnotated.png)
+
+The window has four areas. This guide uses their names throughout, and the [Glossary](#screen-layout) defines them.
+
+The student list and the student detail view are the same width, and you cannot resize them. The card of the student you are viewing is highlighted in the list. Cards cannot be clicked. When no student is selected, the student detail view shows `View a student to see details.` If a student's record is too long to fit, it scrolls as a whole, including the notes.
+
+You can resize the window down to 600 pixels wide and 400 pixels tall. TuteeBook3 keeps a restored window inside the current screen if the saved size or position no longer fits. The student list and record remain usable at the minimum size by scrolling their contents.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -85,6 +97,8 @@ Some commands ask you to confirm before they go ahead:
 * `add` and `edit`, when another student already has the same name. See [Duplicate students](#duplicate-students).
 
 The command shows a confirmation prompt that says what will happen. The next line tells you how to go ahead, such as `Type CONFIRM (uppercase) to delete this student and all their notes.`
+
+![The confirmation prompt after delete 2](images/deleteConfirmationPrompt.png)
 
 * To go ahead, type `CONFIRM` in uppercase and press Enter. Spaces before or after it are ignored.
 * Any other non-blank input, including `confirm` or a mistyped command, cancels the request. TuteeBook3 then runs what you typed as a normal command, with the red notice `The earlier 'delete' command has been cancelled.` (or the name of the command you cancelled) above its result.
@@ -530,13 +544,11 @@ The command does not accept additional arguments.
 
 #### Viewing a student: `view`
 
-TuteeBook3 shows the student list on the left and the student detail view on the right. The two halves are the same width, and you cannot resize them. The card of the student you are viewing is highlighted in the list. Cards cannot be clicked. When no student is selected, the student detail view shows `View a student to see details.` If a student's record is too long to fit, it scrolls as a whole, including the notes.
-
-You can resize the window down to 600 pixels wide and 400 pixels tall. TuteeBook3 keeps a restored window inside the current screen if the saved size or position no longer fits. The student list and record remain usable at the minimum size by scrolling their contents.
-
 `view` shows the full record of the student at the specified index on the right.
 
 The student detail view contains the student's name, school, level, subject-band pairs, address, email, tags, student phone number, guardian name, and guardian phone number, followed by the student's notes. Optional fields without a recorded value, such as the address, email, tags, student phone number, or guardian details, are shown as an em dash (`—`).
+
+<img src="images/viewStudentResult.png" width="460" alt="The student detail view after view 1, showing two notes numbered 1 and 2" />
 
 Format: `view INDEX`
 
