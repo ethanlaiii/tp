@@ -1738,19 +1738,13 @@ Line counts follow the [RepoSense tP Dashboard](https://nus-cs2103-ay2627-s1.git
 
 Measure | AB3 | TuteeBook3
 --------|-----|-----------
-Functional code in the product | 5,261 lines | 9,886 lines
-Functional code written by the team, as credited by RepoSense | Not applicable | 5,113 lines (4,545 non-blank)
-User commands | 8 | 12, plus `CONFIRM`
+Functional code written by the team, as credited by RepoSense | -   | 5,220 lines
+User commands | 8   | 12, plus `CONFIRM`
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The line counts were taken on 30 October 2026, and may not exactly match the current code. RepoSense regenerates its report as the team adds code, so the figures on the dashboard may differ slightly from those in this table.
+<div markdown="span" class="alert alert-info">:information_source: **Note:** The line counts were taken on 3 November 2026, and may not exactly match the current code. RepoSense regenerates its report as the team adds code, so the figures on the dashboard may differ slightly from those in this table.
 </div>
 
-RepoSense does not count lines kept from AB3, so the team wrote about as much functional code as AB3 contains in total. Much of it is validation and error handling, such as about 300 lines each in `ParserUtil` and `EditCommand`. The team also added:
-
-* 5 commands with their parsers: `view`, `filter`, `addnote`, `editnote`, and `deletenote`.
-* 6 field classes (`School`, `Level`, `Subject`, `Band`, `Guardian`, and `Note`) and 3 JSON adapters.
-* 12 search predicate classes for `filter`.
-* A student detail view beside the list.
+The 12 user commands are `add`, `edit`, `delete`, `addnote`, `editnote`, `deletenote`, `view`, `filter`, `list`, `clear`, `help`, and `exit`.
 
 ### Achievements
 
